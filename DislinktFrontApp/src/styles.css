@@ -1,1 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~bootstrap/dist/css/bootstrap.min.css';
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; 
+background-color: #f1f2f6;}
+
+.customnavbar {
+    background-color: white;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+  }
+
+  .footersecurity{
+    color: #fff;
+    background-color: #009cde;
+    background-image: radial-gradient(circle farthest-side at center bottom,#009cde,#003087 0);
+  }
