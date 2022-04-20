@@ -16,10 +16,12 @@ type AuthenticationHandler struct {
 }
 
 func (handler *AuthenticationHandler) Login(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	fmt.Println("Loging in")
 	var request dto.LoginDTO
 	span := utilities.Tracer.StartSpanFromRequest("Login-handler", r)
-
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
@@ -28,11 +30,37 @@ func (handler *AuthenticationHandler) Login(rw http.ResponseWriter, r *http.Requ
 	var user *model.User
 	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
 	user, err = handler.AuthenticationService.Login(ctx, request)
-	fmt.Print(user.Email)
-	if err != nil {
+
+	token, errr := utilities.CreateToken(user.ProfileID, "authentication_service")
+	if errr != nil {
+		utilities.Tracer.LogError(span, errr)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	responseDTO := dto.LoginResponseDTO{
+		Token:     token,
+		Email:     user.Email,
+		Username:  user.Username,
+		ProfileID: user.ProfileID,
+	}
+
+	respJson, err := json.Marshal(responseDTO)
+	if err != nil {
+		utilities.Tracer.LogError(span, err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	rw.WriteHeader(http.StatusOK)
+	_, _ = rw.Write(respJson)
+	rw.Header().Set("Content-Type", "application/json")
+}
+
+func (handler *AuthenticationHandler) Preflight(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+	rw.WriteHeader(http.StatusOK)
 }
 
 func (handler *AuthenticationHandler) Test(rw http.ResponseWriter, r *http.Request) {

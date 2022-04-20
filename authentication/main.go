@@ -20,10 +20,13 @@ import (
 
 func addDataToDB(client *mongo.Client) {
 	user1 := model.User{1111, "admin@dlk.com", "admin", "admin", true}
+	user2 := model.User{1112, "user@dlk.com", "user", "user", true}
 
 	collection := client.Database("dislinkt").Collection("users")
 	insertRes, err := collection.InsertOne(context.TODO(), user1)
+	insertRes1, err := collection.InsertOne(context.TODO(), user2)
 	fmt.Println(insertRes)
+	fmt.Println(insertRes1)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -64,9 +67,10 @@ func initHandler(service *service.AuthenticationService) *handlers.Authenticatio
 func handlerFunc(handler *handlers.AuthenticationHandler) {
 	fmt.Println("Auth server started...")
 	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/login", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/login", handler.Login).Methods("POST")
-	router.HandleFunc("/test", handler.Test).Methods("GET")
-	http.ListenAndServe(":8081", router)
+	router.HandleFunc("/test", handler.Test).Methods("GET", "OPTIONS")
+	log.Fatal(http.ListenAndServe(":8081", router))
 }
 
 func main() {
