@@ -30,7 +30,11 @@ func (handler *AuthenticationHandler) Login(rw http.ResponseWriter, r *http.Requ
 	var user *model.User
 	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
 	user, err = handler.AuthenticationService.Login(ctx, request)
-
+	if err != nil {
+		utilities.Tracer.LogError(span, err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	token, errr := utilities.CreateToken(user.ProfileID, "authentication_service")
 	if errr != nil {
 		utilities.Tracer.LogError(span, errr)
@@ -54,6 +58,7 @@ func (handler *AuthenticationHandler) Login(rw http.ResponseWriter, r *http.Requ
 	rw.WriteHeader(http.StatusOK)
 	_, _ = rw.Write(respJson)
 	rw.Header().Set("Content-Type", "application/json")
+	utilities.Tracer.FinishSpan(span)
 }
 
 func (handler *AuthenticationHandler) Preflight(rw http.ResponseWriter, r *http.Request) {

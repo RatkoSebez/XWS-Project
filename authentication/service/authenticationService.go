@@ -6,6 +6,7 @@ import (
 	"XWS-Project/authentication/repository"
 	"context"
 	"fmt"
+	"log"
 )
 
 type AuthenticationService struct {
@@ -16,6 +17,7 @@ func (service *AuthenticationService) Login(ctx context.Context, data dto.LoginD
 	user, err := service.AuthRepo.GetUserByEmail(ctx, data.Email)
 	if err != nil {
 		fmt.Print("greska uzas jedan")
+		log.Fatal(err)
 	}
 	return user, nil
 }
