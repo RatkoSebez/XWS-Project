@@ -7,13 +7,15 @@ import { FormsModule } from '@angular/forms';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
+import { ImageUploadComponent } from './image-upload/image-upload.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     FrontPageComponent,
     LoginPageComponent,
-    RegistrationPageComponent
+    RegistrationPageComponent,
+    ImageUploadComponent
   ],
   imports: [
     BrowserModule,

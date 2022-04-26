@@ -1,0 +1,8 @@
+<div class="text-center">
+    <input class="form-control" [(ngModel)]="filename" #imageInput type="file" accept="image/*" (change)="onChange(imageInput)" style="width: 50%;">
+  
+    <button (click)="onUpload()" 
+        class="btn btn-success">
+        Upload
+    </button>
+  </div>

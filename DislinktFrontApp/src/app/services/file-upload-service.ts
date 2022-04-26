@@ -7,12 +7,12 @@ import {Observable} from 'rxjs';
 export class FileUploadService {
     
   // API url
-  baseApiUrl = "https://localhost:8082/save-photo"
+  baseApiUrl = "http://localhost:8082/save-photo"
     
   constructor(private http:HttpClient) { }
   
   // Returns an observable
-  upload(file: ArrayBuffer, filename:string):Observable<any> {
+  upload(file: string | undefined, filename:string):Observable<any> {
 
     const objec={
       fileName:filename,

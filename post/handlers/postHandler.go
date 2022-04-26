@@ -5,17 +5,9 @@ import (
 	"XWS-Project/post/model"
 	"XWS-Project/post/service"
 	"XWS-Project/utilities"
-	"bytes"
 	"context"
-	"encoding/base64"
 	"encoding/json"
-	"image/gif"
-	"image/jpeg"
-	"image/png"
-	"log"
 	"net/http"
-	"os"
-	"strings"
 )
 
 type PostHandler struct {
@@ -39,8 +31,8 @@ func (handler *PostHandler) MakePost(rw http.ResponseWriter, r *http.Request) {
 	userID := utilities.GetLoggedUserIDFromToken(r)
 	post, err = handler.PostService.MakePost(ctx, request, userID)
 	if err != nil {
-		log.Fatal(err)
-		return
+		rw.WriteHeader(http.StatusBadRequest)
+		panic(err)
 	}
 	respJson, err := json.Marshal(post)
 	if err != nil {
@@ -73,53 +65,22 @@ func (handler *PostHandler) SavePhoto(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var fileData = request.FileData
-	idx := strings.Index(fileData, ";base64,")
-	ImageType := fileData[11:idx]
-	log.Println(ImageType)
-	unbased, err := base64.RawStdEncoding.DecodeString(fileData[idx+8:])
-	if err != nil {
-		log.Fatal(err)
-	}
-	byteReader := bytes.NewReader(unbased)
+	userID := utilities.GetLoggedUserIDFromToken(r)
+	handler.PostService.SavePhotos(request, userID)
+}
 
-	switch ImageType {
-	case "png":
-		im, err := png.Decode(byteReader)
-		if err != nil {
-			log.Fatal(err)
-		}
+func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request) {
 
-		f, err := os.OpenFile("../photos/"+request.FileName, os.O_WRONLY|os.O_CREATE, 0777)
-		if err != nil {
-			log.Fatal(err)
-		}
+}
+func (handler *PostHandler) Like(rw http.ResponseWriter, r *http.Request) {
 
-		png.Encode(f, im)
-	case "jpeg":
-		im, err := jpeg.Decode(byteReader)
-		if err != nil {
-			log.Fatal(err)
-		}
+}
+func (handler *PostHandler) Dislike(rw http.ResponseWriter, r *http.Request) {
 
-		f, err := os.OpenFile("../photos/"+request.FileName, os.O_WRONLY|os.O_CREATE, 0777)
-		if err != nil {
-			log.Fatal(err)
-		}
+}
+func (handler *PostHandler) Unlike(rw http.ResponseWriter, r *http.Request) {
 
-		jpeg.Encode(f, im, nil)
-	case "gif":
-		im, err := gif.Decode(byteReader)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		f, err := os.OpenFile("../photos/"+request.FileName, os.O_WRONLY|os.O_CREATE, 0777)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		gif.Encode(f, im, nil)
-	}
+}
+func (handler *PostHandler) Undislike(rw http.ResponseWriter, r *http.Request) {
 
 }

@@ -4,10 +4,10 @@ import (
 	"time"
 )
 
-type Reaction struct {
-	ReactionID   uint      `json:"reactionId"`
+type Comment struct {
+	CommentID    uint      `json:"commentId"`
 	PostID       uint      `json:"postId"`
 	UserID       uint      `json:"userId"`
 	CreationTime time.Time `json:"creationTime"`
-	ReactionType string    `json:"reactionType"`
+	CommentData  string    `json:"comment"`
 }

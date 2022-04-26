@@ -11,4 +11,5 @@ type Post struct {
 	MediaAssets  []Media    `json:"mediaAssets"`
 	PostText     string     `json:"postText"`
 	Reactions    []Reaction `json:"reactions"`
+	Comments     []Comment  `json:"comments"`
 }
