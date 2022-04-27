@@ -4,7 +4,9 @@ import (
 	"XWS-Project/post/model"
 	"context"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"log"
 )
 
 type PostRepository struct {
@@ -31,4 +33,56 @@ func (repository *PostRepository) SaveMedia(ctx context.Context, data model.Medi
 	result, err := collection.InsertOne(ctx, data)
 	fmt.Println("Inserted media", result.InsertedID)
 	return err
+}
+
+func (repository *PostRepository) LoadPostByID(ctx context.Context, id uint) (*model.Post, error) {
+	filter := bson.D{{"postId", id}}
+	var result model.Post
+	collection := repository.Client.Database("dislinkt").Collection("posts")
+	err := collection.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return &result, nil
+}
+
+func (repository *PostRepository) UpdatePost(ctx context.Context, post model.Post) (*model.Post, error) {
+	filter := bson.D{{"postId", post.PostID}}
+	update := bson.D{{"$set", bson.D{{"comments", post.Comments}}}}
+	collection := repository.Client.Database("dislinkt").Collection("posts")
+	_, err := collection.UpdateOne(ctx, filter, update)
+	return nil, err
+}
+
+func (repository *PostRepository) AddCommentToPost(ctx context.Context, postId uint, comment model.Comment) (*model.Post, error) {
+	collection := repository.Client.Database("dislinkt").Collection("comments")
+	rslt, err := collection.InsertOne(ctx, comment)
+	fmt.Println("Inserted comment", rslt.InsertedID)
+	if err != nil {
+		panic(err)
+	}
+	result, _ := repository.LoadPostByID(ctx, postId)
+	result.Comments = append(result.Comments, comment)
+	updateRes, err := repository.UpdatePost(ctx, *result)
+	return updateRes, err
+}
+
+func (repository *PostRepository) LikePost(ctx context.Context, post model.Post, reaction model.Reaction) (*model.Post, error) {
+	collection := repository.Client.Database("dislinkt").Collection("reactions")
+	_, err := collection.InsertOne(ctx, reaction)
+	if err != nil {
+		panic(err)
+	}
+	updateRes, err := repository.UpdatePost(ctx, post)
+	return updateRes, err
+}
+
+func (repository *PostRepository) DislikePost(ctx context.Context, post model.Post, reaction model.Reaction) (*model.Post, error) {
+	collection := repository.Client.Database("dislinkt").Collection("reactions")
+	_, err := collection.InsertOne(ctx, reaction)
+	if err != nil {
+		panic(err)
+	}
+	updateRes, err := repository.UpdatePost(ctx, post)
+	return updateRes, err
 }

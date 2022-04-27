@@ -70,17 +70,34 @@ func (handler *PostHandler) SavePhoto(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request) {
+	var request dto.CommentDTO
+	span := utilities.Tracer.StartSpanFromRequest("Post-handler", r)
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	userID := utilities.GetLoggedUserIDFromToken(r)
+	post, err := handler.PostService.PostComment(request, userID)
+	if err != nil {
+		panic(err)
+	}
+	respJson, err := json.Marshal(post)
+	if err != nil {
+		utilities.Tracer.LogError(span, err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
+	rw.WriteHeader(http.StatusOK)
+	_, _ = rw.Write(respJson)
+	rw.Header().Set("Content-Type", "application/json")
 }
+
 func (handler *PostHandler) Like(rw http.ResponseWriter, r *http.Request) {
 
 }
+
 func (handler *PostHandler) Dislike(rw http.ResponseWriter, r *http.Request) {
-
-}
-func (handler *PostHandler) Unlike(rw http.ResponseWriter, r *http.Request) {
-
-}
-func (handler *PostHandler) Undislike(rw http.ResponseWriter, r *http.Request) {
 
 }

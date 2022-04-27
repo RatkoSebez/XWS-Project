@@ -27,6 +27,7 @@ func (service *PostService) MakePost(ctx context.Context, data dto.NewPostDTO, u
 	post.Reactions = []model.Reaction{}
 	post.PostText = data.PostText
 	post.Comments = []model.Comment{}
+	post.MediaAssets = []model.Media{}
 
 	for _, el := range data.Links {
 		var asset model.Media
@@ -107,18 +108,41 @@ func (service *PostService) SavePhotos(request dto.PhotoDTO, userID uint) {
 		gif.Encode(f, im, nil)
 	}
 }
-func (service *PostService) PostComment() (*model.Post, error) {
-	return nil, nil
+func (service *PostService) PostComment(ctx context.Context, data dto.CommentDTO, userID uint) (*model.Post, error) {
+	var comm model.Comment
+	comm.CreationTime = time.Now()
+	comm.PostID = data.PostID
+	comm.CommentData = data.CommentContent
+	comm.UserID = userID
+	post, err := service.PostRepo.AddCommentToPost(ctx, data.PostID, comm)
+	return post, err
 }
-func (service *PostService) Like() (*model.Post, error) {
-	return nil, nil
+
+func (service *PostService) Like(ctx context.Context, data dto.ReactionDTO) (*model.Post, error) {
+	post, err := service.PostRepo.LoadPostByID(ctx, data.PostID)
+	if err != nil {
+		panic(err)
+	}
+	var reaction model.Reaction
+	reaction.PostID = data.PostID
+	reaction.UserID = data.UserID
+	reaction.CreationTime = time.Now()
+	reaction.ReactionType = "LIKE"
+	post.Reactions = append(post.Reactions, reaction)
+	result, err := service.PostRepo.LikePost(ctx, *post, reaction)
+	return result, err
 }
-func (service *PostService) Dislike() (*model.Post, error) {
-	return nil, nil
-}
-func (service *PostService) Unlike() (*model.Post, error) {
-	return nil, nil
-}
-func (service *PostService) Undislike() (*model.Post, error) {
-	return nil, nil
+func (service *PostService) Dislike(ctx context.Context, data dto.ReactionDTO) (*model.Post, error) {
+	post, err := service.PostRepo.LoadPostByID(ctx, data.PostID)
+	if err != nil {
+		panic(err)
+	}
+	var reaction model.Reaction
+	reaction.PostID = data.PostID
+	reaction.UserID = data.UserID
+	reaction.CreationTime = time.Now()
+	reaction.ReactionType = "DISLIKE"
+	post.Reactions = append(post.Reactions, reaction)
+	result, err := service.PostRepo.DislikePost(ctx, *post, reaction)
+	return result, err
 }
