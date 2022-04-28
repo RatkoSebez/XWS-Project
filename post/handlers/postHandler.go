@@ -7,6 +7,7 @@ import (
 	"XWS-Project/utilities"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -18,7 +19,11 @@ func (handler *PostHandler) MakePost(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
-
+	userID := utilities.GetLoggedUserIDFromToken(r)
+	if userID == 0 {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
 	var request dto.NewPostDTO
 	span := utilities.Tracer.StartSpanFromRequest("Post-handler", r)
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -28,7 +33,6 @@ func (handler *PostHandler) MakePost(rw http.ResponseWriter, r *http.Request) {
 	}
 	var post *model.Post
 	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
-	userID := utilities.GetLoggedUserIDFromToken(r)
 	post, err = handler.PostService.MakePost(ctx, request, userID)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
@@ -72,6 +76,11 @@ func (handler *PostHandler) SavePhoto(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request) {
+	userID := utilities.GetLoggedUserIDFromToken(r)
+	if userID == 0 {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
 	var request dto.CommentDTO
 	span := utilities.Tracer.StartSpanFromRequest("Post-handler", r)
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -79,7 +88,6 @@ func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	userID := utilities.GetLoggedUserIDFromToken(r)
 	post, err := handler.PostService.PostComment(context.TODO(), request, userID)
 	if err != nil {
 		panic(err)
@@ -98,7 +106,13 @@ func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request)
 }
 
 func (handler *PostHandler) MakeReaction(rw http.ResponseWriter, r *http.Request) {
+	userID := utilities.GetLoggedUserIDFromToken(r)
+	if userID == 0 {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
 
+	fmt.Println(userID)
 	var reaction dto.ReactionDTO
 	span := utilities.Tracer.StartSpanFromRequest("React-to-the-post", r)
 
