@@ -28,5 +28,13 @@ export class LoginService{
         localStorage.setItem('logedIn', 'true')
       }
 
+    getHeaders() {
+        const jwt = localStorage.getItem('token')
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ` + jwt,
+        });
+        return headers;
+      }
 
 }

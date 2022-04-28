@@ -118,7 +118,7 @@ func (service *PostService) PostComment(ctx context.Context, data dto.CommentDTO
 	return post, err
 }
 
-func (service *PostService) Like(ctx context.Context, data dto.ReactionDTO) (*model.Post, error) {
+func (service *PostService) MakeReaction(ctx context.Context, data dto.ReactionDTO) (*model.Post, error) {
 	post, err := service.PostRepo.LoadPostByID(ctx, data.PostID)
 	if err != nil {
 		panic(err)
@@ -127,22 +127,8 @@ func (service *PostService) Like(ctx context.Context, data dto.ReactionDTO) (*mo
 	reaction.PostID = data.PostID
 	reaction.UserID = data.UserID
 	reaction.CreationTime = time.Now()
-	reaction.ReactionType = "LIKE"
+	reaction.TypeOfReaction = data.React
 	post.Reactions = append(post.Reactions, reaction)
-	result, err := service.PostRepo.LikePost(ctx, *post, reaction)
-	return result, err
-}
-func (service *PostService) Dislike(ctx context.Context, data dto.ReactionDTO) (*model.Post, error) {
-	post, err := service.PostRepo.LoadPostByID(ctx, data.PostID)
-	if err != nil {
-		panic(err)
-	}
-	var reaction model.Reaction
-	reaction.PostID = data.PostID
-	reaction.UserID = data.UserID
-	reaction.CreationTime = time.Now()
-	reaction.ReactionType = "DISLIKE"
-	post.Reactions = append(post.Reactions, reaction)
-	result, err := service.PostRepo.DislikePost(ctx, *post, reaction)
+	result, err := service.PostRepo.ReactOnPost(ctx, *post, reaction)
 	return result, err
 }

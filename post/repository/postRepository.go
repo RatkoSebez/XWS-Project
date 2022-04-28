@@ -67,17 +67,7 @@ func (repository *PostRepository) AddCommentToPost(ctx context.Context, postId u
 	return updateRes, err
 }
 
-func (repository *PostRepository) LikePost(ctx context.Context, post model.Post, reaction model.Reaction) (*model.Post, error) {
-	collection := repository.Client.Database("dislinkt").Collection("reactions")
-	_, err := collection.InsertOne(ctx, reaction)
-	if err != nil {
-		panic(err)
-	}
-	updateRes, err := repository.UpdatePost(ctx, post)
-	return updateRes, err
-}
-
-func (repository *PostRepository) DislikePost(ctx context.Context, post model.Post, reaction model.Reaction) (*model.Post, error) {
+func (repository *PostRepository) ReactOnPost(ctx context.Context, post model.Post, reaction model.Reaction) (*model.Post, error) {
 	collection := repository.Client.Database("dislinkt").Collection("reactions")
 	_, err := collection.InsertOne(ctx, reaction)
 	if err != nil {

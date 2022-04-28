@@ -1,0 +1,26 @@
+<div class="container" style="border: solid 1px black; padding: 35px;">
+    <div class="row">
+    <label for="">Insert text</label>
+    <input type="text" [(ngModel)]="newPost.postText" width="250" height="100">
+    </div>
+    <div class="row" style="margin-top: 20px;">
+    <label for="">Insert link</label>
+    <input type="text" >
+    </div>
+    <div class="row" style="margin-top: 50px;">
+    <div class="text-center">
+        <input class="form-control" [(ngModel)]="filename" #imageInput type="file" accept="image/*" (change)="onChange(imageInput)" style="width: 50%;">
+      
+        <button (click)="onUpload()" 
+            class="btn btn-success" style="margin-top: 20px;">
+            Upload
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-primary" (click)="makeNewPost()">Make new post</button>
+</div>
+
+<div *ngIf="showPost">
+
+</div>

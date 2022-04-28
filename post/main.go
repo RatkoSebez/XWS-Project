@@ -54,10 +54,8 @@ func handlerFunc(handler *handlers.PostHandler) {
 	router.HandleFunc("/save-photo", handler.SavePhoto).Methods("POST")
 	router.HandleFunc("/comment", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/comment", handler.PostComment).Methods("POST")
-	router.HandleFunc("/like", handler.Preflight).Methods("OPTIONS")
-	router.HandleFunc("/like", handler.Like).Methods("POST")
-	router.HandleFunc("/dislike", handler.Preflight).Methods("OPTIONS")
-	router.HandleFunc("/dislike", handler.Dislike).Methods("POST")
+	router.HandleFunc("/make-reaction", handler.Preflight).Methods("OPTIONS")
+	router.HandleFunc("/make-reaction", handler.MakeReaction).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8082", router))
 }

@@ -5,9 +5,9 @@ import (
 )
 
 type Reaction struct {
-	ReactionID   uint      `json:"reactionId"`
-	PostID       uint      `json:"postId"`
-	UserID       uint      `json:"userId"`
-	CreationTime time.Time `json:"creationTime"`
-	ReactionType string    `json:"reactionType"`
+	ReactionID     uint         `json:"reactionId"`
+	PostID         uint         `json:"postId"`
+	UserID         uint         `json:"userId"`
+	CreationTime   time.Time    `json:"creationTime"`
+	TypeOfReaction ReactionType `json:"reactionType"`
 }

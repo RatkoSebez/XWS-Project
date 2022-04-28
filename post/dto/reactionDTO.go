@@ -5,7 +5,7 @@ import (
 )
 
 type ReactionDTO struct {
-	Reaction model.ReactionType `json:"reactionType"`
-	UserID   uint               `json:"userId"`
-	PostID   uint               `json:"postId"`
+	React  model.ReactionType `json:"reactionType"`
+	UserID uint               `json:"userId"`
+	PostID uint               `json:"postId"`
 }

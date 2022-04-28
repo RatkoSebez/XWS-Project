@@ -59,6 +59,7 @@ func (handler *PostHandler) SavePhoto(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 
+	span := utilities.Tracer.StartSpanFromRequest("Photo-handler", r)
 	var request dto.PhotoDTO
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -67,6 +68,7 @@ func (handler *PostHandler) SavePhoto(rw http.ResponseWriter, r *http.Request) {
 	}
 	userID := utilities.GetLoggedUserIDFromToken(r)
 	handler.PostService.SavePhotos(request, userID)
+	utilities.Tracer.FinishSpan(span)
 }
 
 func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request) {
@@ -78,7 +80,7 @@ func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request)
 		return
 	}
 	userID := utilities.GetLoggedUserIDFromToken(r)
-	post, err := handler.PostService.PostComment(request, userID)
+	post, err := handler.PostService.PostComment(context.TODO(), request, userID)
 	if err != nil {
 		panic(err)
 	}
@@ -92,12 +94,33 @@ func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request)
 	rw.WriteHeader(http.StatusOK)
 	_, _ = rw.Write(respJson)
 	rw.Header().Set("Content-Type", "application/json")
+	utilities.Tracer.FinishSpan(span)
 }
 
-func (handler *PostHandler) Like(rw http.ResponseWriter, r *http.Request) {
+func (handler *PostHandler) MakeReaction(rw http.ResponseWriter, r *http.Request) {
 
-}
+	var reaction dto.ReactionDTO
+	span := utilities.Tracer.StartSpanFromRequest("React-to-the-post", r)
 
-func (handler *PostHandler) Dislike(rw http.ResponseWriter, r *http.Request) {
+	err := json.NewDecoder(r.Body).Decode(&reaction)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
+	post, err := handler.PostService.MakeReaction(context.TODO(), reaction)
+	if err != nil {
+		panic(err)
+	}
+	respJson, err := json.Marshal(post)
+	if err != nil {
+		utilities.Tracer.LogError(span, err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	_, _ = rw.Write(respJson)
+	rw.Header().Set("Content-Type", "application/json")
+	utilities.Tracer.FinishSpan(span)
 }
