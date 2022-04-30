@@ -14,6 +14,8 @@ type User struct {
 	Password   string   `json:"password"`
 	Bio        string   `json:"bio"`
 	Experience []string `json:"experience"`
+	Education  []string `json:"education"`
 	Interests  []string `json:"interests"`
+	Skills     []string `json:"skills"`
 	IsPrivate  bool     `json:"isPrivate"`
 }

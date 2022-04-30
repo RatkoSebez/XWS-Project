@@ -1,15 +1,14 @@
 package main
 
 import (
-	"XWS-Project/registration/handlers"
-	"XWS-Project/registration/repository"
-	"XWS-Project/registration/service"
+	"XWS-Project/profile/handlers"
+	"XWS-Project/profile/repository"
+	"XWS-Project/profile/service"
 	"XWS-Project/utilities"
-	"net/http"
-
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -33,26 +32,26 @@ func initDatabase() *mongo.Client {
 	return client
 }
 
-func initRepo(clientDB *mongo.Client) *repository.RegistrationRepository {
-	return &repository.RegistrationRepository{Client: clientDB}
+func initRepo(clientDB *mongo.Client) *repository.ProfileRepository {
+	return &repository.ProfileRepository{Client: clientDB}
 }
 
-func initService(repo *repository.RegistrationRepository) *service.RegistrationService {
-	return &service.RegistrationService{RegistrationRepository: repo}
+func initService(repo *repository.ProfileRepository) *service.ProfileService {
+	return &service.ProfileService{ProfileRepository: repo}
 }
 
-func initHandler(service *service.RegistrationService) *handlers.RegistrationHandler {
-	return &handlers.RegistrationHandler{RegistrationService: service}
+func initHandler(service *service.ProfileService) *handlers.ProfileHandler {
+	return &handlers.ProfileHandler{ProfileService: service}
 }
 
-func handlerFunc(handler *handlers.RegistrationHandler) {
-	fmt.Println("Registration server started...")
+func handlerFunc(handler *handlers.ProfileHandler) {
+	fmt.Println("Profile server started...")
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/register", handler.Register).Methods("POST")
+	router.HandleFunc("/{username}", handler.Edit).Methods("PUT")
 	log.Fatal(http.ListenAndServe(":8081", router))
 }
 func main() {
-	utilities.TracerInit("registration")
+	utilities.TracerInit("profile")
 	dbClient := initDatabase()
 	regRepo := initRepo(dbClient)
 	regService := initService(regRepo)

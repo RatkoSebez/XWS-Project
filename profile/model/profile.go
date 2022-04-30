@@ -1,7 +1,6 @@
-package dto
+package model
 
-type UserDTO struct {
-	ID         int      `json:"id"`
+type ProfileInfo struct {
 	Name       string   `json:"name"`
 	Surname    string   `json:"surname"`
 	Email      string   `json:"email"`
