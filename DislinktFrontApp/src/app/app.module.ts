@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
+import { RouterModule } from '@angular/router';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -14,12 +16,16 @@ import { RegistrationPageComponent } from './registration-page/registration-page
     FrontPageComponent,
     LoginPageComponent,
     RegistrationPageComponent
+          
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule, 
+    RouterModule,
+    ToastrModule.forRoot(),
+
   ],
   providers: [],
   bootstrap: [AppComponent]

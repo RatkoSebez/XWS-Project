@@ -6,8 +6,9 @@ import { RegistrationPageComponent } from './registration-page/registration-page
 
 const routes: Routes = [
   {path:'', component: FrontPageComponent},
+  {path:'register', component: RegistrationPageComponent},
   {path:'login', component: LoginPageComponent},
-  {path:'register', component: RegistrationPageComponent}
+  //{path:'edit', component: EditProfilePageComponent}
 ];
 
 @NgModule({
