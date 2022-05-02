@@ -66,3 +66,22 @@ func (handler *FollowHandler) GetFollowRequest(rw http.ResponseWriter, r *http.R
 	}
 	rw.Write(respJson)
 }
+
+func (handler *FollowHandler) CreateFollow(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+	span := utilities.Tracer.StartSpanFromRequest("follow-handler", r)
+	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
+	var followRequest model.FollowRequest
+	err := json.NewDecoder(r.Body).Decode(&followRequest)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = handler.FollowService.CreateFollow(ctx, followRequest)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}

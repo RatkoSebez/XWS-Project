@@ -31,3 +31,8 @@ func (service *FollowService) GetFollowRequest(ctx context.Context, email string
 	}
 	return followRequests, nil
 }
+
+func (service *FollowService) CreateFollow(ctx context.Context, followRequest model.FollowRequest) error {
+	err := service.FollowRepo.CreateFollow(ctx, followRequest)
+	return err
+}

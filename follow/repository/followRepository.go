@@ -47,3 +47,29 @@ func (repo *FollowRepository) GetFollowRequest(ctx context.Context, email string
 
 	return result, nil
 }
+
+func (repo *FollowRepository) CreateFollow(ctx context.Context, followRequest model.FollowRequest) error {
+	collection := repo.Client.Database("dislinkt").Collection("userFollows")
+	// receiver will get new follower
+	receiver, _ := repo.GetFollow(ctx, followRequest.ReceiverEmail)
+	if receiver.Email == "" {
+		follow := &model.Follow{followRequest.ReceiverEmail, []string{}, []string{followRequest.SenderEmail}}
+		collection.InsertOne(ctx, follow)
+	} else {
+		receiver.Followers = append(receiver.Followers, followRequest.SenderEmail)
+		filter := bson.D{{"email", receiver.Email}}
+		collection.UpdateOne(ctx, filter, receiver)
+	}
+	// sender will get new follow
+	sender, _ := repo.GetFollow(ctx, followRequest.SenderEmail)
+	if sender.Email == "" {
+		follow := &model.Follow{followRequest.SenderEmail, []string{followRequest.ReceiverEmail}, []string{}}
+		collection.InsertOne(ctx, follow)
+	} else {
+		sender.Followers = append(sender.Followers, followRequest.ReceiverEmail)
+		filter := bson.D{{"email", sender.Email}}
+		collection.UpdateOne(ctx, filter, sender)
+	}
+
+	return nil
+}

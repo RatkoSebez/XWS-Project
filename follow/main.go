@@ -62,9 +62,10 @@ func initHandler(service *service.FollowService) *handlers.FollowHandler {
 func handlerFunc(handler *handlers.FollowHandler) {
 	fmt.Println("Follow server started...")
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/followRequest", handler.CreateFollowRequest).Methods("POST")
 	router.HandleFunc("/followRequest/{email}", handler.GetFollowRequest).Methods("GET")
+	router.HandleFunc("/followRequest", handler.CreateFollowRequest).Methods("POST")
 	router.HandleFunc("/follow/{email}", handler.GetFollow).Methods("GET")
+	router.HandleFunc("/follow/", handler.CreateFollow).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8085", router))
 }
 
