@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 )
 
 type PostRepository struct {
@@ -41,7 +40,7 @@ func (repository *PostRepository) LoadPostByID(ctx context.Context, id uint) (*m
 	collection := repository.Client.Database("dislinkt").Collection("posts")
 	err := collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	return &result, nil
 }

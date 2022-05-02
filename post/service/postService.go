@@ -35,7 +35,7 @@ func (service *PostService) MakePost(ctx context.Context, data dto.NewPostDTO, u
 		asset.Filepath = ""
 		err := service.PostRepo.SaveMedia(ctx, asset)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 		post.MediaAssets = append(post.MediaAssets, asset)
 	}
@@ -48,7 +48,7 @@ func (service *PostService) MakePost(ctx context.Context, data dto.NewPostDTO, u
 		asset.Filepath = "../photos/" + idString + el
 		err := service.PostRepo.SaveMedia(ctx, asset)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 		post.MediaAssets = append(post.MediaAssets, asset)
 	}
@@ -65,7 +65,7 @@ func (service *PostService) SavePhotos(request dto.PhotoDTO, userID uint) {
 	log.Println(ImageType)
 	unbased, err := base64.RawStdEncoding.DecodeString(fileData[idx+8 : len(fileData)-1])
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	byteReader := bytes.NewReader(unbased)
 	idString := strconv.FormatUint(uint64(userID), 10)
@@ -73,36 +73,36 @@ func (service *PostService) SavePhotos(request dto.PhotoDTO, userID uint) {
 	case "png":
 		im, err := png.Decode(byteReader)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 
 		f, err := os.OpenFile("../photos/"+idString+request.FileName, os.O_WRONLY|os.O_CREATE, 0777)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 
 		png.Encode(f, im)
 	case "jpeg":
 		im, err := jpeg.Decode(byteReader)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 
 		f, err := os.OpenFile("../photos/"+idString+request.FileName, os.O_WRONLY|os.O_CREATE, 0777)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 
 		jpeg.Encode(f, im, nil)
 	case "gif":
 		im, err := gif.Decode(byteReader)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 
 		f, err := os.OpenFile("../photos/"+idString+request.FileName, os.O_WRONLY|os.O_CREATE, 0777)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 
 		gif.Encode(f, im, nil)
