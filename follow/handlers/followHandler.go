@@ -15,7 +15,7 @@ type FollowHandler struct {
 }
 
 func (handler *FollowHandler) GetFollow(rw http.ResponseWriter, r *http.Request) {
-	span := utilities.Tracer.StartSpanFromRequest("Login-handler", r)
+	span := utilities.Tracer.StartSpanFromRequest("follow-handler", r)
 	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
 
 	email, _ := mux.Vars(r)["email"]
@@ -35,7 +35,7 @@ func (handler *FollowHandler) CreateFollowRequest(rw http.ResponseWriter, r *htt
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
-	span := utilities.Tracer.StartSpanFromRequest("Login-handler", r)
+	span := utilities.Tracer.StartSpanFromRequest("follow-handler", r)
 	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
 	var followRequest model.FollowRequest
 	err := json.NewDecoder(r.Body).Decode(&followRequest)
@@ -48,4 +48,21 @@ func (handler *FollowHandler) CreateFollowRequest(rw http.ResponseWriter, r *htt
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
+}
+
+func (handler *FollowHandler) GetFollowRequest(rw http.ResponseWriter, r *http.Request) {
+	span := utilities.Tracer.StartSpanFromRequest("follow-handler", r)
+	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
+
+	email, _ := mux.Vars(r)["email"]
+	//fmt.Println("parameter: " + email)
+
+	followRequests, _ := handler.FollowService.GetFollowRequest(ctx, email)
+	respJson, err := json.Marshal(followRequests)
+	rw.Header().Add("content-type", "application/json")
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	rw.Write(respJson)
 }
