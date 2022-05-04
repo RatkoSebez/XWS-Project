@@ -103,8 +103,8 @@ export class RegistrationPageComponent implements OnInit {
     this.addInterest();
     this.addSkill();
     this.user.skills = this.skillList
-    this.user.edu = this.eduList
-    this.user.exp = this.expList
+    this.user.education = this.eduList
+    this.user.experience = this.expList
     this.user.interests = this.interestList
     this.service.RegisterUser(this.user).subscribe(
       res=>{

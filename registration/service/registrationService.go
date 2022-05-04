@@ -13,7 +13,7 @@ type RegistrationService struct {
 }
 
 func (service *RegistrationService) RegisterUser(ctx context.Context, dto dto.UserDTO) error {
-	user := model.User{ID: dto.ID, Name: dto.Name, Surname: dto.Surname, Email: dto.Email, Numtel: dto.Numtel, Sex: dto.Sex, BDateDay: dto.BDateDay, BDateMonth: dto.BDateMonth, BDateYear: dto.BDateYear, Username: dto.Username, Password: dto.Password, Bio: dto.Bio, Experience: dto.Experience, Education: dto.Education, Interests: dto.Interests, Skills: dto.Skills, IsPrivate: dto.IsPrivate}
+	user := model.User{Name: dto.Name, Surname: dto.Surname, Email: dto.Email, Numtel: dto.Numtel, Sex: dto.Sex, BDateDay: dto.BDateDay, BDateMonth: dto.BDateMonth, BDateYear: dto.BDateYear, Username: dto.Username, Password: dto.Password, Bio: dto.Bio, Experience: dto.Experience, Education: dto.Education, Interests: dto.Interests, Skills: dto.Skills, IsPrivate: dto.IsPrivate}
 	err := service.RegistrationRepository.RegisterUser(ctx, &user)
 	if err != nil {
 		return err

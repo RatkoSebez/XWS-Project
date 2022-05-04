@@ -4,36 +4,37 @@ export class UserDTO{
     email: string;
     numtel: string;
     sex: string;
-    bdday: number;
-    bdmonth: number;
-    bdyear: number;
+    bdateday: number;
+    bdatemonth: number;
+    bdateyear: number;
     username:string;
     password:string;
     bio:string;
-    exp: Array<string>;
-    edu: Array<string>;
+    experience: Array<string>;
+    education: Array<string>;
     interests: Array<string>;
     skills: Array<string>;
-    isPrivate: boolean;
+    isprivate: boolean;
     constructor(name: string, surname: string, email:string, numtel:string,
         sex:string, bdday: number, bdmonth:number, bdyear:number, 
         username:string, password: string, bio:string, exp = [], 
-        edu =[], intersets=[], skills=[], isPrivate = true) {
+        edu =[], intersets=[], skills=[], isprivate = true) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.numtel = numtel;
-        this.bdday = bdday;
-        this.bdmonth = bdmonth;
-        this.bdyear = bdyear;
         this.sex = sex;
+
+        this.bdateday = bdday;
+        this.bdatemonth = bdmonth;
+        this.bdateyear = bdyear;
         this.username = username;
         this.password = password; 
         this.bio = bio;
-        this.exp = exp;
-        this.edu = edu;
+        this.experience = exp;
+        this.education = edu;
         this.interests = intersets;
         this.skills = skills;
-        this.isPrivate = isPrivate;
+        this.isprivate = isprivate;
     }
 }

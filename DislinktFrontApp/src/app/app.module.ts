@@ -9,6 +9,8 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
 import { RouterModule } from '@angular/router';
 import {ToastrModule} from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import {ToastrModule} from 'ngx-toastr';
     HttpClientModule, 
     RouterModule,
     ToastrModule.forRoot(),
+    BrowserAnimationsModule
 
   ],
   providers: [],

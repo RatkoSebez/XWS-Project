@@ -15,11 +15,15 @@ type RegistrationHandler struct {
 }
 
 func (handler *RegistrationHandler) Register(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+
 	var registerDTO dto.UserDTO
 	span := utilities.Tracer.StartSpanFromRequest("Register-handler", r)
 	err := json.NewDecoder(r.Body).Decode(&registerDTO)
 	if err != nil {
-		fmt.Println("greska1")
+		fmt.Println("GRESKA: najvrv los format jsona")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -39,7 +43,13 @@ func (handler *RegistrationHandler) Register(w http.ResponseWriter, r *http.Requ
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte("{\"success\":\"ok\"}"))
 	w.Header().Set("Content-Type", "application/json")
+}
+func (handler *RegistrationHandler) Preflight(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST")
+	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+	rw.WriteHeader(http.StatusOK)
 }

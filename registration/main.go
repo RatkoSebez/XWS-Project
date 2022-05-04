@@ -49,6 +49,8 @@ func handlerFunc(handler *handlers.RegistrationHandler) {
 	fmt.Println("Registration server started...")
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/register", handler.Register).Methods("POST")
+	router.HandleFunc("/register", handler.Preflight).Methods("OPTIONS")
+
 	log.Fatal(http.ListenAndServe(":8081", router))
 }
 func main() {
