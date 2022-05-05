@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
 )
 
 type PostRepository struct {
@@ -24,7 +26,29 @@ func (repository *PostRepository) LoadPosts(ctx context.Context) ([]*model.Post,
 }
 
 func (repository *PostRepository) LoadPostsByUser(ctx context.Context, userID uint) ([]*model.Post, error) {
-	return nil, nil
+	collection := repository.Client.Database("dislinkt").Collection("posts")
+	findOptions := options.Find()
+	findOptions.SetLimit(30)
+	filter := bson.D{{"userId", userID}}
+	var results []*model.Post
+
+	cur, err := collection.Find(ctx, filter, findOptions)
+	if err != nil {
+		panic(err)
+	}
+
+	for cur.Next(ctx) {
+		var elem model.Post
+		err := cur.Decode(&elem)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		results = append(results, &elem)
+	}
+
+	cur.Close(ctx)
+	return results, err
 }
 
 func (repository *PostRepository) SaveMedia(ctx context.Context, data model.Media) error {

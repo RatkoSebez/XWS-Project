@@ -56,6 +56,9 @@ func handlerFunc(handler *handlers.PostHandler) {
 	router.HandleFunc("/comment", handler.PostComment).Methods("POST")
 	router.HandleFunc("/make-reaction", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/make-reaction", handler.MakeReaction).Methods("POST")
+	//Endpoint that gets all posts of the people that loged user is following
+	router.HandleFunc("/following-posts", handler.Preflight).Methods("OPTIONS")
+	router.HandleFunc("/following-posts", handler.GetFollowingPosts).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8082", router))
 }
