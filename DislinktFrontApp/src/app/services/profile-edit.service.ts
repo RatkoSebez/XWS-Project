@@ -22,5 +22,7 @@ export class ProfileEditService{
     getUser():Observable<UserDTO>{
       return this.http.get<UserDTO>(this.url)
     }
-
+    editUser(data:any){
+      return this.http.put(this.url, data)
+    }
 }

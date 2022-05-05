@@ -49,6 +49,7 @@ func handlerFunc(handler *handlers.ProfileHandler) {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/{email}", handler.Edit).Methods("PUT")
 	router.HandleFunc("/{email}", handler.GetProfileByMail).Methods("GET")
+	router.HandleFunc("/{email}", handler.Preflight).Methods("OPTIONS")
 
 	log.Fatal(http.ListenAndServe(":8081", router))
 }

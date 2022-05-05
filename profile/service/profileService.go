@@ -13,7 +13,7 @@ type ProfileService struct {
 }
 
 func (service *ProfileService) UpdateProfile(ctx context.Context, dto dto.ProfileDTO, tempUsername string) error {
-	user := model.ProfileInfo{Name: dto.Name, Surname: dto.Surname, Email: dto.Email, Numtel: dto.Numtel, Sex: dto.Sex, BDateDay: dto.BDateDay, BDateMonth: dto.BDateMonth, BDateYear: dto.BDateYear, Username: tempUsername, Password: dto.Password, Bio: dto.Bio, Experience: dto.Experience, Education: dto.Education, Interests: dto.Interests, Skills: dto.Skills, IsPrivate: dto.IsPrivate}
+	user := model.ProfileInfo{Name: dto.Name, Surname: dto.Surname, Email: dto.Email, Numtel: dto.Numtel, Sex: dto.Sex, BDateDay: dto.BDateDay, BDateMonth: dto.BDateMonth, BDateYear: dto.BDateYear, Username: dto.Username, Password: dto.Password, Bio: dto.Bio, Experience: dto.Experience, Education: dto.Education, Interests: dto.Interests, Skills: dto.Skills, IsPrivate: dto.IsPrivate}
 	err := service.ProfileRepository.UpdateUser(ctx, &user)
 	if err != nil {
 		return err

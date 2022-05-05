@@ -67,3 +67,9 @@ func (handler *ProfileHandler) GetProfileByMail(w http.ResponseWriter, r *http.R
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(&user)
 }
+func (handler *ProfileHandler) Preflight(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "PUT, GET, POST")
+	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+	rw.WriteHeader(http.StatusOK)
+}

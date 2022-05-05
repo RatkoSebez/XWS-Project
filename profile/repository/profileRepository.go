@@ -19,7 +19,7 @@ func (repository *ProfileRepository) UpdateUser(ctx context.Context, user *model
 	collection := repository.Client.Database("admin").Collection("user")
 	filter := bson.D{{"username", user.Username}}
 	update := bson.D{{"$set", bson.D{
-		{"name", user.Name}, {"surname", user.Surname}, {"email", user.Email}, {"numtel", user.Numtel}, {"sex", user.Sex}, {"bdatemonth", user.BDateMonth}, {"bdateday", user.BDateDay}, {"bdateyear", user.BDateYear}, {"password", user.Password}, {"bio", user.Bio}, {"experience", user.Experience}, {"interests", user.Interests}, {"isPrivate", user.IsPrivate},
+		{"name", user.Name}, {"surname", user.Surname}, {"email", user.Email}, {"numtel", user.Numtel}, {"sex", user.Sex}, {"bdatemonth", user.BDateMonth}, {"bdateday", user.BDateDay}, {"bdateyear", user.BDateYear}, {"username", user.Username}, {"password", user.Password}, {"bio", user.Bio}, {"experience", user.Experience}, {"education", user.Education}, {"interests", user.Interests}, {"skills", user.Skills}, {"isPrivate", user.IsPrivate},
 	}},
 	}
 	updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
