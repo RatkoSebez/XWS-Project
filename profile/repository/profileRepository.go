@@ -17,7 +17,7 @@ type ProfileRepository struct {
 
 func (repository *ProfileRepository) UpdateUser(ctx context.Context, user *model.ProfileInfo) error {
 	collection := repository.Client.Database("admin").Collection("user")
-	filter := bson.D{{"username", user.Username}}
+	filter := bson.D{{"email", user.Email}}
 	update := bson.D{{"$set", bson.D{
 		{"name", user.Name}, {"surname", user.Surname}, {"email", user.Email}, {"numtel", user.Numtel}, {"sex", user.Sex}, {"bdatemonth", user.BDateMonth}, {"bdateday", user.BDateDay}, {"bdateyear", user.BDateYear}, {"username", user.Username}, {"password", user.Password}, {"bio", user.Bio}, {"experience", user.Experience}, {"education", user.Education}, {"interests", user.Interests}, {"skills", user.Skills}, {"isPrivate", user.IsPrivate},
 	}},

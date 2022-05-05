@@ -1,5 +1,5 @@
 
-<form   #regForm="ngForm" (ngSubmit)="onSubmit()"    style=" justify-items: center; visibility: visible;text-align: center; background-color: white;">
+<form   #regForm="ngForm"    style=" justify-items: center; visibility: visible;text-align: center; background-color: white;">
 
 
     <div>
@@ -40,7 +40,7 @@
         <input name="{{e}}" type="text" [ngModel]="e" style="margin-left: 13em;">  
     </tr>
     </table> <br>
-        <input name="newExp1" id="newExp1" [(ngModel)]="exp1" type="text" placeholder="Add Experience"> <button name="expBtn"> Add experience</button>
+        <input name="newExp1" id="newExp1" [(ngModel)]="exp1" type="text" placeholder="Add Experience"> <button name="expBtn" (click)="addExperience()"> Add experience</button>
     </div>
     <div >
         <table style="margin-left: 38em;">
@@ -50,7 +50,7 @@
         <input name="{{edu}}" type="text" [ngModel]="edu">  
     </tr>
     </table> <br>
-        <input name="newEdu1" id="newEdu1" [(ngModel)]="edu1" type="text" placeholder="Add Education"><button name="eduBtn"> Add education</button>
+        <input name="newEdu1" id="newEdu1" [(ngModel)]="edu1" type="text" placeholder="Add Education"><button name="eduBtn" (click)="addEducation()"> Add education</button>
     </div>
     <div >
         <table style="margin-left: 38em;">
@@ -60,7 +60,7 @@
         <input name="{{skill}}" type="text" [ngModel]="skill" >  
     </tr>
     </table> <br>
-        <input name="newSkill1" id="newSkill1" [(ngModel)]="skill1" type="text" placeholder="Add Skill" ng-keyup="func()" > <button name="skillBtn" id="skillBtn" > Add skill</button>
+        <input name="newSkill1" id="newSkill1" [(ngModel)]="skill1" type="text" placeholder="Add Skill" ng-keyup="func()" > <button name="skillBtn" id="skillBtn" (click)="addSkill()"> Add skill</button>
     </div>
     <div >
         <table style="margin-left: 38em;">
@@ -70,16 +70,11 @@
         <input name="{{int}}" type="text" [ngModel]="int">  
     </tr>
     </table> <br>
-        <input name="newInt1" id="newInt1" [(ngModel)]="int1" type="text" placeholder="Add Interest" ng-keyup="func()" > <button name="skillBtn" id="skillBtn" > Add interest</button>
+        <input name="newInt1" id="newInt1" [(ngModel)]="int1" type="text" placeholder="Add Interest" ng-keyup="func()" > <button name="intBtn" id="intBtn" (click)="addInterest()"  > Add interest</button>
     </div>
     <div class="form-group" style="margin-top:2ex">
-        <button class="btn btn-info btn-lg btn-block" type="submit" [disabled]="!regForm.valid"> CONFIRM CHANGES </button>
+        <button class="btn btn-info btn-lg btn-block" type="submit" [disabled]="!regForm.valid" (click)="onSubmit()" > CONFIRM CHANGES </button>
         </div>
     
 
 </form>
-<script>
-    function func(){
-    document.getElementById('skillBtn').disabled = true;
-}
-</script>

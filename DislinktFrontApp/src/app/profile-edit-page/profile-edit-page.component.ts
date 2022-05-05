@@ -51,7 +51,7 @@ export class ProfileEditPageComponent implements OnInit {
     this.service.editUser(this.user$).subscribe(
       res=>{
         
-        this.toastr.success('Registered successfully', 'Success');
+        this.toastr.success('Updated successfully', 'Success');
       }, err => {        this.toastr.error('Error!', 'Error');
     }
       
@@ -68,6 +68,7 @@ export class ProfileEditPageComponent implements OnInit {
     }
     if (this.exp1 != '')
     this.user$.experience.push(this.exp1)
+    this.exp1 = ""
   }
   addEducation(): void{
     if (this.user$.education != null){
@@ -79,6 +80,7 @@ export class ProfileEditPageComponent implements OnInit {
     }
     if (this.edu1 != '')
     this.user$.education.push(this.edu1)
+    this.edu1 = ""
   }
   addInterest(): void{
     if (this.user$.interests!= null){
@@ -90,6 +92,7 @@ export class ProfileEditPageComponent implements OnInit {
     }
     if (this.int1 != '')
     this.user$.interests.push(this.int1)
+    this.int1 = ""
   }
   addSkill(): void{
     if (this.user$.skills != null){
@@ -101,5 +104,6 @@ export class ProfileEditPageComponent implements OnInit {
     }
     if (this.skill1 != '')
     this.user$.skills.push(this.skill1)
+    this.skill1 = ""
   }
 }
