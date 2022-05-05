@@ -47,7 +47,9 @@ func initHandler(service *service.ProfileService) *handlers.ProfileHandler {
 func handlerFunc(handler *handlers.ProfileHandler) {
 	fmt.Println("Profile server started...")
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/{username}", handler.Edit).Methods("PUT")
+	router.HandleFunc("/{email}", handler.Edit).Methods("PUT")
+	router.HandleFunc("/{email}", handler.GetProfileByMail).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(":8081", router))
 }
 func main() {

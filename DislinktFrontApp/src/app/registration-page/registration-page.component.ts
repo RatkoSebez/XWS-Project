@@ -84,18 +84,6 @@ export class RegistrationPageComponent implements OnInit {
     if (this.skill3 != '')
       this.skillList.push(this.skill3)
   }
-  // onSubmit(regForm:NgForm){
-    
-  //   this.service.RegisterUser(this.user).subscribe(
-  //     res=>{
-        
-  //       this.toastr.success('Registered successfully', 'Success');
-  //     }, err => {        this.toastr.error('Error!', 'Error');
-  //   }
-      
-  //   );;
-    
-  // }
 
   onSubmit(){
     this.addEducation();

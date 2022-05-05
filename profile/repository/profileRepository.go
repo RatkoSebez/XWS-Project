@@ -41,3 +41,13 @@ func (repository *ProfileRepository) FindUserByUsername(ctx context.Context, use
 	}
 	return user
 }
+func (repository *ProfileRepository) FindUserByMail(ctx context.Context, mail string) *model.ProfileInfo {
+	user := &model.ProfileInfo{}
+	collection := repository.Client.Database("admin").Collection("user")
+	filter2 := bson.D{{"email", mail}}
+	err2 := collection.FindOne(ctx, filter2).Decode(&user)
+	if err2 != nil {
+		return nil
+	}
+	return user
+}

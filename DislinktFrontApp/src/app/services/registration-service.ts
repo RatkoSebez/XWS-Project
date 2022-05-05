@@ -18,23 +18,6 @@ export class RegistraionService{
   RegisterUser(data:any){
     return this.http.post(this.url , data )
   }
- 
-
-    // constructor(private http: HttpClient, private route: Router) {}
-    // url = 'http://localhost:8081/' + 'register';
-    // user = new AuthResponseDTO('', '','','','',0,0,0,'','','',{},{},{},{}, true);
-
-    // login(authRequest:AuthRequestDTO){  
-    // return this.http.post<any>(this.url,authRequest);
-    // }
-
-    // setUserData(data:AuthResponseDTO){
-    //     this.user=data;
-    //     localStorage.setItem('newUser', JSON.stringify(this.user))
-    //     localStorage.setItem('token', this.user.token)
-    //     localStorage.setItem('mail', this.user.email);
-    //     localStorage.setItem('logedIn', 'true')
-    //   }
 
 
 }

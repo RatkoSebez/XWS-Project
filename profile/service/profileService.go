@@ -25,3 +25,10 @@ func (service *ProfileService) FindUserByUsername(ctx context.Context, username 
 
 	return user
 }
+func (service *ProfileService) FindUserByMail(ctx context.Context, email string) *model.ProfileInfo {
+	user := service.ProfileRepository.FindUserByMail(ctx, email)
+	if user == nil {
+		return nil
+	}
+	return user
+}

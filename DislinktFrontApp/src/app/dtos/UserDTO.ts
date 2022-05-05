@@ -24,7 +24,6 @@ export class UserDTO{
         this.email = email;
         this.numtel = numtel;
         this.sex = sex;
-
         this.bdateday = bdday;
         this.bdatemonth = bdmonth;
         this.bdateyear = bdyear;

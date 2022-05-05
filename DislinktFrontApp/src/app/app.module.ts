@@ -10,6 +10,7 @@ import { RegistrationPageComponent } from './registration-page/registration-page
 import { RouterModule } from '@angular/router';
 import {ToastrModule} from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProfileEditPageComponent } from './profile-edit-page/profile-edit-page.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppComponent,
     FrontPageComponent,
     LoginPageComponent,
-    RegistrationPageComponent
+    RegistrationPageComponent,
+    ProfileEditPageComponent
           
   ],
   imports: [
