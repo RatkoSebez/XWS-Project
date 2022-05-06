@@ -1,0 +1,80 @@
+
+<form   #regForm="ngForm"    style=" justify-items: center; visibility: visible;text-align: center; background-color: white;">
+
+
+    <div>
+        <label> Name </label> <br>
+        <input name="name" type="text" [(ngModel)]="user$.name"> 
+    </div>
+    <div>
+        <label> Surnameame </label> <br>
+        <input name="surname" type="text"  [(ngModel)]="user$.surname"> 
+    </div>
+    <div>
+        <label> Sex </label> <br>
+        <input name="sex" type="text" [(ngModel)]="user$.sex"> 
+    </div>
+    <div>
+        <label> Numtel </label> <br>
+        <input name="numtel" type="text" [(ngModel)]="user$.numtel"> 
+    </div>
+    <div>
+        <label> Birth Day/Month/Year </label> <br>
+        <input name="day" type="number" [(ngModel)]="user$.bdateday"> 
+        <input name="month" type="number" [(ngModel)]="user$.bdatemonth"> 
+        <input name="year" type="number" [(ngModel)]="user$.bdateyear"> 
+    </div>
+    <div>
+        <label> Username </label> <br>
+        <input name="username" type="text" [(ngModel)]="user$.username"> 
+    </div>
+    <div>
+        <label> Biography </label> <br>
+        <textarea name="bio" [(ngModel)]="user$.bio"> </textarea> 
+    </div>
+    <div >
+        <table style="margin-left: 38em;">
+        <label style="margin-left: 14em;"> Work Experience </label>
+        <tr *ngFor="let e of user$.experience" >
+        <br>
+        <input name="{{e}}" type="text" [ngModel]="e" style="margin-left: 13em;">  
+    </tr>
+    </table> <br>
+        <input name="newExp1" id="newExp1" [(ngModel)]="exp1" type="text" placeholder="Add Experience"> <button name="expBtn" (click)="addExperience()"> Add experience</button>
+    </div>
+    <div >
+        <table style="margin-left: 38em;">
+        <label style="margin-left: 14em;" > Education </label>
+        <tr *ngFor="let edu of user$.education">
+        <br>
+        <input name="{{edu}}" type="text" [ngModel]="edu">  
+    </tr>
+    </table> <br>
+        <input name="newEdu1" id="newEdu1" [(ngModel)]="edu1" type="text" placeholder="Add Education"><button name="eduBtn" (click)="addEducation()"> Add education</button>
+    </div>
+    <div >
+        <table style="margin-left: 38em;">
+        <label style="margin-left: 14em;" > Skills </label>
+        <tr *ngFor="let skill of user$.skills" >
+        <br>
+        <input name="{{skill}}" type="text" [ngModel]="skill" >  
+    </tr>
+    </table> <br>
+        <input name="newSkill1" id="newSkill1" [(ngModel)]="skill1" type="text" placeholder="Add Skill" ng-keyup="func()" > <button name="skillBtn" id="skillBtn" (click)="addSkill()"> Add skill</button>
+    </div>
+    <div >
+        <table style="margin-left: 38em;">
+        <label style="margin-left: 14em;"> Interests </label>
+        <tr *ngFor="let int of user$.interests">
+        <br>
+        <input name="{{int}}" type="text" [ngModel]="int">  
+    </tr>
+    </table> <br>
+        <input name="newInt1" id="newInt1" [(ngModel)]="int1" type="text" placeholder="Add Interest" ng-keyup="func()" > <button name="intBtn" id="intBtn" (click)="addInterest()"  > Add interest</button>
+    </div>
+    <div class="form-group" style="margin-top:2ex">
+        <button class="btn btn-info btn-lg btn-block" type="submit" [disabled]="!regForm.valid" (click)="onSubmit()" > CONFIRM CHANGES </button>
+        </div>
+    
+
+</form>

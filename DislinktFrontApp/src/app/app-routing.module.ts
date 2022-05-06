@@ -2,12 +2,17 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { ProfileEditPageComponent } from './profile-edit-page/profile-edit-page.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
 
+var mail = localStorage.getItem('mail')
 const routes: Routes = [
   {path:'', component: FrontPageComponent},
+  {path:'register', component: RegistrationPageComponent},
   {path:'login', component: LoginPageComponent},
-  {path:'register', component: RegistrationPageComponent}
+  {path:'${mail}', component: ProfileEditPageComponent},
+  {path: 'saasd', component: ProfileEditPageComponent}
+  //{path:'edit', component: EditProfilePageComponent}
 ];
 
 @NgModule({

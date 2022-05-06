@@ -138,3 +138,34 @@ func (handler *PostHandler) MakeReaction(rw http.ResponseWriter, r *http.Request
 	rw.Header().Set("Content-Type", "application/json")
 	utilities.Tracer.FinishSpan(span)
 }
+
+func (handler *PostHandler) GetFollowingPosts(rw http.ResponseWriter, r *http.Request) {
+	userID := utilities.GetLoggedUserIDFromToken(r)
+	if userID == 0 {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
+	span := utilities.Tracer.StartSpanFromRequest("Get-following-posts", r)
+
+	var listOfFollowing []uint
+	err := json.NewDecoder(r.Body).Decode(&listOfFollowing)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	posts, err := handler.PostService.LoadFollowingPosts(context.TODO(), listOfFollowing)
+	if err != nil {
+		panic(err)
+	}
+	respJson, err := json.Marshal(posts)
+	if err != nil {
+		utilities.Tracer.LogError(span, err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	rw.WriteHeader(http.StatusOK)
+	_, _ = rw.Write(respJson)
+	rw.Header().Set("Content-Type", "application/json")
+	utilities.Tracer.FinishSpan(span)
+}
