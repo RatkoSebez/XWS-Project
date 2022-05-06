@@ -1,9 +1,21 @@
 package model
 
 type User struct {
-	ProfileID uint   `json:"profileId"`
-	Email     string `json:"email" gorm:"not null;unique"`
-	Username  string `json:"username" gorm:"not null;unique"`
-	Password  string `json:"password"`
-	Public    bool   `json:"public"`
+	//ID         int      `json:"id"`
+	Name       string   `json:"name"`
+	Surname    string   `json:"surname"`
+	Email      string   `json:"email"`
+	Numtel     string   `json:"numtel"`
+	Sex        string   `json:"sex"`
+	BDateDay   int      `json:"bdateday"`
+	BDateMonth int      `json:"bdatemonth"`
+	BDateYear  int      `json:"bdateyear"`
+	Username   string   `json:"username"`
+	Password   string   `json:"password"`
+	Bio        string   `json:"bio"`
+	Experience []string `json:"experience"`
+	Education  []string `json:"education"`
+	Interests  []string `json:"interests"`
+	Skills     []string `json:"skills"`
+	IsPrivate  bool     `json:"isPrivate"`
 }

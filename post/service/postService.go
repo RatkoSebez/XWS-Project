@@ -7,12 +7,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -21,9 +21,10 @@ type PostService struct {
 	PostRepo *repository.PostRepository
 }
 
-func (service *PostService) MakePost(ctx context.Context, data dto.NewPostDTO, userID uint) (*model.Post, error) {
+func (service *PostService) MakePost(ctx context.Context, data dto.NewPostDTO, userEmail string) (*model.Post, error) {
 	var post model.Post
-	post.UserID = userID
+	post.PostID = primitive.NewObjectID()
+	post.UserEmail = userEmail
 	post.Reactions = []model.Reaction{}
 	post.PostText = data.PostText
 	post.Comments = []model.Comment{}
@@ -31,6 +32,7 @@ func (service *PostService) MakePost(ctx context.Context, data dto.NewPostDTO, u
 
 	for _, el := range data.Links {
 		var asset model.Media
+		asset.MediaID = primitive.NewObjectID()
 		asset.Site = el
 		asset.Filepath = ""
 		err := service.PostRepo.SaveMedia(ctx, asset)
@@ -40,10 +42,11 @@ func (service *PostService) MakePost(ctx context.Context, data dto.NewPostDTO, u
 		post.MediaAssets = append(post.MediaAssets, asset)
 	}
 
-	idString := strconv.FormatUint(uint64(userID), 10)
+	idString := userEmail
 
 	for _, el := range data.Photos {
 		var asset model.Media
+		asset.MediaID = primitive.NewObjectID()
 		asset.Site = ""
 		asset.Filepath = "../photos/" + idString + el
 		err := service.PostRepo.SaveMedia(ctx, asset)
@@ -58,7 +61,7 @@ func (service *PostService) MakePost(ctx context.Context, data dto.NewPostDTO, u
 	return resp, err
 }
 
-func (service *PostService) SavePhotos(request dto.PhotoDTO, userID uint) {
+func (service *PostService) SavePhotos(request dto.PhotoDTO, userEmail string) {
 	var fileData = request.FileData
 	idx := strings.Index(fileData, ";base64,")
 	ImageType := fileData[11:idx]
@@ -68,7 +71,7 @@ func (service *PostService) SavePhotos(request dto.PhotoDTO, userID uint) {
 		panic(err)
 	}
 	byteReader := bytes.NewReader(unbased)
-	idString := strconv.FormatUint(uint64(userID), 10)
+	idString := userEmail
 	switch ImageType {
 	case "png":
 		im, err := png.Decode(byteReader)
@@ -108,12 +111,13 @@ func (service *PostService) SavePhotos(request dto.PhotoDTO, userID uint) {
 		gif.Encode(f, im, nil)
 	}
 }
-func (service *PostService) PostComment(ctx context.Context, data dto.CommentDTO, userID uint) (*model.Post, error) {
+func (service *PostService) PostComment(ctx context.Context, data dto.CommentDTO, userEmail string) (*model.Post, error) {
 	var comm model.Comment
+	comm.CommentID = primitive.NewObjectID()
 	comm.CreationTime = time.Now()
 	comm.PostID = data.PostID
 	comm.CommentData = data.CommentContent
-	comm.UserID = userID
+	comm.UserEmail = userEmail
 	post, err := service.PostRepo.AddCommentToPost(ctx, data.PostID, comm)
 	return post, err
 }
@@ -124,8 +128,9 @@ func (service *PostService) MakeReaction(ctx context.Context, data dto.ReactionD
 		panic(err)
 	}
 	var reaction model.Reaction
+	reaction.ReactionID = primitive.NewObjectID()
 	reaction.PostID = data.PostID
-	reaction.UserID = data.UserID
+	reaction.UserEmail = data.UserEmail
 	reaction.CreationTime = time.Now()
 	reaction.TypeOfReaction = data.React
 	post.Reactions = append(post.Reactions, reaction)
@@ -133,7 +138,7 @@ func (service *PostService) MakeReaction(ctx context.Context, data dto.ReactionD
 	return result, err
 }
 
-func (service *PostService) LoadFollowingPosts(ctx context.Context, followingList []uint) ([]*model.Post, error) { //todo: po mejlu
+func (service *PostService) LoadFollowingPosts(ctx context.Context, followingList []string) ([]*model.Post, error) { //todo: po mejlu
 	var returnList []*model.Post
 	for _, el := range followingList {
 		list, err := service.PostRepo.LoadPostsByUser(ctx, el)

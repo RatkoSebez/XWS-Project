@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -17,7 +18,7 @@ type PostRepository struct {
 func (repository *PostRepository) MakePost(ctx context.Context, data model.Post) (*model.Post, error) {
 	collection := repository.Client.Database("dislinkt").Collection("posts")
 	result, err := collection.InsertOne(ctx, data)
-	fmt.Println("Inserted media", result.InsertedID)
+	fmt.Println("Inserted post", result.InsertedID)
 	return &data, err
 }
 
@@ -25,11 +26,11 @@ func (repository *PostRepository) LoadPosts(ctx context.Context) ([]*model.Post,
 	return nil, nil
 }
 
-func (repository *PostRepository) LoadPostsByUser(ctx context.Context, userID uint) ([]*model.Post, error) {
+func (repository *PostRepository) LoadPostsByUser(ctx context.Context, userEmail string) ([]*model.Post, error) {
 	collection := repository.Client.Database("dislinkt").Collection("posts")
 	findOptions := options.Find()
 	findOptions.SetLimit(30)
-	filter := bson.D{{"userId", userID}}
+	filter := bson.D{{"userEmail", userEmail}}
 	var results []*model.Post
 
 	cur, err := collection.Find(ctx, filter, findOptions)
@@ -58,8 +59,8 @@ func (repository *PostRepository) SaveMedia(ctx context.Context, data model.Medi
 	return err
 }
 
-func (repository *PostRepository) LoadPostByID(ctx context.Context, id uint) (*model.Post, error) {
-	filter := bson.D{{"postId", id}}
+func (repository *PostRepository) LoadPostByID(ctx context.Context, id primitive.ObjectID) (*model.Post, error) {
+	filter := bson.D{{"_id", id}}
 	var result model.Post
 	collection := repository.Client.Database("dislinkt").Collection("posts")
 	err := collection.FindOne(ctx, filter).Decode(&result)
@@ -70,14 +71,22 @@ func (repository *PostRepository) LoadPostByID(ctx context.Context, id uint) (*m
 }
 
 func (repository *PostRepository) UpdatePost(ctx context.Context, post model.Post) (*model.Post, error) {
-	filter := bson.D{{"postId", post.PostID}}
-	update := bson.D{{"$set", bson.D{{"comments", post.Comments}}}}
+	filter := bson.D{{"_id", post.PostID}}
+	update := bson.D{
+		{"$set", bson.D{
+			{"comments", post.Comments},
+			{"reactions", post.Reactions},
+			{"postText", post.PostText},
+		}}}
 	collection := repository.Client.Database("dislinkt").Collection("posts")
-	_, err := collection.UpdateOne(ctx, filter, update)
+	result, err := collection.UpdateOne(ctx, filter, update)
+	if result.MatchedCount == 0 {
+		fmt.Println("No documents found to update")
+	}
 	return nil, err
 }
 
-func (repository *PostRepository) AddCommentToPost(ctx context.Context, postId uint, comment model.Comment) (*model.Post, error) {
+func (repository *PostRepository) AddCommentToPost(ctx context.Context, postId primitive.ObjectID, comment model.Comment) (*model.Post, error) {
 	collection := repository.Client.Database("dislinkt").Collection("comments")
 	rslt, err := collection.InsertOne(ctx, comment)
 	fmt.Println("Inserted comment", rslt.InsertedID)
@@ -92,10 +101,12 @@ func (repository *PostRepository) AddCommentToPost(ctx context.Context, postId u
 
 func (repository *PostRepository) ReactOnPost(ctx context.Context, post model.Post, reaction model.Reaction) (*model.Post, error) {
 	collection := repository.Client.Database("dislinkt").Collection("reactions")
-	_, err := collection.InsertOne(ctx, reaction)
+	ress, err := collection.InsertOne(ctx, reaction)
+	fmt.Println(ress)
 	if err != nil {
 		panic(err)
 	}
-	updateRes, err := repository.UpdatePost(ctx, post)
+	_, err = repository.UpdatePost(ctx, post)
+	updateRes, _ := repository.LoadPostByID(ctx, post.PostID)
 	return updateRes, err
 }

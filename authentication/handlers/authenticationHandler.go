@@ -35,7 +35,7 @@ func (handler *AuthenticationHandler) Login(rw http.ResponseWriter, r *http.Requ
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	token, errr := utilities.CreateToken(user.ProfileID, "authentication_service")
+	token, errr := utilities.CreateToken(user.Email, "authentication_service")
 	if errr != nil {
 		utilities.Tracer.LogError(span, errr)
 		rw.WriteHeader(http.StatusBadRequest)
@@ -43,10 +43,9 @@ func (handler *AuthenticationHandler) Login(rw http.ResponseWriter, r *http.Requ
 	}
 
 	responseDTO := dto.LoginResponseDTO{
-		Token:     token,
-		Email:     user.Email,
-		Username:  user.Username,
-		ProfileID: user.ProfileID,
+		Token:    token,
+		Email:    user.Email,
+		Username: user.Username,
 	}
 
 	respJson, err := json.Marshal(responseDTO)

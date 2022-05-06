@@ -19,8 +19,8 @@ func (handler *PostHandler) MakePost(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
-	userID := utilities.GetLoggedUserIDFromToken(r)
-	if userID == 0 {
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
 		rw.WriteHeader(http.StatusForbidden)
 		return
 	}
@@ -33,7 +33,7 @@ func (handler *PostHandler) MakePost(rw http.ResponseWriter, r *http.Request) {
 	}
 	var post *model.Post
 	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
-	post, err = handler.PostService.MakePost(ctx, request, userID)
+	post, err = handler.PostService.MakePost(ctx, request, userEmail)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		panic(err)
@@ -70,14 +70,14 @@ func (handler *PostHandler) SavePhoto(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	userID := utilities.GetLoggedUserIDFromToken(r)
-	handler.PostService.SavePhotos(request, userID)
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	handler.PostService.SavePhotos(request, userEmail)
 	utilities.Tracer.FinishSpan(span)
 }
 
 func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request) {
-	userID := utilities.GetLoggedUserIDFromToken(r)
-	if userID == 0 {
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
 		rw.WriteHeader(http.StatusForbidden)
 		return
 	}
@@ -88,7 +88,7 @@ func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	post, err := handler.PostService.PostComment(context.TODO(), request, userID)
+	post, err := handler.PostService.PostComment(context.TODO(), request, userEmail)
 	if err != nil {
 		panic(err)
 	}
@@ -106,13 +106,13 @@ func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request)
 }
 
 func (handler *PostHandler) MakeReaction(rw http.ResponseWriter, r *http.Request) {
-	userID := utilities.GetLoggedUserIDFromToken(r)
-	if userID == 0 {
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
 		rw.WriteHeader(http.StatusForbidden)
 		return
 	}
 
-	fmt.Println(userID)
+	fmt.Println(userEmail)
 	var reaction dto.ReactionDTO
 	span := utilities.Tracer.StartSpanFromRequest("React-to-the-post", r)
 
@@ -140,14 +140,14 @@ func (handler *PostHandler) MakeReaction(rw http.ResponseWriter, r *http.Request
 }
 
 func (handler *PostHandler) GetFollowingPosts(rw http.ResponseWriter, r *http.Request) {
-	userID := utilities.GetLoggedUserIDFromToken(r)
-	if userID == 0 {
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
 		rw.WriteHeader(http.StatusForbidden)
 		return
 	}
 	span := utilities.Tracer.StartSpanFromRequest("Get-following-posts", r)
 
-	var listOfFollowing []uint
+	var listOfFollowing []string
 	err := json.NewDecoder(r.Body).Decode(&listOfFollowing)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)

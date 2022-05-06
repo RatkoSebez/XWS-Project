@@ -15,7 +15,7 @@ const ExpiresIn = 86400
 var TokenSecret = ""
 
 type TokenClaims struct {
-	LoggedUserId uint `json:"loggedUserId"`
+	LoggedUserEmail string `json:"loggedUserId"`
 	jwt.StandardClaims
 }
 
@@ -28,11 +28,11 @@ func initPublicToken() {
 	}
 }
 
-func CreateToken(userId uint, issuer string) (string, error) {
+func CreateToken(userEmail string, issuer string) (string, error) {
 	if TokenSecret == "" {
 		initPublicToken()
 	}
-	claims := TokenClaims{LoggedUserId: userId, StandardClaims: jwt.StandardClaims{
+	claims := TokenClaims{LoggedUserEmail: userEmail, StandardClaims: jwt.StandardClaims{
 		ExpiresAt: time.Now().Unix() + ExpiresIn,
 		IssuedAt:  time.Now().Unix(),
 		Issuer:    issuer,
@@ -50,7 +50,7 @@ func getToken(header http.Header) (string, error) {
 	return strings.TrimSpace(splitToken[1]), nil
 }
 
-func GetLoggedUserIDFromToken(r *http.Request) uint {
+func GetLoggedUserEmailFromToken(r *http.Request) string {
 	if TokenSecret == "" {
 		initPublicToken()
 	}
@@ -60,10 +60,10 @@ func GetLoggedUserIDFromToken(r *http.Request) uint {
 		tokenString, err1 = getTokenFromParams(r.URL.String())
 		if err1 != nil {
 			fmt.Println(err, err1)
-			return 0
+			return ""
 		}
 	}
-	return GetLoggedUserIDFromPureToken(tokenString)
+	return GetLoggedUserEmailFromPureToken(tokenString)
 }
 
 func getTokenFromParams(s string) (string, error) {
@@ -85,7 +85,7 @@ func getTokenFromParams(s string) (string, error) {
 	return token, nil
 }
 
-func GetLoggedUserIDFromPureToken(tok string) uint {
+func GetLoggedUserEmailFromPureToken(tok string) string {
 	if TokenSecret == "" {
 		initPublicToken()
 	}
@@ -94,12 +94,12 @@ func GetLoggedUserIDFromPureToken(tok string) uint {
 	})
 	if err != nil {
 		fmt.Println(err)
-		return 0
+		return ""
 	}
 	if claims, ok := token.Claims.(*TokenClaims); ok && token.Valid {
-		return claims.LoggedUserId
+		return claims.LoggedUserEmail
 	} else {
 		fmt.Println(err)
-		return 0
+		return ""
 	}
 }
