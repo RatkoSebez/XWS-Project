@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 )
 
 type AuthenticationRepository struct {
@@ -21,7 +20,7 @@ func (repo *AuthenticationRepository) GetUserByEmail(ctx context.Context, email 
 	filter := bson.D{{"email", email}}
 	err := collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	return user, nil
