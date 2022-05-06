@@ -16,7 +16,7 @@ type ProfileRepository struct {
 }
 
 func (repository *ProfileRepository) UpdateUser(ctx context.Context, user *model.ProfileInfo) error {
-	collection := repository.Client.Database("admin").Collection("user")
+	collection := repository.Client.Database("dislinkt").Collection("users")
 	filter := bson.D{{"email", user.Email}}
 	update := bson.D{{"$set", bson.D{
 		{"name", user.Name}, {"surname", user.Surname}, {"email", user.Email}, {"numtel", user.Numtel}, {"sex", user.Sex}, {"bdatemonth", user.BDateMonth}, {"bdateday", user.BDateDay}, {"bdateyear", user.BDateYear}, {"username", user.Username}, {"password", user.Password}, {"bio", user.Bio}, {"experience", user.Experience}, {"education", user.Education}, {"interests", user.Interests}, {"skills", user.Skills}, {"isPrivate", user.IsPrivate},
@@ -33,7 +33,7 @@ func (repository *ProfileRepository) UpdateUser(ctx context.Context, user *model
 
 func (repository *ProfileRepository) FindUserByUsername(ctx context.Context, username string, tempUsername string) *model.ProfileInfo {
 	user := &model.ProfileInfo{}
-	collection := repository.Client.Database("admin").Collection("user")
+	collection := repository.Client.Database("dislinkt").Collection("users")
 	filter2 := bson.D{{"username", username}}
 	err2 := collection.FindOne(ctx, filter2).Decode(&user)
 	if err2 != nil {
@@ -43,7 +43,7 @@ func (repository *ProfileRepository) FindUserByUsername(ctx context.Context, use
 }
 func (repository *ProfileRepository) FindUserByMail(ctx context.Context, mail string) *model.ProfileInfo {
 	user := &model.ProfileInfo{}
-	collection := repository.Client.Database("admin").Collection("user")
+	collection := repository.Client.Database("dislinkt").Collection("users")
 	filter2 := bson.D{{"email", mail}}
 	err2 := collection.FindOne(ctx, filter2).Decode(&user)
 	if err2 != nil {

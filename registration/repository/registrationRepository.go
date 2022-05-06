@@ -17,7 +17,7 @@ type RegistrationRepository struct {
 
 func (repository *RegistrationRepository) FindUserByUsername(ctx context.Context, username string) *model.User {
 	user := &model.User{}
-	collection := repository.Client.Database("admin").Collection("user")
+	collection := repository.Client.Database("dislinkt").Collection("users")
 	filter2 := bson.D{{"username", username}}
 
 	err2 := collection.FindOne(ctx, filter2).Decode(&user)
@@ -31,7 +31,7 @@ func (repository *RegistrationRepository) FindUserByUsername(ctx context.Context
 }
 
 func (repository *RegistrationRepository) RegisterUser(ctx context.Context, user *model.User) error {
-	collection := repository.Client.Database("admin").Collection("user")
+	collection := repository.Client.Database("dislinkt").Collection("users")
 	insertResult, err := collection.InsertOne(context.TODO(), user)
 	if err != nil {
 		log.Fatal(err)

@@ -133,7 +133,7 @@ func (service *PostService) MakeReaction(ctx context.Context, data dto.ReactionD
 	return result, err
 }
 
-func (service *PostService) LoadFollowingPosts(ctx context.Context, followingList []uint) ([]*model.Post, error) {
+func (service *PostService) LoadFollowingPosts(ctx context.Context, followingList []uint) ([]*model.Post, error) { //todo: po mejlu
 	var returnList []*model.Post
 	for _, el := range followingList {
 		list, err := service.PostRepo.LoadPostsByUser(ctx, el)
