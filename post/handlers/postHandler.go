@@ -169,3 +169,27 @@ func (handler *PostHandler) GetFollowingPosts(rw http.ResponseWriter, r *http.Re
 	rw.Header().Set("Content-Type", "application/json")
 	utilities.Tracer.FinishSpan(span)
 }
+
+func (handler *PostHandler) GetUserPosts(rw http.ResponseWriter, r *http.Request) {
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
+	span := utilities.Tracer.StartSpanFromRequest("Get-user-posts", r)
+
+	posts, err := handler.PostService.GetUserPosts(context.TODO(), userEmail)
+	if err != nil {
+		panic(err)
+	}
+	respJson, err := json.Marshal(posts)
+	if err != nil {
+		utilities.Tracer.LogError(span, err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	rw.WriteHeader(http.StatusOK)
+	_, _ = rw.Write(respJson)
+	rw.Header().Set("Content-Type", "application/json")
+	utilities.Tracer.FinishSpan(span)
+}

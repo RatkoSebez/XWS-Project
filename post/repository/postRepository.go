@@ -8,7 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 )
 
 type PostRepository struct {
@@ -30,7 +29,7 @@ func (repository *PostRepository) LoadPostsByUser(ctx context.Context, userEmail
 	collection := repository.Client.Database("dislinkt").Collection("posts")
 	findOptions := options.Find()
 	findOptions.SetLimit(30)
-	filter := bson.D{{"userEmail", userEmail}}
+	filter := bson.D{{"useremail", userEmail}}
 	var results []*model.Post
 
 	cur, err := collection.Find(ctx, filter, findOptions)
@@ -42,7 +41,7 @@ func (repository *PostRepository) LoadPostsByUser(ctx context.Context, userEmail
 		var elem model.Post
 		err := cur.Decode(&elem)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 
 		results = append(results, &elem)

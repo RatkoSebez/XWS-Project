@@ -138,12 +138,12 @@ func (service *PostService) MakeReaction(ctx context.Context, data dto.ReactionD
 	return result, err
 }
 
-func (service *PostService) LoadFollowingPosts(ctx context.Context, followingList []string) ([]*model.Post, error) { //todo: po mejlu
+func (service *PostService) LoadFollowingPosts(ctx context.Context, followingList []string) ([]*model.Post, error) {
 	var returnList []*model.Post
 	for _, el := range followingList {
 		list, err := service.PostRepo.LoadPostsByUser(ctx, el)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 		for _, element := range list {
 			returnList = append(returnList, element)
@@ -151,4 +151,11 @@ func (service *PostService) LoadFollowingPosts(ctx context.Context, followingLis
 	}
 
 	return returnList, nil
+}
+
+func (service *PostService) GetUserPosts(ctx context.Context, userEmail string) ([]*model.Post, error) {
+
+	list, err := service.PostRepo.LoadPostsByUser(ctx, userEmail)
+
+	return list, err
 }
