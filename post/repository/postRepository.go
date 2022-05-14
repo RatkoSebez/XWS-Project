@@ -29,7 +29,7 @@ func (repository *PostRepository) LoadPostsByUser(ctx context.Context, userEmail
 	collection := repository.Client.Database("dislinkt").Collection("posts")
 	findOptions := options.Find()
 	findOptions.SetLimit(30)
-	filter := bson.D{{"useremail", userEmail}}
+	filter := bson.D{{"userEmail", userEmail}}
 	var results []*model.Post
 
 	cur, err := collection.Find(ctx, filter, findOptions)
