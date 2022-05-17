@@ -17,7 +17,7 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PostServiceClient interface {
-	CreatePost(ctx context.Context, in *MakePost, opts ...grpc.CallOption) (*Post, error)
+	CreatePost(ctx context.Context, in *MakePostPlusEmail, opts ...grpc.CallOption) (*Post, error)
 	SavePhoto(ctx context.Context, in *PhotoMessage, opts ...grpc.CallOption) (*EmptyMessage, error)
 	Comment(ctx context.Context, in *NewComment, opts ...grpc.CallOption) (*Post, error)
 	MakeReaction(ctx context.Context, in *NewReaction, opts ...grpc.CallOption) (*Post, error)
@@ -33,7 +33,7 @@ func NewPostServiceClient(cc grpc.ClientConnInterface) PostServiceClient {
 	return &postServiceClient{cc}
 }
 
-func (c *postServiceClient) CreatePost(ctx context.Context, in *MakePost, opts ...grpc.CallOption) (*Post, error) {
+func (c *postServiceClient) CreatePost(ctx context.Context, in *MakePostPlusEmail, opts ...grpc.CallOption) (*Post, error) {
 	out := new(Post)
 	err := c.cc.Invoke(ctx, "/post.PostService/CreatePost", in, out, opts...)
 	if err != nil {
@@ -91,7 +91,7 @@ func (c *postServiceClient) GetUserPosts(ctx context.Context, in *EmptyMessage, 
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
 type PostServiceServer interface {
-	CreatePost(context.Context, *MakePost) (*Post, error)
+	CreatePost(context.Context, *MakePostPlusEmail) (*Post, error)
 	SavePhoto(context.Context, *PhotoMessage) (*EmptyMessage, error)
 	Comment(context.Context, *NewComment) (*Post, error)
 	MakeReaction(context.Context, *NewReaction) (*Post, error)
@@ -104,7 +104,7 @@ type PostServiceServer interface {
 type UnimplementedPostServiceServer struct {
 }
 
-func (*UnimplementedPostServiceServer) CreatePost(context.Context, *MakePost) (*Post, error) {
+func (*UnimplementedPostServiceServer) CreatePost(context.Context, *MakePostPlusEmail) (*Post, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePost not implemented")
 }
 func (*UnimplementedPostServiceServer) SavePhoto(context.Context, *PhotoMessage) (*EmptyMessage, error) {
@@ -129,7 +129,7 @@ func RegisterPostServiceServer(s *grpc.Server, srv PostServiceServer) {
 }
 
 func _PostService_CreatePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MakePost)
+	in := new(MakePostPlusEmail)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -141,7 +141,7 @@ func _PostService_CreatePost_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/post.PostService/CreatePost",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostServiceServer).CreatePost(ctx, req.(*MakePost))
+		return srv.(PostServiceServer).CreatePost(ctx, req.(*MakePostPlusEmail))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -80,6 +80,8 @@ func (handler *AuthenticationHandler) Test(rw http.ResponseWriter, r *http.Reque
 	_, _ = rw.Write(respJson)
 }
 
+//grpc handlers
+
 func (handler *AuthenticationHandler) Post(ctx context.Context, request *pb.PostRequest) (*pb.PostResponse, error) {
 	var user *model.User
 	var reqq dto.LoginDTO

@@ -8,7 +8,7 @@ import "google/api/annotations.proto";
 
 service PostService{
 
-    rpc CreatePost(MakePost) returns (Post){
+    rpc CreatePost(MakePostPlusEmail) returns (Post){
         option(google.api.http)={
             post:"/make-new-post"
             body:"*"
@@ -49,6 +49,13 @@ message MakePost{
     repeated string links = 1;
     repeated string photos = 2;   
     string postText =3;   
+}
+
+message MakePostPlusEmail{
+    repeated string links = 1;
+    repeated string photos = 2;   
+    string postText =3;  
+    string userEmail=4;
 }
 
 message Post{

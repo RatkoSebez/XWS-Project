@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"XWS-Project/post/dto"
+	"XWS-Project/post/mapper"
 	"XWS-Project/post/model"
 	"XWS-Project/post/service"
+	pb "XWS-Project/proto/post_service"
 	"XWS-Project/utilities"
 	"context"
 	"encoding/json"
@@ -12,6 +14,7 @@ import (
 )
 
 type PostHandler struct {
+	pb.UnimplementedPostServiceServer
 	PostService *service.PostService
 }
 
@@ -192,4 +195,20 @@ func (handler *PostHandler) GetUserPosts(rw http.ResponseWriter, r *http.Request
 	_, _ = rw.Write(respJson)
 	rw.Header().Set("Content-Type", "application/json")
 	utilities.Tracer.FinishSpan(span)
+}
+
+//grpc handlers
+
+func (handler *PostHandler) CreatePost(ctx context.Context, pbDto *pb.MakePostPlusEmail) (*pb.Post, error) {
+	request := mapper.MapPBtoDTORequest(pbDto)
+	var post *model.Post
+
+	post, err := handler.PostService.MakePost(ctx, *request, pbDto.UserEmail)
+	if err != nil {
+		panic(err)
+	}
+
+	response := mapper.MapResponse(post)
+	return response, nil
+
 }

@@ -3,7 +3,8 @@ package api
 import (
 	"XWS-Project/api_gateway/infrastructure/services"
 	"XWS-Project/proto/login_service"
-	//"XWS-Project/proto/post_service"
+	"XWS-Project/proto/post_service"
+	"XWS-Project/utilities"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -25,6 +26,10 @@ func NewCustomHandler(postClientAddress, authenticationClientAddress string) Han
 
 func (handler *CustomHandler) Init(mux *runtime.ServeMux) {
 	err := mux.HandlePath("POST", "/login", handler.Login)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("POST", "/make-new-post", handler.MakePost)
 	if err != nil {
 		panic(err)
 	}
@@ -57,4 +62,37 @@ func (handler *CustomHandler) Login(w http.ResponseWriter, r *http.Request, path
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
+}
+
+func (handler *CustomHandler) MakePost(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	postClient := services.NewPostClient(handler.postClientAddress)
+
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	var request post_service.MakePostPlusEmail
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	request.UserEmail = userEmail
+	response, err := postClient.CreatePost(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
 }
