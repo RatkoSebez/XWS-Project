@@ -1,0 +1,112 @@
+syntax="proto3";
+
+option go_package="XWS-Project/proto/post_service";
+
+package post;
+
+import "google/api/annotations.proto";
+
+service PostService{
+
+    rpc CreatePost(MakePost) returns (Post){
+        option(google.api.http)={
+            post:"/make-new-post"
+            body:"*"
+        };
+    }
+    rpc SavePhoto(PhotoMessage) returns (EmptyMessage){
+        option(google.api.http)={
+            post:"/save-photo"
+            body:"*"
+        };
+    }
+    rpc Comment(NewComment) returns(Post){
+        option(google.api.http)={
+            post:"/comment"
+            body:"*"
+        };
+    }
+    rpc MakeReaction(NewReaction) returns(Post){
+        option(google.api.http)={
+            post:"/make-reaction"
+            body:"*"
+        };
+    }
+    rpc FollowingPosts(GetListOfFollowing) returns (PostList){
+        option(google.api.http)={
+            post:"/following-posts"
+            body:"*"
+        };
+    }
+    rpc GetUserPosts(EmptyMessage) returns(PostList){
+        option(google.api.http)={
+            get:"/get-user-posts"
+        };
+    }
+}
+
+message MakePost{
+    repeated string links = 1;
+    repeated string photos = 2;   
+    string postText =3;   
+}
+
+message Post{
+    string postID =1;
+    string userEmail=2;
+    string creationTime=3;
+    repeated Media mediaAssets=4;
+    string postText =5;
+    repeated Reaction reactions=6;
+    repeated Comment comments=7;
+}
+
+message Media{
+    string mediaID=1;
+    string site=2;
+    string filepath=3;
+}
+
+message Reaction{
+    string reactionID =1;
+    string postID=2;
+    string userEmail=3;
+    string creationTime=4;
+    string typeOfReaction=5;
+}
+
+message Comment{
+    string commentID=1;
+    string postID=2;
+    string userEmail=3;
+    string creationTime=4;
+    string commentData =5;
+}
+
+message PhotoMessage{
+    string fileName=1;
+    string fileData=2;
+}
+
+message NewComment{
+    string commentContent =1;
+    string postID =2;
+}
+
+message NewReaction{
+    string react =1;
+    string userEmail=2;
+    string postID=3;
+}
+
+message GetListOfFollowing{
+    repeated string listOfFollowing=1;
+}
+
+message PostList{
+    repeated Post posts=1;
+}
+
+message EmptyMessage{
+
+}

@@ -1,0 +1,35 @@
+syntax="proto3";
+
+option go_package="XWS-Project/proto/login_service";
+
+package authentication;
+
+import "google/api/annotations.proto";
+
+service Authentication {
+    rpc Post(PostRequest) returns(PostResponse){
+        option(google.api.http) = {
+            post:"/login"
+            body:"*"
+        };
+    }
+}
+
+message PostRequest{
+    loginDTO dto=1;
+}
+
+message PostResponse{
+    loginResponseDTO dto=1;
+}
+
+message loginDTO{
+    string email = 1;
+    string password = 2;
+}
+
+message loginResponseDTO{
+    string email = 1;
+    string token = 2;
+    string username = 3;
+}

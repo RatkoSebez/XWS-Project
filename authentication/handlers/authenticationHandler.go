@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"XWS-Project/authentication/dto"
+	"XWS-Project/authentication/mapper"
 	"XWS-Project/authentication/model"
 	"XWS-Project/authentication/service"
+	pb "XWS-Project/proto/login_service"
 	"XWS-Project/utilities"
 	"context"
 	"encoding/json"
@@ -12,6 +14,7 @@ import (
 )
 
 type AuthenticationHandler struct {
+	pb.UnimplementedAuthenticationServer
 	AuthenticationService *service.AuthenticationService
 }
 
@@ -75,4 +78,35 @@ func (handler *AuthenticationHandler) Test(rw http.ResponseWriter, r *http.Reque
 		return
 	}
 	_, _ = rw.Write(respJson)
+}
+
+func (handler *AuthenticationHandler) Post(ctx context.Context, request *pb.PostRequest) (*pb.PostResponse, error) {
+	var user *model.User
+	var reqq dto.LoginDTO
+
+	ourReq := mapper.MapRequestObrnuto(request.GetDto())
+	reqq.Email = ourReq.Email
+	reqq.Password = ourReq.Password
+	user, err := handler.AuthenticationService.Login(ctx, reqq)
+	if err != nil {
+		panic(err)
+	}
+	token, errr := utilities.CreateToken(user.Email, "authentication_service")
+	if errr != nil {
+		panic(errr)
+	}
+
+	responseDTO := dto.LoginResponseDTO{
+		Token:    token,
+		Email:    user.Email,
+		Username: user.Username,
+	}
+
+	loginResp := mapper.MapResponse(&responseDTO)
+
+	response := pb.PostResponse{
+		Dto: loginResp,
+	}
+
+	return &response, nil
 }

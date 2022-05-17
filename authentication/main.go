@@ -5,13 +5,15 @@ import (
 	"XWS-Project/authentication/model"
 	"XWS-Project/authentication/repository"
 	"XWS-Project/authentication/service"
+	pb "XWS-Project/proto/login_service"
 	"XWS-Project/utilities"
 	"context"
 	"fmt"
+	"google.golang.org/grpc"
 	"log"
-	"net/http"
-
-	"github.com/gorilla/mux"
+	"net"
+	//"github.com/gorilla/mux"
+	//"net/http"
 
 	//"time"
 	//"os"
@@ -75,12 +77,21 @@ func initHandler(service *service.AuthenticationService) *handlers.Authenticatio
 }
 
 func handlerFunc(handler *handlers.AuthenticationHandler) {
-	fmt.Println("Auth server started...")
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", "8081"))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	pb.RegisterAuthenticationServer(grpcServer, handler)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
+	/*fmt.Println("Auth server started...")
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/login", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/login", handler.Login).Methods("POST")
 	router.HandleFunc("/test", handler.Test).Methods("GET", "OPTIONS")
-	log.Fatal(http.ListenAndServe(":8081", router))
+	log.Fatal(http.ListenAndServe(":8081", router))*/
 }
 
 func main() {
