@@ -2,8 +2,10 @@ package api
 
 import (
 	"XWS-Project/api_gateway/infrastructure/services"
+	"XWS-Project/proto/follow_service"
 	"XWS-Project/proto/login_service"
 	"XWS-Project/proto/post_service"
+	"XWS-Project/proto/profile_service"
 	"XWS-Project/proto/registration_service"
 	"XWS-Project/utilities"
 	"context"
@@ -18,14 +20,16 @@ type CustomHandler struct {
 	authenticationClientAddress string
 	registrationClientAddress   string
 	followClientAddress         string
+	profileClientAddress        string
 }
 
-func NewCustomHandler(postClientAddress, authenticationClientAddress, regClientAdd, followClAdd string) Handler {
+func NewCustomHandler(postClientAddress, authenticationClientAddress, regClientAdd, followClAdd, profileClAdd string) Handler {
 	return &CustomHandler{
 		postClientAddress:           postClientAddress,
 		authenticationClientAddress: authenticationClientAddress,
 		registrationClientAddress:   regClientAdd,
 		followClientAddress:         followClAdd,
+		profileClientAddress:        profileClAdd,
 	}
 }
 
@@ -54,14 +58,39 @@ func (handler *CustomHandler) Init(mux *runtime.ServeMux) {
 	if err != nil {
 		panic(err)
 	}
-	err = mux.HandlePath("GET", "/get-user-posts", handler.GetUserPosts)
+	err = mux.HandlePath("POST", "/get-user-posts", handler.GetUserPosts)
 	if err != nil {
 		panic(err)
 	}
-	err = mux.HandlePath("POST", "/register", handler.GetUserPosts)
+	err = mux.HandlePath("POST", "/register", handler.Register)
 	if err != nil {
 		panic(err)
 	}
+	err = mux.HandlePath("GET", "/follow/{email}", handler.GetFollow)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("POST", "/follow", handler.CreateFollow)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("GET", "/followRequest/{email}", handler.GetFollowRequest)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("POST", "/followRequest", handler.CreateFollowRequest)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("PUT", "/{email}", handler.Edit)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("GET", "/{email}", handler.GetProfileByMail)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func (handler *CustomHandler) Test(w http.ResponseWriter, r *http.Request) {
@@ -250,6 +279,7 @@ func (handler *CustomHandler) FollowingPosts(w http.ResponseWriter, r *http.Requ
 func (handler *CustomHandler) GetUserPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 	postClient := services.NewPostClient(handler.postClientAddress)
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+
 	if userEmail == "" {
 		w.WriteHeader(http.StatusForbidden)
 		return
@@ -279,12 +309,6 @@ func (handler *CustomHandler) GetUserPosts(w http.ResponseWriter, r *http.Reques
 
 func (handler *CustomHandler) Register(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 	registerClient := services.NewRegistrationClient(handler.registrationClientAddress)
-	userEmail := utilities.GetLoggedUserEmailFromToken(r)
-	if userEmail == "" {
-		w.WriteHeader(http.StatusForbidden)
-		return
-	}
-
 	var request registration_service.RegisterMessage
 
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -293,7 +317,180 @@ func (handler *CustomHandler) Register(w http.ResponseWriter, r *http.Request, p
 		return
 	}
 
-	response, err := registerClient.Register(context.TODO(), &request)
+	_, err = registerClient.Register(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (handler *CustomHandler) GetFollow(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	followClient := services.NewFollowClient(handler.followClientAddress)
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	email := pathParams["email"]
+	if email == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	var request follow_service.EmptyEmailMessage
+	request.Email = email
+	follow, err := followClient.GetFollow(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(follow)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+
+}
+
+func (handler *CustomHandler) CreateFollow(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	followClient := services.NewFollowClient(handler.followClientAddress)
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+	var request follow_service.FollowRequestMessage
+	follow, err := followClient.CreateFollow(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(follow)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
+
+func (handler *CustomHandler) GetFollowRequest(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	followClient := services.NewFollowClient(handler.followClientAddress)
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+	email := pathParams["email"]
+	if email == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	var request follow_service.EmptyEmailMessage
+	request.Email = email
+	follow, err := followClient.GetFollowRequest(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(follow)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
+
+func (handler *CustomHandler) CreateFollowRequest(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	followClient := services.NewFollowClient(handler.followClientAddress)
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+	var request follow_service.FollowRequestMessage
+	follow, err := followClient.CreateFollowRequest(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(follow)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
+
+func (handler *CustomHandler) Edit(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	profileClient := services.NewProfileClient(handler.profileClientAddress)
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	email := pathParams["email"]
+	if email == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if userEmail == "" || userEmail != email {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	var request profile_service.ProfileDTO
+	request.EmailParameter = email
+
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	response, err := profileClient.Edit(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+
+}
+
+func (handler *CustomHandler) GetProfileByMail(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	profileClient := services.NewProfileClient(handler.profileClientAddress)
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	email := pathParams["email"]
+	if email == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if userEmail == "" || userEmail != email {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+	var request profile_service.EmptyMailMessage
+	request.Email = email
+	response, err := profileClient.GetProfileByMail(context.TODO(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err.Error())

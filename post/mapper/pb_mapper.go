@@ -3,8 +3,8 @@ package mapper
 import (
 	"XWS-Project/post/dto"
 	"XWS-Project/post/model"
-	"XWS-Project/proto/post_service"
 	pb "XWS-Project/proto/post_service"
+	//"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -54,7 +54,7 @@ func MapResponse(respPost *model.Post) *pb.Post {
 	return rtrn
 }
 
-func MapCommentDTO(dtoPb *post_service.NewComment) *dto.CommentDTO {
+func MapCommentDTO(dtoPb *pb.NewComment) *dto.CommentDTO {
 	id, _ := primitive.ObjectIDFromHex(dtoPb.PostID)
 	rtrn := &dto.CommentDTO{
 		CommentContent: dtoPb.CommentContent,
@@ -63,7 +63,7 @@ func MapCommentDTO(dtoPb *post_service.NewComment) *dto.CommentDTO {
 	return rtrn
 }
 
-func MapReactionDTO(dtoPb *post_service.NewReaction) *dto.ReactionDTO {
+func MapReactionDTO(dtoPb *pb.NewReaction) *dto.ReactionDTO {
 	id, _ := primitive.ObjectIDFromHex(dtoPb.PostID)
 	rtrn := &dto.ReactionDTO{
 		PostID:    id,
@@ -83,15 +83,51 @@ func GetReactionType(reaction string) model.ReactionType {
 	return model.Like
 }
 
-func MapManyPosts(posts []*model.Post) *post_service.PostList {
-	var retr *post_service.PostList
+func MapManyPosts(posts []*model.Post) *pb.PostList {
+	retr := &pb.PostList{
+		Posts: nil,
+	}
+
 	for _, el := range posts {
-		retr.Posts = append(retr.Posts, MapResponse(el))
+
+		postPb := &pb.Post{
+			CreationTime: el.CreationTime.String(),
+			PostID:       el.PostID.String(),
+			PostText:     el.PostText,
+			UserEmail:    el.UserEmail,
+		}
+
+		for _, elm := range el.Comments {
+			postPb.Comments = append(postPb.Comments, &pb.Comment{
+				CommentData:  elm.CommentData,
+				CommentID:    elm.CommentID.String(),
+				CreationTime: elm.CreationTime.String(),
+				PostID:       elm.PostID.String(),
+				UserEmail:    elm.UserEmail,
+			})
+		}
+		for _, elm := range el.Reactions {
+			postPb.Reactions = append(postPb.Reactions, &pb.Reaction{
+				CreationTime:   elm.CreationTime.String(),
+				PostID:         elm.PostID.String(),
+				ReactionID:     elm.ReactionID.String(),
+				TypeOfReaction: elm.TypeOfReaction.String(),
+				UserEmail:      elm.UserEmail,
+			})
+		}
+		for _, elm := range el.MediaAssets {
+			postPb.MediaAssets = append(postPb.MediaAssets, &pb.Media{
+				Filepath: elm.Filepath,
+				MediaID:  elm.MediaID.String(),
+				Site:     elm.Site,
+			})
+		}
+		retr.Posts = append(retr.Posts, postPb)
 	}
 	return retr
 }
 
-func MapPhotoDTO(pbDto *post_service.PhotoMessage) *dto.PhotoDTO {
+func MapPhotoDTO(pbDto *pb.PhotoMessage) *dto.PhotoDTO {
 	rtrn := &dto.PhotoDTO{
 		FileData: pbDto.FileData,
 		FileName: pbDto.FileName,

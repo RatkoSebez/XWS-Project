@@ -3,8 +3,10 @@ package startup
 import (
 	"XWS-Project/api_gateway/infrastructure/api"
 	cfg "XWS-Project/api_gateway/startup/config"
+	"XWS-Project/proto/follow_service"
 	"XWS-Project/proto/login_service"
 	"XWS-Project/proto/post_service"
+	"XWS-Project/proto/profile_service"
 	"XWS-Project/proto/registration_service"
 	"context"
 	"fmt"
@@ -44,6 +46,14 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+	err = follow_service.RegisterFollowServiceHandlerFromEndpoint(context.TODO(), server.mux, server.config.FollowPort, opts)
+	if err != nil {
+		panic(err)
+	}
+	err = profile_service.RegisterProfileServiceHandlerFromEndpoint(context.TODO(), server.mux, server.config.ProfilePort, opts)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (server *Server) initCustomHandlers() {
@@ -51,7 +61,9 @@ func (server *Server) initCustomHandlers() {
 	authEndp := server.config.AuthenticationHost + ":" + server.config.AuthenticationPort
 	regisEndp := server.config.RegistrationHost + ":" + server.config.RegistrationPort
 	followEndp := server.config.FollowHost + ":" + server.config.FollowPort
-	authHandler := api.NewCustomHandler(postEndp, authEndp, regisEndp, followEndp)
+	profileEndp := server.config.ProfileHost + ":" + server.config.ProfilePort
+
+	authHandler := api.NewCustomHandler(postEndp, authEndp, regisEndp, followEndp, profileEndp)
 	authHandler.Init(server.mux)
 }
 

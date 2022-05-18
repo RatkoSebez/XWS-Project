@@ -4,10 +4,13 @@ import (
 	"XWS-Project/profile/handlers"
 	"XWS-Project/profile/repository"
 	"XWS-Project/profile/service"
+	pb "XWS-Project/proto/profile_service"
 	"XWS-Project/utilities"
 	"context"
 	"fmt"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -45,13 +48,22 @@ func initHandler(service *service.ProfileService) *handlers.ProfileHandler {
 }
 
 func handlerFunc(handler *handlers.ProfileHandler) {
-	fmt.Println("Profile server started...")
+	/*fmt.Println("Profile server started...")
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/{email}", handler.Edit).Methods("PUT")
 	router.HandleFunc("/{email}", handler.GetProfileByMail).Methods("GET")
 	router.HandleFunc("/{email}", handler.Preflight).Methods("OPTIONS")
 
-	log.Fatal(http.ListenAndServe(":8081", router))
+	log.Fatal(http.ListenAndServe(":8081", router))*/
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", "8084"))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	pb.RegisterProfileServiceServer(grpcServer, handler)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
 }
 func main() {
 	utilities.TracerInit("profile")

@@ -1,11 +1,12 @@
 package handlers
 
 import (
+	"XWS-Project/follow/mapper"
 	//"XWS-Project/follow/model"
 	"XWS-Project/follow/service"
 	pb "XWS-Project/proto/follow_service"
 	//"XWS-Project/utilities"
-	//"context"
+	"context"
 	//"encoding/json"
 	//"github.com/gorilla/mux"
 	//"net/http"
@@ -89,3 +90,29 @@ func (handler *FollowHandler) CreateFollow(rw http.ResponseWriter, r *http.Reque
 }*/
 
 //grpc handlers
+
+func (handler *FollowHandler) GetFollow(ctx context.Context, pbDto *pb.EmptyEmailMessage) (*pb.FollowMessage, error) {
+	userFollow, err := handler.FollowService.GetFollow(ctx, pbDto.Email)
+	response := mapper.MapFollow(userFollow)
+	return response, err
+}
+
+func (handler *FollowHandler) CreateFollow(ctx context.Context, pbDto *pb.FollowRequestMessage) (*pb.EmptyMessage, error) {
+	request := mapper.MapFollowRequestMessage(pbDto)
+	err := handler.FollowService.CreateFollow(ctx, *request)
+	var response *pb.EmptyMessage
+	return response, err
+}
+
+func (handler *FollowHandler) GetFollowRequest(ctx context.Context, pbDto *pb.EmptyEmailMessage) (*pb.FollowRequestsMessage, error) {
+	userFollows, _ := handler.FollowService.GetFollowRequest(ctx, pbDto.Email)
+	response := mapper.MapFollows(userFollows)
+	return response, nil
+}
+
+func (handler *FollowHandler) CreateFollowRequest(ctx context.Context, pbDto *pb.FollowRequestMessage) (*pb.EmptyMessage, error) {
+	request := mapper.MapFollowRequestMessage(pbDto)
+	err := handler.FollowService.CreateFollowRequest(ctx, *request)
+	var response *pb.EmptyMessage
+	return response, err
+}

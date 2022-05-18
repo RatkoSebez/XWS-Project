@@ -4,6 +4,7 @@ import (
 	"XWS-Project/proto/follow_service"
 	"XWS-Project/proto/login_service"
 	"XWS-Project/proto/post_service"
+	"XWS-Project/proto/profile_service"
 	"XWS-Project/proto/registration_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -29,7 +30,7 @@ func NewPostClient(address string) post_service.PostServiceClient {
 func NewRegistrationClient(address string) registration_service.RegistrationServiceClient {
 	conn, err := getConnection(address)
 	if err != nil {
-		log.Fatalf("Failed to start gRPC connection to Post service: %v", err)
+		log.Fatalf("Failed to start gRPC connection to Registration service: %v", err)
 	}
 	return registration_service.NewRegistrationServiceClient(conn)
 }
@@ -37,10 +38,19 @@ func NewRegistrationClient(address string) registration_service.RegistrationServ
 func NewFollowClient(address string) follow_service.FollowServiceClient {
 	conn, err := getConnection(address)
 	if err != nil {
-		log.Fatalf("Failed to start gRPC connection to Post service: %v", err)
+		log.Fatalf("Failed to start gRPC connection to Follow service: %v", err)
 	}
 	return follow_service.NewFollowServiceClient(conn)
 }
+
+func NewProfileClient(address string) profile_service.ProfileServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Profile service: %v", err)
+	}
+	return profile_service.NewProfileServiceClient(conn)
+}
+
 func getConnection(address string) (*grpc.ClientConn, error) {
 	return grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }

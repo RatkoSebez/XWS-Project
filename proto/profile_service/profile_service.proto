@@ -1,11 +1,69 @@
 syntax="proto3";
 
-option go_package="XWS-Project/proto/follow_service";
+option go_package="XWS-Project/proto/profile_service";
 
 package follow;
 
 import "google/api/annotations.proto";
 
 service ProfileService{
-    
+    rpc Edit(ProfileDTO) returns(StatusMessage){
+        option(google.api.http)={
+            put:"/{email}"
+            body:"*"
+        };
+    }
+
+    rpc GetProfileByMail(EmptyMailMessage) returns(ProfileInfo){
+        option(google.api.http)={
+            get:"/{email}"
+        };
+    }
+}
+
+message ProfileDTO {
+    string name =1;
+    string surname =2;
+    string email =3;
+    string numtel=4;
+    string sex=5;
+    int32 bDateDay=6;
+    int32 bDateMonth=7;
+    int32 bDateYear=8;
+    string username=9;
+    string password=10;
+    string bio=11;
+    repeated string experience=12;
+    repeated string education=13;
+    repeated string interests=14;
+    repeated string skills=15;
+    bool isPrivate=16;
+    string emailParameter=17;
+}
+
+message ProfileInfo {
+    string name =1;
+    string surname =2;
+    string email =3;
+    string numtel=4;
+    string sex=5;
+    int32 bDateDay=6;
+    int32 bDateMonth=7;
+    int32 bDateYear=8;
+    string username=9;
+    string password=10;
+    string bio=11;
+    repeated string experience=12;
+    repeated string education=13;
+    repeated string interests=14;
+    repeated string skills=15;
+    bool isPrivate=16;
+}
+
+message EmptyMailMessage{
+    string email=1;
+}
+
+message StatusMessage{
+    string status=1;
 }

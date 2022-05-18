@@ -62,9 +62,6 @@ func (handler *RegistrationHandler) Preflight(rw http.ResponseWriter, r *http.Re
 func (handler *RegistrationHandler) Register(ctx context.Context, pbDto *pb.RegisterMessage) (*pb.EmptyMessage, error) {
 	reqDto := mapper.MapPBToDTO(pbDto)
 	err := handler.RegistrationService.RegisterUser(ctx, *reqDto)
-	if err != nil {
-		panic(err)
-	}
-	var resp *pb.EmptyMessage
-	return resp, nil
+	var resp = &pb.EmptyMessage{}
+	return resp, err
 }

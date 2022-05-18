@@ -82,7 +82,8 @@ func (repository *PostRepository) UpdatePost(ctx context.Context, post model.Pos
 	if result.MatchedCount == 0 {
 		fmt.Println("No documents found to update")
 	}
-	return nil, err
+	var response = post
+	return &response, err
 }
 
 func (repository *PostRepository) AddCommentToPost(ctx context.Context, postId primitive.ObjectID, comment model.Comment) (*model.Post, error) {

@@ -9,7 +9,7 @@ import (
 	"XWS-Project/utilities"
 	"context"
 	"encoding/json"
-	//"fmt"
+	"fmt"
 	"net/http"
 )
 
@@ -229,8 +229,8 @@ func (handler *PostHandler) Comment(ctx context.Context, pbDto *pb.NewComment) (
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(post.CreationTime.String())
 	response := mapper.MapResponse(post)
-
 	return response, nil
 
 }
@@ -252,6 +252,7 @@ func (handler *PostHandler) FollowingPosts(ctx context.Context, pbDto *pb.GetLis
 	if err != nil {
 		panic(err)
 	}
+
 	response := mapper.MapManyPosts(posts)
 
 	return response, nil

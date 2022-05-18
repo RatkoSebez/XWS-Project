@@ -2,22 +2,20 @@ package handlers
 
 import (
 	"XWS-Project/profile/dto"
+	"XWS-Project/profile/mapper"
 	"XWS-Project/profile/service"
-	"XWS-Project/utilities"
+	pb "XWS-Project/proto/profile_service"
 	"context"
-	"encoding/json"
-	"fmt"
-	"html/template"
 	"net/http"
-
-	"github.com/gorilla/mux"
+	//"github.com/gorilla/mux"
 )
 
 type ProfileHandler struct {
+	pb.UnimplementedProfileServiceServer
 	ProfileService *service.ProfileService
 }
 
-func (handler *ProfileHandler) Edit(w http.ResponseWriter, r *http.Request) {
+/*func (handler *ProfileHandler) Edit(w http.ResponseWriter, r *http.Request) {
 	var infoDTO dto.ProfileDTO
 	span := utilities.Tracer.StartSpanFromRequest("Profile-handler", r)
 	err := json.NewDecoder(r.Body).Decode(&infoDTO)
@@ -66,10 +64,40 @@ func (handler *ProfileHandler) GetProfileByMail(w http.ResponseWriter, r *http.R
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(&user)
-}
+}*/
 func (handler *ProfileHandler) Preflight(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Methods", "PUT, GET, POST")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	rw.WriteHeader(http.StatusOK)
+}
+
+//grpc handlers
+
+func (handler *ProfileHandler) Edit(ctx context.Context, request *pb.ProfileDTO) (*pb.StatusMessage, error) {
+	infoDTO := mapper.MapProfileDTO(request)
+	
+	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
+	vars := mux.Vars(r)
+	var tempMail:= infoDTO.EmailParameter
+	var user = handler.ProfileService.FindUserByMail(ctx, tempMail)
+	var statusMesage *pb.StatusMessage
+
+	var user2 = handler.ProfileService.FindUserByUsername(ctx, infoDTO.Username, user.Username)
+	if user2 != nil && user2.Username != user.Username {
+		statusMesage.Status="Username already taken"
+		return statusMesage, nil
+	}
+
+	err = handler.ProfileService.UpdateProfile(ctx, infoDTO, user.Username)
+	if err != nil {		
+		statusMesage.Status="greska2"
+		return statusMesage, error
+	}
+}
+
+func (handler *ProfileHandler) GetProfileByMail(ctx context.Context, request *pb.EmptyMailMessage) (*pb.ProfileInfo, error) {
+	var user = handler.ProfileService.FindUserByMail(ctx, request.Email)
+	response:=mapper.MapResponseProfile(user)
+	return response, nil
 }
