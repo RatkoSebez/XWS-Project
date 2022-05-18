@@ -1,20 +1,22 @@
 package handlers
 
 import (
-	"XWS-Project/follow/model"
+	//"XWS-Project/follow/model"
 	"XWS-Project/follow/service"
-	"XWS-Project/utilities"
-	"context"
-	"encoding/json"
-	"github.com/gorilla/mux"
-	"net/http"
+	pb "XWS-Project/proto/follow_service"
+	//"XWS-Project/utilities"
+	//"context"
+	//"encoding/json"
+	//"github.com/gorilla/mux"
+	//"net/http"
 )
 
 type FollowHandler struct {
+	pb.UnimplementedFollowServiceServer
 	FollowService *service.FollowService
 }
 
-func (handler *FollowHandler) GetFollow(rw http.ResponseWriter, r *http.Request) {
+/*func (handler *FollowHandler) GetFollow(rw http.ResponseWriter, r *http.Request) {
 	span := utilities.Tracer.StartSpanFromRequest("follow-handler", r)
 	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
 
@@ -84,4 +86,6 @@ func (handler *FollowHandler) CreateFollow(rw http.ResponseWriter, r *http.Reque
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-}
+}*/
+
+//grpc handlers

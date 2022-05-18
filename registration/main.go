@@ -1,17 +1,19 @@
 package main
 
 import (
+	pb "XWS-Project/proto/registration_service"
 	"XWS-Project/registration/handlers"
 	"XWS-Project/registration/repository"
 	"XWS-Project/registration/service"
 	"XWS-Project/utilities"
-	"net/http"
-
+	//"net/http"
 	"context"
 	"fmt"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 
-	"github.com/gorilla/mux"
+	//"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -46,12 +48,22 @@ func initHandler(service *service.RegistrationService) *handlers.RegistrationHan
 }
 
 func handlerFunc(handler *handlers.RegistrationHandler) {
-	fmt.Println("Registration server started...")
+	/*fmt.Println("Registration server started...")
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/register", handler.Register).Methods("POST")
 	router.HandleFunc("/register", handler.Preflight).Methods("OPTIONS")
 
-	log.Fatal(http.ListenAndServe(":8081", router))
+	log.Fatal(http.ListenAndServe(":8081", router))*/
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", "8083"))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	pb.RegisterRegistrationServiceServer(grpcServer, handler)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
+
 }
 func main() {
 	utilities.TracerInit("registration")

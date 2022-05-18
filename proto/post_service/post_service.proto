@@ -38,7 +38,7 @@ service PostService{
             body:"*"
         };
     }
-    rpc GetUserPosts(EmptyMessage) returns(PostList){
+    rpc GetUserPosts(UserMailMessage) returns(PostList){
         option(google.api.http)={
             get:"/get-user-posts"
         };
@@ -93,11 +93,13 @@ message Comment{
 message PhotoMessage{
     string fileName=1;
     string fileData=2;
+    string userEmail=3;
 }
 
 message NewComment{
     string commentContent =1;
     string postID =2;
+    string userEmail=3;
 }
 
 message NewReaction{
@@ -112,6 +114,10 @@ message GetListOfFollowing{
 
 message PostList{
     repeated Post posts=1;
+}
+
+message UserMailMessage{
+    string userMail =1;
 }
 
 message EmptyMessage{

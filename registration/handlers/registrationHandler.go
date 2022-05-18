@@ -1,20 +1,23 @@
 package handlers
 
 import (
-	"XWS-Project/registration/dto"
+	pb "XWS-Project/proto/registration_service"
+	//"XWS-Project/registration/dto"
+	"XWS-Project/registration/mapper"
 	"XWS-Project/registration/service"
-	"XWS-Project/utilities"
+	//"XWS-Project/utilities"
 	"context"
-	"encoding/json"
-	"fmt"
+	//"encoding/json"
+	//"fmt"
 	"net/http"
 )
 
 type RegistrationHandler struct {
+	pb.UnimplementedRegistrationServiceServer
 	RegistrationService *service.RegistrationService
 }
 
-func (handler *RegistrationHandler) Register(w http.ResponseWriter, r *http.Request) {
+/*func (handler *RegistrationHandler) Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
@@ -46,10 +49,22 @@ func (handler *RegistrationHandler) Register(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte("{\"success\":\"ok\"}"))
 	w.Header().Set("Content-Type", "application/json")
-}
+}*/
 func (handler *RegistrationHandler) Preflight(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Methods", "POST")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	rw.WriteHeader(http.StatusOK)
+}
+
+//grpc handler
+
+func (handler *RegistrationHandler) Register(ctx context.Context, pbDto *pb.RegisterMessage) (*pb.EmptyMessage, error) {
+	reqDto := mapper.MapPBToDTO(pbDto)
+	err := handler.RegistrationService.RegisterUser(ctx, *reqDto)
+	if err != nil {
+		panic(err)
+	}
+	var resp *pb.EmptyMessage
+	return resp, nil
 }

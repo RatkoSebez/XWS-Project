@@ -6,6 +6,12 @@ type Config struct {
 	AuthenticationPort string
 	PostHost           string
 	PostPort           string
+	RegistrationHost   string
+	RegistrationPort   string
+	ProfileHost        string
+	ProfilePort        string
+	FollowHost         string
+	FollowPort         string
 }
 
 func NewConfig() *Config {
@@ -15,5 +21,11 @@ func NewConfig() *Config {
 		AuthenticationPort: "8081",
 		PostHost:           "localhost",
 		PostPort:           "8082",
+		RegistrationHost:   "localhost",
+		RegistrationPort:   "8083",
+		ProfileHost:        "localhost",
+		ProfilePort:        "8084",
+		FollowHost:         "localhost",
+		FollowPort:         "8085",
 	}
 }

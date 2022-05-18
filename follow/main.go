@@ -5,13 +5,16 @@ import (
 	"XWS-Project/follow/model"
 	"XWS-Project/follow/repository"
 	"XWS-Project/follow/service"
+	pb "XWS-Project/proto/follow_service"
 	"XWS-Project/utilities"
 	"context"
 	"fmt"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 	"net/http"
 )
 
@@ -60,13 +63,22 @@ func initHandler(service *service.FollowService) *handlers.FollowHandler {
 }
 
 func handlerFunc(handler *handlers.FollowHandler) {
-	fmt.Println("Follow server started...")
+	/*fmt.Println("Follow server started...")
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/followRequest/{email}", handler.GetFollowRequest).Methods("GET")
 	router.HandleFunc("/followRequest", handler.CreateFollowRequest).Methods("POST")
 	router.HandleFunc("/follow/{email}", handler.GetFollow).Methods("GET")
 	router.HandleFunc("/follow/", handler.CreateFollow).Methods("POST")
-	log.Fatal(http.ListenAndServe(":8085", router))
+	log.Fatal(http.ListenAndServe(":8085", router))*/
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", "8085"))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	pb.RegisterFollowServiceServer(grpcServer, handler)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
 }
 
 func main() {

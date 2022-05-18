@@ -9,7 +9,7 @@ import (
 	"XWS-Project/utilities"
 	"context"
 	"encoding/json"
-	"fmt"
+	//"fmt"
 	"net/http"
 )
 
@@ -61,7 +61,7 @@ func (handler *PostHandler) Preflight(rw http.ResponseWriter, r *http.Request) {
 	rw.WriteHeader(http.StatusOK)
 }
 
-func (handler *PostHandler) SavePhoto(rw http.ResponseWriter, r *http.Request) {
+/*func (handler *PostHandler) SavePhoto(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
@@ -76,7 +76,7 @@ func (handler *PostHandler) SavePhoto(rw http.ResponseWriter, r *http.Request) {
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
 	handler.PostService.SavePhotos(request, userEmail)
 	utilities.Tracer.FinishSpan(span)
-}
+}*/
 
 func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request) {
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
@@ -108,7 +108,7 @@ func (handler *PostHandler) PostComment(rw http.ResponseWriter, r *http.Request)
 	utilities.Tracer.FinishSpan(span)
 }
 
-func (handler *PostHandler) MakeReaction(rw http.ResponseWriter, r *http.Request) {
+/*func (handler *PostHandler) MakeReaction(rw http.ResponseWriter, r *http.Request) {
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
 	if userEmail == "" {
 		rw.WriteHeader(http.StatusForbidden)
@@ -140,7 +140,7 @@ func (handler *PostHandler) MakeReaction(rw http.ResponseWriter, r *http.Request
 	_, _ = rw.Write(respJson)
 	rw.Header().Set("Content-Type", "application/json")
 	utilities.Tracer.FinishSpan(span)
-}
+}*/
 
 func (handler *PostHandler) GetFollowingPosts(rw http.ResponseWriter, r *http.Request) {
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
@@ -173,7 +173,7 @@ func (handler *PostHandler) GetFollowingPosts(rw http.ResponseWriter, r *http.Re
 	utilities.Tracer.FinishSpan(span)
 }
 
-func (handler *PostHandler) GetUserPosts(rw http.ResponseWriter, r *http.Request) {
+/*func (handler *PostHandler) GetUserPosts(rw http.ResponseWriter, r *http.Request) {
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
 	if userEmail == "" {
 		rw.WriteHeader(http.StatusForbidden)
@@ -195,7 +195,7 @@ func (handler *PostHandler) GetUserPosts(rw http.ResponseWriter, r *http.Request
 	_, _ = rw.Write(respJson)
 	rw.Header().Set("Content-Type", "application/json")
 	utilities.Tracer.FinishSpan(span)
-}
+}*/
 
 //grpc handlers
 
@@ -211,4 +211,59 @@ func (handler *PostHandler) CreatePost(ctx context.Context, pbDto *pb.MakePostPl
 	response := mapper.MapResponse(post)
 	return response, nil
 
+}
+
+func (handler *PostHandler) SavePhoto(ctx context.Context, pbDto *pb.PhotoMessage) (*pb.EmptyMessage, error) {
+
+	request := mapper.MapPhotoDTO(pbDto)
+	handler.PostService.SavePhotos(*request, pbDto.UserEmail)
+	var response *pb.EmptyMessage
+	return response, nil
+
+}
+
+func (handler *PostHandler) Comment(ctx context.Context, pbDto *pb.NewComment) (*pb.Post, error) {
+
+	request := mapper.MapCommentDTO(pbDto)
+	post, err := handler.PostService.PostComment(context.TODO(), *request, pbDto.UserEmail)
+	if err != nil {
+		panic(err)
+	}
+	response := mapper.MapResponse(post)
+
+	return response, nil
+
+}
+
+func (handler *PostHandler) MakeReaction(ctx context.Context, pbDto *pb.NewReaction) (*pb.Post, error) {
+	request := mapper.MapReactionDTO(pbDto)
+	post, err := handler.PostService.MakeReaction(context.TODO(), *request)
+	if err != nil {
+		panic(err)
+	}
+	response := mapper.MapResponse(post)
+
+	return response, nil
+}
+
+func (handler *PostHandler) FollowingPosts(ctx context.Context, pbDto *pb.GetListOfFollowing) (*pb.PostList, error) {
+
+	posts, err := handler.PostService.LoadFollowingPosts(context.TODO(), pbDto.ListOfFollowing)
+	if err != nil {
+		panic(err)
+	}
+	response := mapper.MapManyPosts(posts)
+
+	return response, nil
+}
+
+func (handler *PostHandler) GetUserPosts(ctx context.Context, pbDto *pb.UserMailMessage) (*pb.PostList, error) {
+
+	posts, err := handler.PostService.GetUserPosts(context.TODO(), pbDto.UserMail)
+	if err != nil {
+		panic(err)
+	}
+	response := mapper.MapManyPosts(posts)
+
+	return response, nil
 }

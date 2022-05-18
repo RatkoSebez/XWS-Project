@@ -22,7 +22,7 @@ type PostServiceClient interface {
 	Comment(ctx context.Context, in *NewComment, opts ...grpc.CallOption) (*Post, error)
 	MakeReaction(ctx context.Context, in *NewReaction, opts ...grpc.CallOption) (*Post, error)
 	FollowingPosts(ctx context.Context, in *GetListOfFollowing, opts ...grpc.CallOption) (*PostList, error)
-	GetUserPosts(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*PostList, error)
+	GetUserPosts(ctx context.Context, in *UserMailMessage, opts ...grpc.CallOption) (*PostList, error)
 }
 
 type postServiceClient struct {
@@ -78,7 +78,7 @@ func (c *postServiceClient) FollowingPosts(ctx context.Context, in *GetListOfFol
 	return out, nil
 }
 
-func (c *postServiceClient) GetUserPosts(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*PostList, error) {
+func (c *postServiceClient) GetUserPosts(ctx context.Context, in *UserMailMessage, opts ...grpc.CallOption) (*PostList, error) {
 	out := new(PostList)
 	err := c.cc.Invoke(ctx, "/post.PostService/GetUserPosts", in, out, opts...)
 	if err != nil {
@@ -96,7 +96,7 @@ type PostServiceServer interface {
 	Comment(context.Context, *NewComment) (*Post, error)
 	MakeReaction(context.Context, *NewReaction) (*Post, error)
 	FollowingPosts(context.Context, *GetListOfFollowing) (*PostList, error)
-	GetUserPosts(context.Context, *EmptyMessage) (*PostList, error)
+	GetUserPosts(context.Context, *UserMailMessage) (*PostList, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -119,7 +119,7 @@ func (*UnimplementedPostServiceServer) MakeReaction(context.Context, *NewReactio
 func (*UnimplementedPostServiceServer) FollowingPosts(context.Context, *GetListOfFollowing) (*PostList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FollowingPosts not implemented")
 }
-func (*UnimplementedPostServiceServer) GetUserPosts(context.Context, *EmptyMessage) (*PostList, error) {
+func (*UnimplementedPostServiceServer) GetUserPosts(context.Context, *UserMailMessage) (*PostList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserPosts not implemented")
 }
 func (*UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
@@ -219,7 +219,7 @@ func _PostService_FollowingPosts_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _PostService_GetUserPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmptyMessage)
+	in := new(UserMailMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -231,7 +231,7 @@ func _PostService_GetUserPosts_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/post.PostService/GetUserPosts",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostServiceServer).GetUserPosts(ctx, req.(*EmptyMessage))
+		return srv.(PostServiceServer).GetUserPosts(ctx, req.(*UserMailMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }

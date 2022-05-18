@@ -5,6 +5,7 @@ import (
 	cfg "XWS-Project/api_gateway/startup/config"
 	"XWS-Project/proto/login_service"
 	"XWS-Project/proto/post_service"
+	"XWS-Project/proto/registration_service"
 	"context"
 	"fmt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -39,10 +40,18 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+	err = registration_service.RegisterRegistrationServiceHandlerFromEndpoint(context.TODO(), server.mux, server.config.RegistrationPort, opts)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (server *Server) initCustomHandlers() {
-	authHandler := api.NewCustomHandler(server.config.PostHost+":"+server.config.PostPort, server.config.AuthenticationHost+":"+server.config.AuthenticationPort)
+	postEndp := server.config.PostHost + ":" + server.config.PostPort
+	authEndp := server.config.AuthenticationHost + ":" + server.config.AuthenticationPort
+	regisEndp := server.config.RegistrationHost + ":" + server.config.RegistrationPort
+	followEndp := server.config.FollowHost + ":" + server.config.FollowPort
+	authHandler := api.NewCustomHandler(postEndp, authEndp, regisEndp, followEndp)
 	authHandler.Init(server.mux)
 }
 

@@ -1,0 +1,39 @@
+syntax="proto3";
+
+option go_package="XWS-Project/proto/registration_service";
+
+package registration;
+
+import "google/api/annotations.proto";
+
+service RegistrationService{
+    rpc Register(RegisterMessage) returns (EmptyMessage){
+        option(google.api.http)={
+            post:"/register"
+            body:"*"
+        };
+    }
+}
+
+message RegisterMessage{
+    string name =1;
+    string surname =2;
+    string email =3;
+    string numtel=4;
+    string sex=5;
+    int32 bDateDay=6;
+    int32 bDateMonth=7;
+    int32 bDateYear=8;
+    string username=9;
+    string password=10;
+    string bio=11;
+    repeated string experience=12;
+    repeated string education=13;
+    repeated string interests=14;
+    repeated string skills=15;
+    bool isPrivate=16;
+}
+
+message EmptyMessage{
+    
+}

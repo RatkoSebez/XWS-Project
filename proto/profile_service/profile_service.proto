@@ -1,0 +1,11 @@
+syntax="proto3";
+
+option go_package="XWS-Project/proto/follow_service";
+
+package follow;
+
+import "google/api/annotations.proto";
+
+service ProfileService{
+    
+}

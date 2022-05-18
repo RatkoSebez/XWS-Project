@@ -1,0 +1,58 @@
+syntax="proto3";
+
+option go_package="XWS-Project/proto/follow_service";
+
+package follow;
+
+import "google/api/annotations.proto";
+
+service FollowService{
+    rpc GetFollow(EmptyEmailMessage) returns (FollowMessage){
+        option(google.api.http)={
+            get:"/follow/{email}"
+        };
+    }
+
+    rpc CreateFollow(FollowRequestMessage) returns (EmptyMessage){
+        option(google.api.http)={
+            post:"/follow"
+            body:"*"
+        };
+    }
+
+    rpc GetFollowRequest(EmptyEmailMessage)  returns (FollowRequestsMessage){
+        option(google.api.http)={
+            get:"/followRequest/{email}"
+        };
+    }
+
+    rpc CreateFollowRequest(FollowRequestMessage) returns (EmptyMessage){
+        option(google.api.http)={
+            post:"/followRequest"
+            body:"*"
+        };
+    }
+}
+
+message EmptyMessage{
+
+}
+
+message EmptyEmailMessage{
+    string email=1;
+}
+
+message FollowMessage {
+    string email =1;
+    repeated string follows=2;
+    repeated string followers=3;
+}
+
+message FollowRequestMessage{
+    string senderEmail =1;
+    string receiverEmail=2;
+}
+
+message FollowRequestsMessage{
+    repeated FollowRequestMessage requests=1;
+}

@@ -4,14 +4,16 @@ import (
 	"XWS-Project/post/handlers"
 	"XWS-Project/post/repository"
 	"XWS-Project/post/service"
+	pb "XWS-Project/proto/post_service"
 	"XWS-Project/utilities"
 	"context"
 	"fmt"
-	"github.com/gorilla/mux"
+	//"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"google.golang.org/grpc"
 	"log"
-	"net/http"
+	"net"
 )
 
 func initDB() *mongo.Client {
@@ -46,7 +48,7 @@ func initHandler(service *service.PostService) *handlers.PostHandler {
 }
 
 func handlerFunc(handler *handlers.PostHandler) {
-	fmt.Println("Post server started...")
+	/*fmt.Println("Post server started...")
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/make-new-post", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/make-new-post", handler.MakePost).Methods("POST")
@@ -62,7 +64,16 @@ func handlerFunc(handler *handlers.PostHandler) {
 	//router.HandleFunc("/get-user-posts", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/get-user-posts", handler.GetUserPosts).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":8082", router))
+	log.Fatal(http.ListenAndServe(":8082", router))*/
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", "8082"))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	pb.RegisterPostServiceServer(grpcServer, handler)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
 }
 
 func main() {
