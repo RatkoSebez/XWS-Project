@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"XWS-Project/profile/dto"
+	//"XWS-Project/profile/dto"
 	"XWS-Project/profile/mapper"
 	"XWS-Project/profile/service"
 	pb "XWS-Project/proto/profile_service"
@@ -76,28 +76,30 @@ func (handler *ProfileHandler) Preflight(rw http.ResponseWriter, r *http.Request
 
 func (handler *ProfileHandler) Edit(ctx context.Context, request *pb.ProfileDTO) (*pb.StatusMessage, error) {
 	infoDTO := mapper.MapProfileDTO(request)
-	
-	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
-	vars := mux.Vars(r)
-	var tempMail:= infoDTO.EmailParameter
+
+	var tempMail = request.EmailParameter
 	var user = handler.ProfileService.FindUserByMail(ctx, tempMail)
-	var statusMesage *pb.StatusMessage
+	var statusMesage = &pb.StatusMessage{
+		Status: "",
+	}
 
 	var user2 = handler.ProfileService.FindUserByUsername(ctx, infoDTO.Username, user.Username)
 	if user2 != nil && user2.Username != user.Username {
-		statusMesage.Status="Username already taken"
+		statusMesage.Status = "Username already taken"
 		return statusMesage, nil
 	}
 
-	err = handler.ProfileService.UpdateProfile(ctx, infoDTO, user.Username)
-	if err != nil {		
-		statusMesage.Status="greska2"
-		return statusMesage, error
+	err := handler.ProfileService.UpdateProfile(ctx, *infoDTO, user.Username)
+	if err != nil {
+		statusMesage.Status = "greska2"
+		return statusMesage, err
 	}
+	statusMesage.Status = "Successfully edited profile."
+	return statusMesage, nil
 }
 
 func (handler *ProfileHandler) GetProfileByMail(ctx context.Context, request *pb.EmptyMailMessage) (*pb.ProfileInfo, error) {
 	var user = handler.ProfileService.FindUserByMail(ctx, request.Email)
-	response:=mapper.MapResponseProfile(user)
+	response := mapper.MapResponseProfile(user)
 	return response, nil
 }

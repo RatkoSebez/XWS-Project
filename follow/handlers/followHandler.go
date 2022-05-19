@@ -100,7 +100,7 @@ func (handler *FollowHandler) GetFollow(ctx context.Context, pbDto *pb.EmptyEmai
 func (handler *FollowHandler) CreateFollow(ctx context.Context, pbDto *pb.FollowRequestMessage) (*pb.EmptyMessage, error) {
 	request := mapper.MapFollowRequestMessage(pbDto)
 	err := handler.FollowService.CreateFollow(ctx, *request)
-	var response *pb.EmptyMessage
+	var response = &pb.EmptyMessage{}
 	return response, err
 }
 
@@ -113,6 +113,6 @@ func (handler *FollowHandler) GetFollowRequest(ctx context.Context, pbDto *pb.Em
 func (handler *FollowHandler) CreateFollowRequest(ctx context.Context, pbDto *pb.FollowRequestMessage) (*pb.EmptyMessage, error) {
 	request := mapper.MapFollowRequestMessage(pbDto)
 	err := handler.FollowService.CreateFollowRequest(ctx, *request)
-	var response *pb.EmptyMessage
+	var response = &pb.EmptyMessage{}
 	return response, err
 }
