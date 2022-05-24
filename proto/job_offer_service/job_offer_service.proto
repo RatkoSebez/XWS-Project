@@ -1,0 +1,50 @@
+syntax="proto3";
+
+option go_package="XWS-Project/proto/job_offer_service";
+
+package job_offer;
+
+import "google/api/annotations.proto";
+
+service JobOfferService{
+    rpc CreateOffer(Offer) returns (Offer){
+        option(google.api.http)={
+            post:"/create-offer"
+            body:"*"
+        };
+    }
+
+    rpc GetOffersByCompany(CompanyID) returns (Offers){
+        option(google.api.http)={
+            post:"/get-by-coid"
+            body:"*"
+        };
+    }
+
+    rpc GetOffersByPosition(Position) returns (Offers){
+        option(google.api.http)={
+            post:"/get-by-position"
+            body:"*"
+        };
+    }
+}
+
+message Offer{
+    string  jobOfferId=1;
+    string companyId=2;
+    string position=3;
+    string  jobDescription=4;
+    repeated string preconditions=5;
+}
+
+message Offers{
+    repeated Offer offers=1;
+}
+
+message CompanyID{
+    string companyID=1;
+}
+
+message Position{
+    string position=1;
+}
