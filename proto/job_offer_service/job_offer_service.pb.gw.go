@@ -32,7 +32,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 func request_JobOfferService_CreateOffer_0(ctx context.Context, marshaler runtime.Marshaler, client JobOfferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Offer
+	var protoReq OfferRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -49,7 +49,7 @@ func request_JobOfferService_CreateOffer_0(ctx context.Context, marshaler runtim
 }
 
 func local_request_JobOfferService_CreateOffer_0(ctx context.Context, marshaler runtime.Marshaler, server JobOfferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Offer
+	var protoReq OfferRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)

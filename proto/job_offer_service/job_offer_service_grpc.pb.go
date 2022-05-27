@@ -17,7 +17,7 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JobOfferServiceClient interface {
-	CreateOffer(ctx context.Context, in *Offer, opts ...grpc.CallOption) (*Offer, error)
+	CreateOffer(ctx context.Context, in *OfferRequest, opts ...grpc.CallOption) (*Offer, error)
 	GetOffersByCompany(ctx context.Context, in *CompanyID, opts ...grpc.CallOption) (*Offers, error)
 	GetOffersByPosition(ctx context.Context, in *Position, opts ...grpc.CallOption) (*Offers, error)
 }
@@ -30,7 +30,7 @@ func NewJobOfferServiceClient(cc grpc.ClientConnInterface) JobOfferServiceClient
 	return &jobOfferServiceClient{cc}
 }
 
-func (c *jobOfferServiceClient) CreateOffer(ctx context.Context, in *Offer, opts ...grpc.CallOption) (*Offer, error) {
+func (c *jobOfferServiceClient) CreateOffer(ctx context.Context, in *OfferRequest, opts ...grpc.CallOption) (*Offer, error) {
 	out := new(Offer)
 	err := c.cc.Invoke(ctx, "/job_offer.JobOfferService/CreateOffer", in, out, opts...)
 	if err != nil {
@@ -61,7 +61,7 @@ func (c *jobOfferServiceClient) GetOffersByPosition(ctx context.Context, in *Pos
 // All implementations must embed UnimplementedJobOfferServiceServer
 // for forward compatibility
 type JobOfferServiceServer interface {
-	CreateOffer(context.Context, *Offer) (*Offer, error)
+	CreateOffer(context.Context, *OfferRequest) (*Offer, error)
 	GetOffersByCompany(context.Context, *CompanyID) (*Offers, error)
 	GetOffersByPosition(context.Context, *Position) (*Offers, error)
 	mustEmbedUnimplementedJobOfferServiceServer()
@@ -71,7 +71,7 @@ type JobOfferServiceServer interface {
 type UnimplementedJobOfferServiceServer struct {
 }
 
-func (*UnimplementedJobOfferServiceServer) CreateOffer(context.Context, *Offer) (*Offer, error) {
+func (*UnimplementedJobOfferServiceServer) CreateOffer(context.Context, *OfferRequest) (*Offer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOffer not implemented")
 }
 func (*UnimplementedJobOfferServiceServer) GetOffersByCompany(context.Context, *CompanyID) (*Offers, error) {
@@ -87,7 +87,7 @@ func RegisterJobOfferServiceServer(s *grpc.Server, srv JobOfferServiceServer) {
 }
 
 func _JobOfferService_CreateOffer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Offer)
+	in := new(OfferRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func _JobOfferService_CreateOffer_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/job_offer.JobOfferService/CreateOffer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JobOfferServiceServer).CreateOffer(ctx, req.(*Offer))
+		return srv.(JobOfferServiceServer).CreateOffer(ctx, req.(*OfferRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

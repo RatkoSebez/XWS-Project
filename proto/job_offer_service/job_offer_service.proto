@@ -7,7 +7,7 @@ package job_offer;
 import "google/api/annotations.proto";
 
 service JobOfferService{
-    rpc CreateOffer(Offer) returns (Offer){
+    rpc CreateOffer(OfferRequest) returns (Offer){
         option(google.api.http)={
             post:"/create-offer"
             body:"*"
@@ -27,6 +27,13 @@ service JobOfferService{
             body:"*"
         };
     }
+}
+
+message OfferRequest{
+    string companyId=1;
+    string position=2;
+    string  jobDescription=3;
+    repeated string preconditions=4;
 }
 
 message Offer{

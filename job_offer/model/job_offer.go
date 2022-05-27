@@ -7,7 +7,7 @@ import (
 type JobOffer struct {
 	JobOfferId     primitive.ObjectID `bson:"_id" json:"jobOfferId"`
 	CompanyId      primitive.ObjectID `bson:"companyId" json:"companyId"`
-	position       string             `bson:"position" json:"position"`
-	jobDescription string             `bson:"jobDescription" json:"jobDescription"`
-	preconditions  []string           `bson:"preconditions" json:"preconditions"`
+	Position       string             `bson:"position" json:"position"`
+	JobDescription string             `bson:"jobDescription" json:"jobDescription"`
+	Preconditions  []string           `bson:"preconditions" json:"preconditions"`
 }
