@@ -97,7 +97,9 @@ export class RegistrationPageComponent implements OnInit {
     this.service.RegisterUser(this.user).subscribe(
       res=>{
         
-        this.toastr.success('Registered successfully', 'Success');
+        this.toastr.success('Registered successfully', 'Success')
+        this.route.navigate(['/login']);
+        ;
       }, err => {        this.toastr.error('Error!', 'Error');
     }
       

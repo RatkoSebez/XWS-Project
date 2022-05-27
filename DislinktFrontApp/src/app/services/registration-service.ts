@@ -14,7 +14,7 @@ export class RegistraionService{
 
   constructor(private http:HttpClient) { }
 
-  url = 'http://localhost:8081/' + 'register';
+  url = 'http://localhost:8080/' + 'register';
   RegisterUser(data:any){
     return this.http.post(this.url , data )
   }

@@ -2,12 +2,13 @@ package utilities
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 const ExpiresIn = 86400

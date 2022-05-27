@@ -13,18 +13,18 @@ import { AuthResponseDTO } from '../dtos/AuthResponseDTO';
 export class LoginService{
 
     constructor(private http: HttpClient, private route: Router) {}
-    url = 'http://localhost:8081/' + 'login';
-    user = new AuthResponseDTO('', '');
+    url = 'http://localhost:8080/' + 'login';
+    user = new AuthResponseDTO('', '', '');
 
     login(authRequest:AuthRequestDTO){  
     return this.http.post<any>(this.url,authRequest);
     }
 
     setUserData(data:AuthResponseDTO){
-        this.user=data;
+        this.user.token=data.token;
         localStorage.setItem('activeUser', JSON.stringify(this.user))
-        localStorage.setItem('token', this.user.token)
-        localStorage.setItem('mail', this.user.email);
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('mail', data.email);
         localStorage.setItem('logedIn', 'true')
       }
 

@@ -5,7 +5,7 @@ import { AuthRequestDTO } from '../dtos/AuthRequestDTO';
 import { AuthResponseDTO } from '../dtos/AuthResponseDTO';
 import { Observable } from 'rxjs';
 import { UserDTO } from '../dtos/UserDTO';
-
+import { LoginService } from './login-service';
 
 
 @Injectable({
@@ -14,15 +14,32 @@ import { UserDTO } from '../dtos/UserDTO';
 
 export class ProfileEditService{
 
-    constructor(private http: HttpClient, private route: Router) {}
-    mail = localStorage.getItem('mail') 
-    url = 'http://localhost:8081/saasd';         //+ '${mail}';
+    public mail:any
+    public header : HttpHeaders | undefined
+    constructor(private http: HttpClient, private route: Router, private loginservice: LoginService) {}
+    url = 'http://localhost:8080/l';         //+ '${mail}';
+    urlDefault = 'http://localhost:8080/';   
     //user = new AuthResponseDTO('', '');
 
     getUser():Observable<UserDTO>{
-      return this.http.get<UserDTO>(this.url)
+      this.header = this.loginservice.getHeaders()
+
+      return this.http.get<UserDTO>(this.url, {'headers':this.header})
     }
     editUser(data:any){
-      return this.http.put(this.url, data)
+      this.mail = localStorage.getItem('mail')
+      this.header = this.loginservice.getHeaders()
+
+      return this.http.put(this.urlDefault + this.mail , data, {'headers':this.header})
+    }
+    getFollowed(data:any){
+      return this.http
+    }
+    getUserByMail(mail:any):Observable<UserDTO>{
+      this.header = this.loginservice.getHeaders()
+      this.mail = localStorage.getItem('mail')
+      console.log(this.header)
+      console.log(this.mail)
+      return this.http.get<UserDTO>(this.urlDefault + this.mail, {'headers':this.header})
     }
 }

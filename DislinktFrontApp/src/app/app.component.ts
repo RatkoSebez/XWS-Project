@@ -9,13 +9,18 @@ import { Component } from '@angular/core';
 export class AppComponent {
   constructor(){}
 
-  logged:boolean=false;
+  public logged:boolean=true;
+  public notlogged:boolean=true;
   loading:boolean=false;
-  
+  public  logVisible = true;
+  public  outvisible = false;
+  static lv = true;
+  static ov = false;
 
   logOut(){
 
   }
+
 
   getUsername(){
 

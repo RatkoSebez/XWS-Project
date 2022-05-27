@@ -1,11 +1,11 @@
 export class AuthResponseDTO{
     token: string;
     email: string;
-    roles: Array<string>;
+    username: string;
 
-    constructor(token: string, email: string, roles =[]) {
+    constructor(token: string, email: string, username : string) {
         this.token = token;
         this.email = email;
-        this.roles = roles;
+        this.username = username;
     }
 }

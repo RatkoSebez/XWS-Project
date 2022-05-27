@@ -30,7 +30,8 @@ export class ProfileEditPageComponent implements OnInit {
       public skill2 = ''
       public skill3 = ''
       public skillList = new Array<string>();
-
+      public x :any
+ 
   constructor(
     public service: ProfileEditService,
     private route: Router,
@@ -39,7 +40,7 @@ export class ProfileEditPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.service.getUser()
+    this.service.getUserByMail(localStorage.getItem('mail'))
       .subscribe(data => this.user$ = data);
   }
 
@@ -56,6 +57,8 @@ export class ProfileEditPageComponent implements OnInit {
     }
       
     );
+    this.route.navigate(['/profile'])
+
   }
 
   addExperience(): void{
@@ -106,4 +109,5 @@ export class ProfileEditPageComponent implements OnInit {
     this.user$.skills.push(this.skill1)
     this.skill1 = ""
   }
+
 }

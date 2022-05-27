@@ -51,3 +51,26 @@ func (repository *ProfileRepository) FindUserByMail(ctx context.Context, mail st
 	}
 	return user
 }
+
+func (repository *ProfileRepository) GetAllUsers(ctx context.Context) []*model.ProfileInfo {
+	collection := repository.Client.Database("dislinkt").Collection("users")
+	cur, err := collection.Find(ctx, nil)
+	var results []*model.ProfileInfo
+
+	if err != nil {
+		panic(err)
+	}
+
+	for cur.Next(ctx) {
+		var elem model.ProfileInfo
+		err := cur.Decode(&elem)
+		if err != nil {
+			panic(err)
+		}
+
+		results = append(results, &elem)
+	}
+
+	cur.Close(ctx)
+	return results
+}

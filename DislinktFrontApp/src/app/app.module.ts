@@ -17,6 +17,8 @@ import { ProfileEditPageComponent } from './profile-edit-page/profile-edit-page.
 import { ImageUploadComponent } from './image-upload/image-upload.component';
 import { NewPostComponent } from './new-post/new-post.component';
 import { PostBoxComponent } from './post-box/post-box.component';
+import { HomepageComponent } from './homepage/homepage.component';
+import { ProfilePageComponent } from './profile-page/profile-page.component';
 //>>>>>>> d5b454f8c581b57932eed820dde1d1fa63716a55
 
 @NgModule({
@@ -31,7 +33,9 @@ import { PostBoxComponent } from './post-box/post-box.component';
 //=======
     ImageUploadComponent,
     NewPostComponent,
-    PostBoxComponent
+    PostBoxComponent,
+    HomepageComponent,
+    ProfilePageComponent
 //>>>>>>> d5b454f8c581b57932eed820dde1d1fa63716a55
   ],
   imports: [

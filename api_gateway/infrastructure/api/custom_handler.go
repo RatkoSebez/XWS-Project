@@ -11,8 +11,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"net/http"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
 type CustomHandler struct {
@@ -38,7 +39,16 @@ func (handler *CustomHandler) Init(mux *runtime.ServeMux) {
 	if err != nil {
 		panic(err)
 	}
+	err = mux.HandlePath("OPTIONS", "/login", handler.Preflight)
+	if err != nil {
+		panic(err)
+	}
 	err = mux.HandlePath("POST", "/make-new-post", handler.MakePost)
+	if err != nil {
+		panic(err)
+	}
+	//	router.HandleFunc("/register", handler.Preflight).Methods("OPTIONS")
+	err = mux.HandlePath("OPTIONS", "/register", handler.Preflight)
 	if err != nil {
 		panic(err)
 	}
@@ -90,6 +100,18 @@ func (handler *CustomHandler) Init(mux *runtime.ServeMux) {
 	if err != nil {
 		panic(err)
 	}
+	//err = mux.HandlePath("GET", "/users", handler.GetAllProfiles)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("OPTIONS", "/users", handler.Preflight)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("OPTIONS", "/{email}", handler.Preflight)
+	if err != nil {
+		panic(err)
+	}
 
 }
 
@@ -98,6 +120,9 @@ func (handler *CustomHandler) Test(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *CustomHandler) Login(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST,  OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	authClient := services.NewAuthenticationClient(handler.authenticationClientAddress)
 	var request login_service.LoginDTO
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -308,6 +333,10 @@ func (handler *CustomHandler) GetUserPosts(w http.ResponseWriter, r *http.Reques
 }
 
 func (handler *CustomHandler) Register(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST,  OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+	fmt.Println("Registering user")
 	registerClient := services.NewRegistrationClient(handler.registrationClientAddress)
 	var request registration_service.RegisterMessage
 
@@ -324,7 +353,6 @@ func (handler *CustomHandler) Register(w http.ResponseWriter, r *http.Request, p
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 }
 
 func (handler *CustomHandler) GetFollow(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
@@ -476,7 +504,35 @@ func (handler *CustomHandler) Edit(w http.ResponseWriter, r *http.Request, pathP
 
 }
 
+// func (handler *CustomHandler) GetAllProfiles(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	w.Header().Set("Access-Control-Allow-Methods", " OPTIONS,  GET")
+// 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+// 	profileClient := services.NewProfileClient(handler.profileClientAddress)
+// 	//userEmail := utilities.GetLoggedUserEmailFromToken(r)
+
+// 	var request profile_service.EmptyMailMessage
+
+// 	response, err := profileClient.GetAllUsers(context.TODO(), &request)
+// 	if err != nil {
+// 		w.WriteHeader(http.StatusInternalServerError)
+// 		fmt.Println(err.Error())
+// 		return
+// 	}
+// 	responseJson, err := json.Marshal(response)
+// 	if err != nil {
+// 		w.WriteHeader(http.StatusInternalServerError)
+// 		fmt.Println(err.Error())
+// 		return
+// 	}
+// 	w.WriteHeader(http.StatusOK)
+// 	w.Write(responseJson)
+// }
+
 func (handler *CustomHandler) GetProfileByMail(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, PUT, OPTIONS,  GET")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	profileClient := services.NewProfileClient(handler.profileClientAddress)
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
 	email := pathParams["email"]
@@ -485,6 +541,7 @@ func (handler *CustomHandler) GetProfileByMail(w http.ResponseWriter, r *http.Re
 		return
 	}
 	if userEmail == "" || userEmail != email {
+		fmt.Println("Nije ocitan header")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
@@ -504,4 +561,10 @@ func (handler *CustomHandler) GetProfileByMail(w http.ResponseWriter, r *http.Re
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(responseJson)
+}
+func (handler *CustomHandler) Preflight(rw http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+	rw.WriteHeader(http.StatusOK)
 }

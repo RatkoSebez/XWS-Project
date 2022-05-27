@@ -7,7 +7,7 @@
         
         <li  style="margin-right: 30px;">
           <a  routerLink="register">
-            <button type="button" class="btn custombuttonfull btn-dark">Sign in</button>
+            <button type="button" *ngIf="logged" class="btn custombuttonfull btn-dark">Sign in</button>
           </a>
         </li>
         <li>
@@ -15,12 +15,12 @@
 
         <li class="xs-6">
           <a routerLink="">
-            <button type="button" *ngIf="logged" class="btn custombuttonfull btn-dark" (click)="logOut()">Log out</button>
+            <button type="button" *ngIf="this.outvisible" (click) = "this.outvisible=false;this.logVisible=true" class="btn custombuttonfull btn-dark" (click)="logOut()">Log out</button>
           </a>
         </li>
         <li class="xs-6">
           <a routerLink="login">
-            <button type="button" class="btn custombuttonfull btn-dark">Log in</button>
+            <button type="button" id="lbtn" *ngIf="this.logVisible" (click)="this.logVisible = false; this.outvisible=true"  class="btn custombuttonfull btn-dark">Log in</button>
           </a>
         </li>
       </ul>

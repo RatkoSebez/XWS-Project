@@ -2,9 +2,12 @@ package handlers
 
 import (
 	pb "XWS-Project/proto/registration_service"
+	"fmt"
+
 	//"XWS-Project/registration/dto"
 	"XWS-Project/registration/mapper"
 	"XWS-Project/registration/service"
+
 	//"XWS-Project/utilities"
 	"context"
 	//"encoding/json"
@@ -52,7 +55,7 @@ type RegistrationHandler struct {
 }*/
 func (handler *RegistrationHandler) Preflight(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
-	rw.Header().Set("Access-Control-Allow-Methods", "POST")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	rw.WriteHeader(http.StatusOK)
 }
@@ -61,7 +64,16 @@ func (handler *RegistrationHandler) Preflight(rw http.ResponseWriter, r *http.Re
 
 func (handler *RegistrationHandler) Register(ctx context.Context, pbDto *pb.RegisterMessage) (*pb.EmptyMessage, error) {
 	reqDto := mapper.MapPBToDTO(pbDto)
+	var user = handler.RegistrationService.FindUserByUsername(ctx, reqDto.Username)
+	if user != nil {
+		fmt.Println("Username already taken")
+
+		return nil, nil
+	}
 	err := handler.RegistrationService.RegisterUser(ctx, *reqDto)
+
 	var resp = &pb.EmptyMessage{}
+
 	return resp, err
+
 }

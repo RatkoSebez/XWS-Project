@@ -4,9 +4,9 @@ export class UserDTO{
     email: string;
     numtel: string;
     sex: string;
-    bdateday: number;
-    bdatemonth: number;
-    bdateyear: number;
+    bDateDay: number;
+    bDateMonth: number;
+    bDateYear: number;
     username:string;
     password:string;
     bio:string;
@@ -24,9 +24,9 @@ export class UserDTO{
         this.email = email;
         this.numtel = numtel;
         this.sex = sex;
-        this.bdateday = bdday;
-        this.bdatemonth = bdmonth;
-        this.bdateyear = bdyear;
+        this.bDateDay = bdday;
+        this.bDateMonth = bdmonth;
+        this.bDateYear = bdyear;
         this.username = username;
         this.password = password; 
         this.bio = bio;

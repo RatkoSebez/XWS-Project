@@ -1,0 +1,31 @@
+
+
+    <div style="text-align: center;">
+        
+        <label style="font-weight: 800;"> Name </label> <br>
+        <p> {{user$.name}}  </p> 
+        <label style="font-weight: 800;"> Surname </label> <br>
+        <p> {{user$.surname}}  </p> 
+        <label style="font-weight: 800;"> Mail address </label> <br>
+        <p> {{user$.email}}  </p> 
+        <label style="font-weight: 800;"> Username </label> <br>
+        <p> {{user$.username}}  </p> 
+        
+        <label style="font-weight: 800;"> Phone number </label> <br>
+        <p> {{user$.numtel}}  </p> 
+     <label style="font-weight: 800;"> Biography </label> <br>
+        <p> {{user$.bio}}   </p> 
+        <label style="font-weight: 800;"> Date of birth </label> <br>
+        <p> {{user$.bDateDay}} {{user$.bDateMonth}} {{user$.bDateYear}}    </p> 
+        <label style="font-weight: 800;"> Experience </label> <br>
+        <p> {{user$.experience[0]}} <br>   {{user$.experience[1]}} <br> {{user$.experience[2]}}<br>  {{user$.experience[3]}}    </p> 
+        <label style="font-weight: 800;"> Education </label> <br>
+        <p> {{user$.education[0]}} <br> {{user$.education[1]}} <br>  {{user$.education[2]}} <br>  {{user$.education[3]}}    </p> 
+        <label style="font-weight: 800;"> Interests </label> <br>
+        <p> {{user$.interests[0]}} <br> {{user$.interests[1]}} <br>  {{user$.interests[2]}} <br> {{user$.interests[3]}}    </p> 
+        <label style="font-weight: 800;"> Skills </label> <br>
+        <p> {{user$.skills[0]}} <br>  {{user$.skills[1]}} <br> {{user$.skills[2]}} <br> {{user$.skills[3]}}    </p> 
+
+        <button style="background-color: blue; color: white;" (click) = "edit()" >Edit profile</button>
+    </div>
+    
