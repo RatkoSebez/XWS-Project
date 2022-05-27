@@ -20,7 +20,7 @@ func (service *AuthenticationService) Login(ctx context.Context, data dto.LoginD
 }
 
 func (service *AuthenticationService) RegisterUser(ctx context.Context, dto dto.RegisterUserDTO) error {
-	user := model.User{Name: dto.Name, Surname: dto.Surname, Email: dto.Email, Numtel: dto.Numtel, Username: dto.Username, Password: dto.Password}
+	user := model.User{Name: dto.Name, Surname: dto.Surname, Email: dto.Email, Username: dto.Username, Password: dto.Password}
 	err := service.AuthRepo.RegisterUser(ctx, &user)
 	if err != nil {
 		return err

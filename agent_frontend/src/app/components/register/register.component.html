@@ -9,28 +9,31 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label>First Name<span class="text-danger">*</span></label>
-                            <input type="text" name="fname" class="form-control" placeholder="Enter First Name" autofocus [(ngModel)]="firstName">
+                            <input type="text" name="fname" class="form-control" placeholder="Enter First Name" autofocus [(ngModel)]="name">
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label>Last Name<span class="text-danger">*</span></label>
-                            <input type="text" name="Lname" class="form-control" placeholder="Enter Last Name" [(ngModel)]="lastName">
-                        </div>
-
-                        <div class="mb-3 col-md-12">
-                            <label>Password<span class="text-danger">*</span></label>
-                            <input type="password" name="password" class="form-control" placeholder="Enter Password" [(ngModel)]="password">
+                            <input type="text" name="Lname" class="form-control" placeholder="Enter Last Name" [(ngModel)]="surname">
                         </div>
                         <div class="mb-3 col-md-12">
                             <label>Email<span class="text-danger">*</span></label>
                             <input type="text" name="email" class="form-control" placeholder="Email" [(ngModel)]="email">
                         </div>
+                        <div class="mb-3 col-md-12">
+                            <label>Username<span class="text-danger">*</span></label>
+                            <input type="text" name="username" class="form-control" placeholder="Username" [(ngModel)]="username">
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label>Password<span class="text-danger">*</span></label>
+                            <input type="password" name="password" class="form-control" placeholder="Enter Password" [(ngModel)]="password">
+                        </div>
                         <div class="col-md-12">
-                            <button class="btn btn-primary float-end" (click)="register()">Register Now</button>
+                            <button class="btn btn-primary float-end" (click)="register()">Register</button>
                         </div>
                     </div>
                 </form>
-                <p class="text-center mt-3 text-secondary">If you have account, Please <a href="/login">Login Now</a></p>
+                <p class="text-center mt-3 text-secondary">If you have an account, Please <a routerLink="/login">Login</a></p>
             </div>
         </div>
     </div>

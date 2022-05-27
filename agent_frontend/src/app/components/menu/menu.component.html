@@ -22,17 +22,17 @@
                 </li>
             </ul>
             <form class="d-flex">
-                <a href="/login" *ngIf="!isLoggedIn">
+                <a routerLink="/login" *ngIf="!isLoggedIn">
                     <button class="btn btn-outline-success" type="button">
                         Login
                     </button>
                 </a>
-                <a href="/logout" *ngIf="isLoggedIn">
+                <a routerLink="/" *ngIf="isLoggedIn" (click)="logout()">
                     <button class="btn btn-outline-success" type="button">
                         Logout
                     </button>
                 </a>
-                <a href="/register" *ngIf="!isLoggedIn">
+                <a routerLink="/register" *ngIf="!isLoggedIn">
                     <button class="btn btn-outline-success" type="button">
                         Register
                     </button>

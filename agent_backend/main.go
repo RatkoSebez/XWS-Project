@@ -23,25 +23,20 @@ import (
 )
 
 func addDataToDB(client *mongo.Client) {
-	user1 := model.User{"Dusan", "Markovic", "dusan@gmail.com", "1212", "dulecar", "dulecar123"}
-	user2 := model.User{"Bojan", "Prodanovic", "bojan@gmail.com", "121232", "bp21", "123"}
+	user1 := model.User{"Dusan", "Markovic", "dusan@gmail.com", "dulecar", "dulecar123"}
+	user2 := model.User{"Bojan", "Prodanovic", "bojan@gmail.com", "bp21", "123"}
 
 	collection := client.Database("agent").Collection("users")
-	_, err := collection.DeleteOne(context.TODO(), bson.M{"email": "dusan@gmail.com"})
+	_, err := collection.DeleteMany(context.TODO(), bson.M{})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	_, err = collection.InsertOne(context.TODO(), user1)
 	if err != nil {
 		panic(err)
 	}
-	_, err = collection.DeleteOne(context.TODO(), bson.M{"email": "bojan@gmail.com"})
-	if err != nil {
-		panic(err)
-	}
-	insertRes, err := collection.InsertOne(context.TODO(), user1)
-	if err != nil {
-		panic(err)
-	}
-	insertRes1, err := collection.InsertOne(context.TODO(), user2)
-	fmt.Println(insertRes)
-	fmt.Println(insertRes1)
+	_, err = collection.InsertOne(context.TODO(), user2)
 	if err != nil {
 		panic(err)
 	}
@@ -92,6 +87,7 @@ func handlerFunc(handler *handlers.AuthenticationHandler) {
 	router.HandleFunc("/api/test", handler.Test).Methods("GET")
 	router.HandleFunc("/api/login", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/api/login", handler.Login).Methods("POST")
+	router.HandleFunc("/api/register", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/api/register", handler.Register).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8090", router))

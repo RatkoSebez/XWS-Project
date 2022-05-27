@@ -14,17 +14,17 @@ export class HomeComponent implements OnInit {
   constructor(private http: HttpClient) { }
   
   ngOnInit(): void {
-    this.http.get<any>('api/user/loggedInUser/').subscribe(
-      response => {
-        this.user = response
-      }
-    );
-    this.http.get<any>('api/treeView/').subscribe(
-      response => {
-        console.log(response)
-        this.makeTree(response)
-      }
-    );
+    // this.http.get<any>('api/user/loggedInUser/').subscribe(
+    //   response => {
+    //     this.user = response
+    //   }
+    // );
+    // this.http.get<any>('api/treeView/').subscribe(
+    //   response => {
+    //     console.log(response)
+    //     this.makeTree(response)
+    //   }
+    // );
     // blocked by cors, fix this
     // this.http.post('https://localhost/api/login', {username: "admin", password: "123"}).subscribe(
     //   response => {

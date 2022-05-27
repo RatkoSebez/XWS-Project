@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from '../model/User';
+import { JwtData } from '../model/dto/JwtData';
+import { LoginUserDto } from '../model/dto/LoginUserDto';
 
 @Injectable({
   providedIn: 'root'
@@ -10,17 +10,21 @@ export class LoginService {
 
   constructor(private http: HttpClient) { }
 
-  // login(username: string, password: string){
-  //   var postData = {
-  //     username: username,
-  //     password: password
-  //   }
-  //   this.http.post<any>("http://localhost:8080/login", postData).toPromise().then(data => {
-  //     console.log(data);
-  //   });
-  // }
+  login(userDto: LoginUserDto){
+    return this.http.post('http://localhost:8090/api/login', userDto)
+  }
 
-  getLoggedInUser(){
-    return this.http.get<User>('api/user/loggedInUser/');
+  logout(){
+    localStorage.clear()
+  }
+
+  isLoggedIn(){
+    return localStorage.getItem('token') !== null
+  }
+
+  saveToLocalStorage(jwtData: JwtData){
+    localStorage.setItem('token', jwtData.token)
+    localStorage.setItem('email', jwtData.email)
+    localStorage.setItem('username', jwtData.username)
   }
 }

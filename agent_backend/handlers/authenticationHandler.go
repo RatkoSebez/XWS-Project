@@ -2,10 +2,8 @@ package handlers
 
 import (
 	"XWS-Project/agent_backend/dto"
-	"XWS-Project/agent_backend/mapper"
 	"XWS-Project/agent_backend/model"
 	"XWS-Project/agent_backend/service"
-	pb "XWS-Project/proto/login_service"
 	"XWS-Project/utilities"
 	"context"
 	"encoding/json"
@@ -14,7 +12,6 @@ import (
 )
 
 type AuthenticationHandler struct {
-	pb.UnimplementedAuthenticationServer
 	AuthenticationService *service.AuthenticationService
 }
 
@@ -81,7 +78,7 @@ func (handler *AuthenticationHandler) Register(rw http.ResponseWriter, r *http.R
 
 	var user = handler.AuthenticationService.FindUserByEmail(ctx, request.Email)
 	if user != nil {
-		fmt.Println("Email already taken")
+		fmt.Println("Email already taken: " + request.Email)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -99,7 +96,6 @@ func (handler *AuthenticationHandler) Register(rw http.ResponseWriter, r *http.R
 }
 
 func (handler *AuthenticationHandler) Preflight(rw http.ResponseWriter, r *http.Request) {
-	fmt.Println("I am in preflight")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
@@ -107,6 +103,9 @@ func (handler *AuthenticationHandler) Preflight(rw http.ResponseWriter, r *http.
 }
 
 func (handler *AuthenticationHandler) Test(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	respJson, err := json.Marshal("vrati bilo sta")
 	rw.Header().Add("content-type", "application/json")
 	if err != nil {
@@ -114,37 +113,4 @@ func (handler *AuthenticationHandler) Test(rw http.ResponseWriter, r *http.Reque
 		return
 	}
 	_, _ = rw.Write(respJson)
-}
-
-//grpc handlers
-
-func (handler *AuthenticationHandler) Post(ctx context.Context, request *pb.PostRequest) (*pb.PostResponse, error) {
-	var user *model.User
-	var reqq dto.LoginDTO
-
-	ourReq := mapper.MapRequestObrnuto(request.GetDto())
-	reqq.Email = ourReq.Email
-	reqq.Password = ourReq.Password
-	user, err := handler.AuthenticationService.Login(ctx, reqq)
-	if err != nil {
-		panic(err)
-	}
-	token, errr := utilities.CreateToken(user.Email, "authentication_service")
-	if errr != nil {
-		panic(errr)
-	}
-
-	responseDTO := dto.LoginResponseDTO{
-		Token:    token,
-		Email:    user.Email,
-		Username: user.Username,
-	}
-
-	loginResp := mapper.MapResponse(&responseDTO)
-
-	response := pb.PostResponse{
-		Dto: loginResp,
-	}
-
-	return &response, nil
 }

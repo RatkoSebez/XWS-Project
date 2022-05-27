@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { RegisterUserDto } from 'src/app/model/dto/RegisterUserDto';
+import { RegisterService } from 'src/app/services/register.service';
 
 @Component({
   selector: 'app-register',
@@ -8,33 +9,32 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  firstName = ''
-  lastName = ''
+  name = ''
+  surname = ''
   email = ''
   password = ''
+  username = ''
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private router: Router, private registerService: RegisterService) { }
 
   ngOnInit(): void {
-    // this.http.get('localhost:8081/test').subscribe(
+    // this.http.get('http://localhost:8090/api/test').subscribe(
     //   response => {
     //     console.log(response)
     //   }
     // );
 
-    this.http.post('localhost:8080/login', {email: "dusan@gmail.com", password: "dulecar"}).subscribe(
-      response => {
-        console.log(response)
-      }
-    );
+    // this.http.post('http://localhost:8090/api/login', {email: "dusan@gmail.com", password: "dulecar"}).subscribe(
+    //   response => {
+    //     console.log(response)
+    //   }
+    // );
   }
 
   register(){
-    this.http.post('localhost:8090/api/register', {firstName: this.firstName, lastName: this.lastName, username: this.email, password: this.password}).subscribe(
-      response => {
-      }
-    );
-    // do not wait for response because server is sending email (which is slow)
-    // this.router.navigate(['/']);
+    var userDto = new RegisterUserDto(this.name, this.surname, this.email, this.username, this.password)
+    this.registerService.register(userDto).subscribe(response => {
+      this.router.navigate(['/']);
+    })
   }
 }
