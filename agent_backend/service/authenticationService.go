@@ -1,9 +1,9 @@
 package service
 
 import (
-	"XWS-Project/agent_application/dto"
-	"XWS-Project/agent_application/model"
-	"XWS-Project/agent_application/repository"
+	"XWS-Project/agent_backend/dto"
+	"XWS-Project/agent_backend/model"
+	"XWS-Project/agent_backend/repository"
 	"context"
 )
 

@@ -1,6 +1,6 @@
 package mapper
 
-import "XWS-Project/agent_application/dto"
+import "XWS-Project/agent_backend/dto"
 import pb "XWS-Project/proto/login_service"
 
 func MapRequest(dto *dto.LoginDTO) *pb.LoginDTO {

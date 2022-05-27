@@ -1,17 +1,16 @@
 package main
 
 import (
-	"XWS-Project/agent_application/handlers"
-	"XWS-Project/agent_application/model"
-	"XWS-Project/agent_application/repository"
-	"XWS-Project/agent_application/service"
+	"XWS-Project/agent_backend/handlers"
+	"XWS-Project/agent_backend/model"
+	"XWS-Project/agent_backend/repository"
+	"XWS-Project/agent_backend/service"
 	"XWS-Project/utilities"
 	"context"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-
 	//"github.com/gorilla/mux"
 	//"net/http"
 
@@ -87,11 +86,14 @@ func handlerFunc(handler *handlers.AuthenticationHandler) {
 	//	log.Fatalf("failed to serve: %s", err)
 	//}
 	fmt.Println("Agent application started...")
+
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/test", handler.Test).Methods("GET", "OPTIONS")
-	router.HandleFunc("/login", handler.Login).Methods("POST")
-	router.HandleFunc("/login", handler.Preflight).Methods("OPTIONS")
-	router.HandleFunc("/register", handler.Register).Methods("POST")
+	router.HandleFunc("/api/test", handler.Preflight).Methods("OPTIONS")
+	router.HandleFunc("/api/test", handler.Test).Methods("GET")
+	router.HandleFunc("/api/login", handler.Preflight).Methods("OPTIONS")
+	router.HandleFunc("/api/login", handler.Login).Methods("POST")
+	router.HandleFunc("/api/register", handler.Register).Methods("POST")
+
 	log.Fatal(http.ListenAndServe(":8090", router))
 }
 

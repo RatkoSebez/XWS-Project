@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"XWS-Project/agent_application/model"
+	"XWS-Project/agent_backend/model"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"

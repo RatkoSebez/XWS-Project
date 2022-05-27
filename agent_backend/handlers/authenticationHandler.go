@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"XWS-Project/agent_application/dto"
-	"XWS-Project/agent_application/mapper"
-	"XWS-Project/agent_application/model"
-	"XWS-Project/agent_application/service"
+	"XWS-Project/agent_backend/dto"
+	"XWS-Project/agent_backend/mapper"
+	"XWS-Project/agent_backend/model"
+	"XWS-Project/agent_backend/service"
 	pb "XWS-Project/proto/login_service"
 	"XWS-Project/utilities"
 	"context"
@@ -99,6 +99,7 @@ func (handler *AuthenticationHandler) Register(rw http.ResponseWriter, r *http.R
 }
 
 func (handler *AuthenticationHandler) Preflight(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("I am in preflight")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
