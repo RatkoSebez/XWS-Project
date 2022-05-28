@@ -22,9 +22,14 @@ export class LoginService {
     return localStorage.getItem('token') !== null
   }
 
+  isAdmin(){
+    return localStorage.getItem('isAdmin') == 'true'
+  }
+
   saveToLocalStorage(jwtData: JwtData){
     localStorage.setItem('token', jwtData.token)
     localStorage.setItem('email', jwtData.email)
     localStorage.setItem('username', jwtData.username)
+    localStorage.setItem('isAdmin', String(jwtData.isAdmin))
   }
 }

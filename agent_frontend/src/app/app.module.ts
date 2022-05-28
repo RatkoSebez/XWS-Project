@@ -12,6 +12,8 @@ import { LoginService } from './services/login.service';
 import { RegisterComponent } from './components/register/register.component';
 import { AuthGuard } from './auth.guard';
 import { LoginComponent } from './components/login/login.component';
+import { RegisterCompanyComponent } from './components/register-company/register-company.component';
+import { CompaniesComponent } from './components/companies/companies.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,8 @@ import { LoginComponent } from './components/login/login.component';
     PageNotFoundComponent,
     RegisterComponent,
     LoginComponent,
+    RegisterCompanyComponent,
+    CompaniesComponent,
   ],
   imports: [
     BrowserModule,
