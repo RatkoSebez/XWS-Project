@@ -4,6 +4,7 @@ import (
 	"XWS-Project/job_offer/handlers"
 	"XWS-Project/job_offer/repository"
 	"XWS-Project/job_offer/service"
+	pb "XWS-Project/proto/job_offer_service"
 	"XWS-Project/utilities"
 	"context"
 	"fmt"
@@ -48,7 +49,7 @@ func handlerFunc(handler *handlers.JobHandler) {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	//pb.RegisterJobServiceServer(grpcServer, handler)
+	pb.RegisterJobOfferServiceServer(grpcServer, handler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}

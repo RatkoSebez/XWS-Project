@@ -12,6 +12,8 @@ type Config struct {
 	ProfilePort        string
 	FollowHost         string
 	FollowPort         string
+	JobOfferHost       string
+	JobOfferPort       string
 }
 
 func NewConfig() *Config {
@@ -27,5 +29,7 @@ func NewConfig() *Config {
 		ProfilePort:        "8084",
 		FollowHost:         "localhost",
 		FollowPort:         "8085",
+		JobOfferHost:       "localhost",
+		JobOfferPort:       "8086",
 	}
 }

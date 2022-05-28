@@ -21,15 +21,17 @@ type CustomHandler struct {
 	registrationClientAddress   string
 	followClientAddress         string
 	profileClientAddress        string
+	jobOfferClientAddress       string
 }
 
-func NewCustomHandler(postClientAddress, authenticationClientAddress, regClientAdd, followClAdd, profileClAdd string) Handler {
+func NewCustomHandler(postClientAddress, authenticationClientAddress, regClientAdd, followClAdd, profileClAdd, jobOfferClAdd string) Handler {
 	return &CustomHandler{
 		postClientAddress:           postClientAddress,
 		authenticationClientAddress: authenticationClientAddress,
 		registrationClientAddress:   regClientAdd,
 		followClientAddress:         followClAdd,
 		profileClientAddress:        profileClAdd,
+		jobOfferClientAddress:       jobOfferClAdd,
 	}
 }
 

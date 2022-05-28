@@ -4,6 +4,7 @@ import (
 	"XWS-Project/api_gateway/infrastructure/api"
 	cfg "XWS-Project/api_gateway/startup/config"
 	"XWS-Project/proto/follow_service"
+	"XWS-Project/proto/job_offer_service"
 	"XWS-Project/proto/login_service"
 	"XWS-Project/proto/post_service"
 	"XWS-Project/proto/profile_service"
@@ -54,6 +55,10 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+	err = job_offer_service.RegisterJobOfferServiceHandlerFromEndpoint(context.TODO(), server.mux, server.config.JobOfferPort, opts)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (server *Server) initCustomHandlers() {
@@ -62,8 +67,9 @@ func (server *Server) initCustomHandlers() {
 	regisEndp := server.config.RegistrationHost + ":" + server.config.RegistrationPort
 	followEndp := server.config.FollowHost + ":" + server.config.FollowPort
 	profileEndp := server.config.ProfileHost + ":" + server.config.ProfilePort
+	jobOfferEndp := server.config.JobOfferHost + ":" + server.config.JobOfferPort
 
-	authHandler := api.NewCustomHandler(postEndp, authEndp, regisEndp, followEndp, profileEndp)
+	authHandler := api.NewCustomHandler(postEndp, authEndp, regisEndp, followEndp, profileEndp, jobOfferEndp)
 	authHandler.Init(server.mux)
 }
 

@@ -2,6 +2,7 @@ package services
 
 import (
 	"XWS-Project/proto/follow_service"
+	"XWS-Project/proto/job_offer_service"
 	"XWS-Project/proto/login_service"
 	"XWS-Project/proto/post_service"
 	"XWS-Project/proto/profile_service"
@@ -49,6 +50,14 @@ func NewProfileClient(address string) profile_service.ProfileServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Profile service: %v", err)
 	}
 	return profile_service.NewProfileServiceClient(conn)
+}
+
+func NewJobOfferClient(address string) job_offer_service.JobOfferServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Job Offer service: %v", err)
+	}
+	return job_offer_service.NewJobOfferServiceClient(conn)
 }
 
 func getConnection(address string) (*grpc.ClientConn, error) {
