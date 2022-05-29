@@ -1,6 +1,7 @@
 package main
 
 import (
+	"XWS-Project/agent_backend/dto"
 	"XWS-Project/agent_backend/handlers"
 	"XWS-Project/agent_backend/model"
 	"XWS-Project/agent_backend/repository"
@@ -51,6 +52,7 @@ func addDataToDB(client *mongo.Client) {
 	// companies
 
 	comments := []string{"I like this company", "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, animi quaerat. Consequatur iure, ipsam molestiae at corrupti, mollitia quidem fugiat excepturi quae ratione deserunt ipsum molestias unde nemo est error sapiente accusantium eveniet possimus facilis, nostrum alias laborum autem doloribus. Aperiam, id odit mollitia distinctio hic soluta ipsam nisi temporibus veniam repellendus repudiandae modi! Autem deleniti obcaecati iure molestias totam dignissimos blanditiis culpa maiores repudiandae qui nihil consequuntur eos soluta magni alias officia quibusdam reiciendis, natus voluptatibus. Cupiditate, eveniet impedit rem eos quaerat ex, aliquam quos totam odit atque labore? Porro qui, explicabo saepe vero minus perspiciatis ad ullam reiciendis."}
+	salaryForPosition := []dto.SalaryForPosition{dto.SalaryForPosition{"backend developer", 3500}}
 
 	company1 := model.Company{
 		"Apple",
@@ -61,6 +63,7 @@ func addDataToDB(client *mongo.Client) {
 		"dusan@gmail.com",
 		false,
 		comments,
+		salaryForPosition,
 	}
 	company2 := model.Company{
 		"Microsoft",
@@ -71,6 +74,7 @@ func addDataToDB(client *mongo.Client) {
 		"dusan@gmail.com",
 		false,
 		comments,
+		salaryForPosition,
 	}
 	company3 := model.Company{
 		"Google",
@@ -81,6 +85,7 @@ func addDataToDB(client *mongo.Client) {
 		"dusan@gmail.com",
 		false,
 		comments,
+		salaryForPosition,
 	}
 	company4 := model.Company{
 		"Amazon",
@@ -91,6 +96,7 @@ func addDataToDB(client *mongo.Client) {
 		"bojan@gmail.com",
 		false,
 		comments,
+		salaryForPosition,
 	}
 
 	collection = client.Database("agent").Collection("company")
@@ -178,6 +184,8 @@ func handlerFunc(handler *handlers.AgentHandler) {
 	router.HandleFunc("/api/company/approve", handler.ApproveCompany).Methods("POST")
 	router.HandleFunc("/api/company/comment", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/api/company/comment", handler.CreateCompanyComment).Methods("PUT")
+	router.HandleFunc("/api/company/salary", handler.Preflight).Methods("OPTIONS")
+	router.HandleFunc("/api/company/salary", handler.CreateCompanySalary).Methods("PUT")
 
 	log.Fatal(http.ListenAndServe(":8090", router))
 }

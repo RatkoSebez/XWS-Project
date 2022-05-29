@@ -12,7 +12,7 @@
                         <a class="nav-link" data-bs-toggle="tab" href="#comments{{company.name}}">Comments</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#menu2{{company.name}}">Menu 2</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#salary{{company.name}}">Salary</a>
                     </li>
                 </ul>
             </div>
@@ -35,11 +35,20 @@
                             <app-comment [comment]="comment"></app-comment>
                         </div>
                     </div>
-                    <div class="tab-pane container fade" id="menu2{{company.name}}">...c</div>
+                    <div class="tab-pane container fade" id="salary{{company.name}}">
+                        <label>Job Position</label>
+                        <input type="text" name="jobPosition" class="form-control" placeholder="Enter Job Position" autofocus [(ngModel)]="jobPosition">
+                        <label>Salary</label>
+                        <input type="number" name="salary" class="form-control" placeholder="Enter Salary" [(ngModel)]="salary">
+                        <button class="btn btn-primary" (click)="createSalary()">Submit</button>
+                        <div *ngFor="let salaryForPosition of company.salaryForPosition">
+                            <app-salary [jobPosition]="salaryForPosition.jobPosition" [salary]="salaryForPosition.salary"></app-salary>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-footer text-muted">
-                {{company.email}}
+                <p class="card-text">owner: {{company.ownerEmail}} | approved: {{company.isApproved}}</p>
             </div>
         </div>
     </div>

@@ -62,6 +62,10 @@ func (service *AgentService) CreateCompanyComment(ctx context.Context, dto *dto.
 	service.Repository.CreateCompanyComment(ctx, dto)
 }
 
+func (service *AgentService) CreateCompanySalary(ctx context.Context, dto *dto.CreateSalaryForPositionDTO) {
+	service.Repository.CreateCompanySalary(ctx, dto)
+}
+
 //func (service *AgentService) GetAllUsersCompanies(ctx context.Context, userEmail string) []*model.Company {
 //	return service.Repository.GetAllUsersCompanies(ctx, userEmail)
 //}

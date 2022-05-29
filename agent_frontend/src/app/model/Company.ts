@@ -1,3 +1,5 @@
+import { SalaryForPosition } from "./dto/SalaryForPosition";
+
 export class Company{
     constructor(
         public name: string,
@@ -7,6 +9,7 @@ export class Company{
         public description: string,
         public isApproved: boolean,
         public ownerEmail: string,
-        public comments: string[]
+        public comments: string[],
+        public salaryForPosition: SalaryForPosition[]
     ){}
 }

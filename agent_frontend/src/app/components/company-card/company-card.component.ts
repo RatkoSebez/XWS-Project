@@ -10,6 +10,8 @@ import { CompanyService } from 'src/app/services/company.service';
 export class CompanyCardComponent implements OnInit {
 
   comment = ''
+  salary = 0
+  jobPosition = ''
   @Input() company!: Company;
   @Output() refresh = new EventEmitter<string>();
 
@@ -23,8 +25,16 @@ export class CompanyCardComponent implements OnInit {
   }
 
   createComment(){
+    // this.callParent()
     this.companyService.comment(this.company.name, this.comment).subscribe()
     this.comment = ''
+  }
+
+  createSalary(){
+    // this.callParent()
+    this.companyService.salary(this.company.name, this.jobPosition, this.salary).subscribe()
+    this.salary = 0
+    this.jobPosition = ''
   }
 
 }

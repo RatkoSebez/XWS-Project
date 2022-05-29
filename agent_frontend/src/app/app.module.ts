@@ -18,6 +18,7 @@ import { CompanyComponent } from './components/company/company.component';
 import { EditCompanyModalComponent } from './components/edit-company-modal/edit-company-modal.component';
 import { CompanyCardComponent } from './components/company-card/company-card.component';
 import { CommentComponent } from './components/comment/comment.component';
+import { SalaryComponent } from './components/salary/salary.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { CommentComponent } from './components/comment/comment.component';
     EditCompanyModalComponent,
     CompanyCardComponent,
     CommentComponent,
+    SalaryComponent,
   ],
   imports: [
     BrowserModule,
