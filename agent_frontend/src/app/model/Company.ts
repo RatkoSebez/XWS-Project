@@ -1,4 +1,5 @@
 import { SalaryForPosition } from "./dto/SalaryForPosition";
+import { Job } from "./Job";
 
 export class Company{
     constructor(
@@ -11,6 +12,7 @@ export class Company{
         public ownerEmail: string,
         public comments: string[],
         public interviewReviews: string[],
-        public salaryForPosition: SalaryForPosition[]
+        public salaryForPosition: SalaryForPosition[],
+        public jobs: Job[],
     ){}
 }

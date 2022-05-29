@@ -12,6 +12,7 @@ import { CompanyService } from 'src/app/services/company.service';
 })
 export class HomeComponent implements OnInit {
   user = new User('', 1)
+  show = localStorage.getItem('email') != null
 
   companies!: Company[]
 

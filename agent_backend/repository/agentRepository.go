@@ -171,6 +171,22 @@ func (repository *AgentRepository) CreateCompanySalary(ctx context.Context, data
 	}
 }
 
+func (repository *AgentRepository) CreateCompanyJob(ctx context.Context, data *dto.CreateJobDTO) {
+	company := &model.Company{}
+	collection := repository.Client.Database("agent").Collection("company")
+	filter := bson.D{{"name", data.CompanyName}}
+	err := collection.FindOne(ctx, filter).Decode(&company)
+	company.Jobs = append(company.Jobs, model.Job{data.Name, data.Description, data.Requirements, data.Benefits})
+	update := bson.M{"$set": company}
+	_, err = collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
 //func (repository *AgentRepository) GetAllUsersCompanies(ctx context.Context, userEmail string) []*model.Company {
 //	var companies []*model.Company
 //	collection := repository.Client.Database("agent").Collection("company")

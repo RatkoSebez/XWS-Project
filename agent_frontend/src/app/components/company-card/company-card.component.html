@@ -17,6 +17,9 @@
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#interview{{company.name}}">Interview</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#jobs{{company.name}}">Jobs</a>
+                    </li>
                 </ul>
             </div>
             <div class="card-body">
@@ -56,6 +59,11 @@
                         <button *ngIf="company.ownerEmail != ownerEmail" class="btn btn-primary" (click)="createInterviewReview()">Submit</button>
                         <div *ngFor="let interviewReview of company.interviewReviews">
                             <app-interview [interviewReview]="interviewReview"></app-interview>
+                        </div>
+                    </div>
+                    <div class="tab-pane container fade" id="jobs{{company.name}}">
+                        <div *ngFor="let job of company.jobs">
+                            <app-job [job]="job"></app-job>
                         </div>
                     </div>
                 </div>

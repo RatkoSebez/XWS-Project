@@ -13,4 +13,5 @@ type Company struct {
 	Comments          []string                `json:"comments"`
 	InterviewReviews  []string                `json:"interviewReviews"`
 	SalaryForPosition []dto.SalaryForPosition `json:"salaryForPosition"`
+	Jobs              []Job                   `json:"jobs"`
 }

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Company } from '../model/Company';
+import { CreateJobDTO } from '../model/dto/CreateJobDTO';
 import { RegisterCompanyDto } from '../model/dto/RegisterCompanyDto';
 
 @Injectable({
@@ -55,6 +56,15 @@ export class CompanyService {
     return this.http.put(
       'http://localhost:8090/api/company/salary',
        {name: name, jobPosition: jobPosition, salary: salary}
+    )
+  }
+
+  job(jobDto: CreateJobDTO){
+    console.log('poslao')
+    console.log(jobDto.companyName)
+    return this.http.put(
+      'http://localhost:8090/api/company/job',
+       {companyName: jobDto.companyName, name: jobDto.name, description: jobDto.description, requirements: jobDto.requirements, benefits: jobDto.benefits}
     )
   }
 }

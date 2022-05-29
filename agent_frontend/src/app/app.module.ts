@@ -20,6 +20,8 @@ import { CompanyCardComponent } from './components/company-card/company-card.com
 import { CommentComponent } from './components/comment/comment.component';
 import { SalaryComponent } from './components/salary/salary.component';
 import { InterviewComponent } from './components/interview/interview.component';
+import { JobComponent } from './components/job/job.component';
+import { NewJobModalComponent } from './components/new-job-modal/new-job-modal.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { InterviewComponent } from './components/interview/interview.component';
     CommentComponent,
     SalaryComponent,
     InterviewComponent,
+    JobComponent,
+    NewJobModalComponent,
   ],
   imports: [
     BrowserModule,

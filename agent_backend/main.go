@@ -52,6 +52,11 @@ func addDataToDB(client *mongo.Client) {
 	comments := []string{"I like this company", "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, animi quaerat. Consequatur iure, ipsam molestiae at corrupti, mollitia quidem fugiat excepturi quae ratione deserunt ipsum molestias unde nemo est error sapiente accusantium eveniet possimus facilis, nostrum alias laborum autem doloribus. Aperiam, id odit mollitia distinctio hic soluta ipsam nisi temporibus veniam repellendus repudiandae modi! Autem deleniti obcaecati iure molestias totam dignissimos blanditiis culpa maiores repudiandae qui nihil consequuntur eos soluta magni alias officia quibusdam reiciendis, natus voluptatibus. Cupiditate, eveniet impedit rem eos quaerat ex, aliquam quos totam odit atque labore? Porro qui, explicabo saepe vero minus perspiciatis ad ullam reiciendis."}
 	salaryForPosition := []dto.SalaryForPosition{dto.SalaryForPosition{"backend developer", 3500}}
 	interviewReviews := []string{"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, animi quaerat. Consequatur iure, ipsam molestiae at corrupti, mollitia quidem fugiat excepturi quae ratione deserunt ipsum molestias unde nemo est error sapiente accusantium eveniet possimus facilis, nostrum alias laborum autem doloribus. Aperiam, id odit mollitia distinctio hic soluta ipsam nisi temporibus veniam repellendus repudiandae modi! Autem deleniti obcaecati iure molestias totam dignissimos blanditiis culpa maiores repudiandae qui nihil consequuntur eos soluta magni alias officia quibusdam reiciendis, natus voluptatibus. Cupiditate, eveniet impedit rem eos quaerat ex, aliquam quos totam odit atque labore? Porro qui, explicabo saepe vero minus perspiciatis ad ullam reiciendis."}
+	jobs := []model.Job{model.Job{
+		"backend developer",
+		"Funding Options are looking for a talented Full Stack Engineer to help reimagine and reinvent how small businesses discover and access the right financial products for their needs.\n\nIf you have excellent programming skills and a passion for developing applications or improving existing ones, we would like to meet you. As a Full Stack Engineer, you’ll work closely with our engineers to ensure system consistency and improve user experience. Ultimately, you should be able to develop and maintain functional and stable web applications to meet our company’s needs. We work in an agile fashion, small cross functional squads, with daily stand-ups and fortnightly retrospectives. You’ll bring new ideas, and become an integral part of the process of continuously improving our product.\n\nOur stack includes - Python, AWS environments (including Lambda & Fargate), Terraform, CircleCI, React / Gatsby, Sentry and Google BigQuery / Stitch / Metabase.",
+		"Proven work experience as a Full Stack Developer\nIn-depth understanding of the entire web development process (design, development and deployment)\nHands on experience with AWS and programming languages like Python: Django, FastAPI, Flask, JavaScript (React)\nExperience working in Scrum and follow Agile development practises\nTeamwork skills with a problem-solving attitude\nAn understanding of Salesforce integration would be a bonus",
+		"21 days paid holiday as well as the Serbian National Bank holidays\nDiscounted medical insurance\nPingpong table"}}
 
 	company1 := model.Company{
 		"Apple",
@@ -64,6 +69,7 @@ func addDataToDB(client *mongo.Client) {
 		comments,
 		interviewReviews,
 		salaryForPosition,
+		jobs,
 	}
 	company2 := model.Company{
 		"Microsoft",
@@ -76,6 +82,7 @@ func addDataToDB(client *mongo.Client) {
 		comments,
 		interviewReviews,
 		salaryForPosition,
+		jobs,
 	}
 	company3 := model.Company{
 		"Google",
@@ -88,6 +95,7 @@ func addDataToDB(client *mongo.Client) {
 		comments,
 		interviewReviews,
 		salaryForPosition,
+		jobs,
 	}
 	company4 := model.Company{
 		"Amazon",
@@ -100,6 +108,7 @@ func addDataToDB(client *mongo.Client) {
 		comments,
 		interviewReviews,
 		salaryForPosition,
+		jobs,
 	}
 
 	collection = client.Database("agent").Collection("company")
@@ -191,6 +200,8 @@ func handlerFunc(handler *handlers.AgentHandler) {
 	router.HandleFunc("/api/company/interview", handler.CreateCompanyInterviewReview).Methods("PUT")
 	router.HandleFunc("/api/company/salary", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/api/company/salary", handler.CreateCompanySalary).Methods("PUT")
+	router.HandleFunc("/api/company/job", handler.Preflight).Methods("OPTIONS")
+	router.HandleFunc("/api/company/job", handler.CreateCompanyJob).Methods("PUT")
 
 	log.Fatal(http.ListenAndServe(":8090", router))
 }
