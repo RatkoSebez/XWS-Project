@@ -4,7 +4,7 @@ import (
 	"XWS-Project/agent_backend/dto"
 	"XWS-Project/agent_backend/model"
 	"XWS-Project/agent_backend/service"
-	"XWS-Project/utilities"
+	"XWS-Project/agent_backend/utilities"
 	"context"
 	"encoding/json"
 	"fmt"
