@@ -53,6 +53,7 @@ func addDataToDB(client *mongo.Client) {
 	company1 := model.Company{"kompanija1", "mail1@gmail.com", "adresa1", "4681563153", "opis1", "dusan@gmail.com", false}
 	company2 := model.Company{"kompanija2", "mail2@gmail.com", "adresa2", "3286454686", "opis2", "dusan@gmail.com", false}
 	company3 := model.Company{"kompanija3", "mail3@gmail.com", "adresa3", "9894842315", "opis3", "dusan@gmail.com", false}
+	company4 := model.Company{"kompanija4", "mail4@gmail.com", "adresa4", "5457422315", "opis4", "bojan@gmail.com", false}
 
 	collection = client.Database("agent").Collection("company")
 	_, err = collection.DeleteMany(context.TODO(), bson.M{})
@@ -69,6 +70,10 @@ func addDataToDB(client *mongo.Client) {
 		panic(err)
 	}
 	_, err = collection.InsertOne(context.TODO(), company3)
+	if err != nil {
+		panic(err)
+	}
+	_, err = collection.InsertOne(context.TODO(), company4)
 	if err != nil {
 		panic(err)
 	}
@@ -126,7 +131,11 @@ func handlerFunc(handler *handlers.AgentHandler) {
 	router.HandleFunc("/api/company", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/api/company", handler.CreateCompany).Methods("POST")
 	router.HandleFunc("/api/company", handler.Preflight).Methods("OPTIONS")
-	router.HandleFunc("/api/company", handler.GetAll).Methods("GET")
+	router.HandleFunc("/api/company", handler.GetAllCompanies).Methods("GET")
+	router.HandleFunc("/api/company", handler.Preflight).Methods("OPTIONS")
+	router.HandleFunc("/api/company", handler.EditCompany).Methods("PUT")
+	//router.HandleFunc("/api/company/{email}", handler.Preflight).Methods("OPTIONS")
+	//router.HandleFunc("/api/company/{email}", handler.GetAllUsersCompanies).Methods("GET")
 	router.HandleFunc("/api/company/approve", handler.Preflight).Methods("OPTIONS")
 	router.HandleFunc("/api/company/approve", handler.ApproveCompany).Methods("POST")
 

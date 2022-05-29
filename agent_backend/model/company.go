@@ -6,6 +6,6 @@ type Company struct {
 	Address     string `json:"address"`
 	PhoneNumber string `json:"phoneNumber"`
 	Description string `json:"description"`
-	OwnerEmail  string `json:"ownerEmail"`
+	OwnerEmail  string `json:"ownerEmail" bson:"ownerEmail"`
 	IsApproved  bool   `json:"isApproved"`
 }

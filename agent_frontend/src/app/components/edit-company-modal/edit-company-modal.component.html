@@ -1,0 +1,31 @@
+<!-- Edit company modal -->
+<div class="modal fade" id="editCompanyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Company</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="name">Name</label>
+                <input class="form-control mb-4" type="text" placeholder="Name" name="owner id" [value]="company.name" disabled>
+                <label for="name">Address</label>
+                <input class="form-control mb-4" type="text" placeholder="Address" name="owner id" #address [value]="company.address" id="address">
+                <label for="name">Phone Number</label>
+                <input class="form-control mb-4" type="text" placeholder="Phone Number" name="owner id" #phoneNumber [value]="company.phoneNumber">
+                <label for="name">Email</label>
+                <input class="form-control mb-4" type="text" placeholder="Email" name="owner id" #email [value]="company.email">
+                <label for="name">Description</label>
+                <input class="form-control mb-4" type="text" placeholder="Description" name="owner id" #description [value]="company.description">
+                <label for="name">Owner Email</label>
+                <input class="form-control mb-4" type="text" placeholder="Owner Email" name="owner id" [value]="company.ownerEmail" disabled>
+                <label for="name">Approved</label>
+                <input class="form-control mb-4" type="text" placeholder="Approved" name="owner id" [value]="company.isApproved" disabled>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="edit(company)">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

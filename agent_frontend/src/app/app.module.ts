@@ -14,6 +14,8 @@ import { AuthGuard } from './auth.guard';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterCompanyComponent } from './components/register-company/register-company.component';
 import { CompaniesComponent } from './components/companies/companies.component';
+import { CompanyComponent } from './components/company/company.component';
+import { EditCompanyModalComponent } from './components/edit-company-modal/edit-company-modal.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { CompaniesComponent } from './components/companies/companies.component';
     LoginComponent,
     RegisterCompanyComponent,
     CompaniesComponent,
+    CompanyComponent,
+    EditCompanyModalComponent,
   ],
   imports: [
     BrowserModule,

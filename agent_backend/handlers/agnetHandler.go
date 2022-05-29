@@ -170,7 +170,7 @@ func (handler *AgentHandler) ApproveCompany(rw http.ResponseWriter, r *http.Requ
 	utilities.Tracer.FinishSpan(span)
 }
 
-func (handler *AgentHandler) GetAll(rw http.ResponseWriter, r *http.Request) {
+func (handler *AgentHandler) GetAllCompanies(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
@@ -178,7 +178,7 @@ func (handler *AgentHandler) GetAll(rw http.ResponseWriter, r *http.Request) {
 	span := utilities.Tracer.StartSpanFromRequest("Get all not approved companies handler", r)
 	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
 
-	companies := handler.Service.GetAll(ctx)
+	companies := handler.Service.GetAllCompanies(ctx)
 
 	respJson, _ := json.Marshal(companies)
 	rw.WriteHeader(http.StatusOK)
@@ -186,3 +186,44 @@ func (handler *AgentHandler) GetAll(rw http.ResponseWriter, r *http.Request) {
 	_, _ = rw.Write(respJson)
 	utilities.Tracer.FinishSpan(span)
 }
+
+func (handler *AgentHandler) EditCompany(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+
+	span := utilities.Tracer.StartSpanFromRequest("Edit company handler", r)
+	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
+
+	var company model.Company
+	err := json.NewDecoder(r.Body).Decode(&company)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	handler.Service.EditCompany(ctx, &company)
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+	utilities.Tracer.FinishSpan(span)
+}
+
+//func (handler *AgentHandler) GetAllUsersCompanies(rw http.ResponseWriter, r *http.Request) {
+//	rw.Header().Set("Access-Control-Allow-Origin", "*")
+//	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+//	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+//
+//	span := utilities.Tracer.StartSpanFromRequest("Get all not approved companies handler", r)
+//	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
+//
+//	userEmail, _ := mux.Vars(r)["email"]
+//
+//	companies := handler.Service.GetAllUsersCompanies(ctx, userEmail)
+//
+//	respJson, _ := json.Marshal(companies)
+//	rw.WriteHeader(http.StatusOK)
+//	rw.Header().Set("Content-Type", "application/json")
+//	_, _ = rw.Write(respJson)
+//	utilities.Tracer.FinishSpan(span)
+//}

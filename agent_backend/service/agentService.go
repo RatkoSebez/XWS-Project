@@ -50,6 +50,14 @@ func (service *AgentService) ApproveCompany(ctx context.Context, dto *dto.Approv
 	service.Repository.ApproveCompany(ctx, dto)
 }
 
-func (service *AgentService) GetAll(ctx context.Context) []*model.Company {
-	return service.Repository.GetAll(ctx)
+func (service *AgentService) GetAllCompanies(ctx context.Context) []*model.Company {
+	return service.Repository.GetAllCompanies(ctx)
 }
+
+func (service *AgentService) EditCompany(ctx context.Context, company *model.Company) {
+	service.Repository.EditCompany(ctx, company)
+}
+
+//func (service *AgentService) GetAllUsersCompanies(ctx context.Context, userEmail string) []*model.Company {
+//	return service.Repository.GetAllUsersCompanies(ctx, userEmail)
+//}

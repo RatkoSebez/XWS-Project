@@ -79,7 +79,7 @@ func (repository *AgentRepository) ApproveCompany(ctx context.Context, dto *dto.
 	}
 }
 
-func (repository *AgentRepository) GetAll(ctx context.Context) []*model.Company {
+func (repository *AgentRepository) GetAllCompanies(ctx context.Context) []*model.Company {
 	var companies []*model.Company
 	collection := repository.Client.Database("agent").Collection("company")
 
@@ -101,3 +101,45 @@ func (repository *AgentRepository) GetAll(ctx context.Context) []*model.Company 
 
 	return companies
 }
+
+func (repository *AgentRepository) EditCompany(ctx context.Context, newCompany *model.Company) {
+	company := &model.Company{}
+	collection := repository.Client.Database("agent").Collection("company")
+	filter := bson.D{{"name", newCompany.Name}}
+	err := collection.FindOne(ctx, filter).Decode(&company)
+	company.Address = newCompany.Address
+	company.PhoneNumber = newCompany.PhoneNumber
+	company.Email = newCompany.Email
+	company.Description = newCompany.Description
+	update := bson.M{"$set": company}
+	_, err = collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+//func (repository *AgentRepository) GetAllUsersCompanies(ctx context.Context, userEmail string) []*model.Company {
+//	var companies []*model.Company
+//	collection := repository.Client.Database("agent").Collection("company")
+//
+//	// Finding multiple documents returns a cursor
+//	cur, err := collection.Find(ctx, bson.D{{"ownerEmail", userEmail}})
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	// Iterate through the cursor
+//	for cur.Next(ctx) {
+//		var elem model.Company
+//		err := cur.Decode(&elem)
+//		if err != nil {
+//			log.Fatal(err)
+//		}
+//		companies = append(companies, &elem)
+//	}
+//
+//	return companies
+//}
