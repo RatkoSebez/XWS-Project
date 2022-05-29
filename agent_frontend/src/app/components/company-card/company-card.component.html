@@ -1,5 +1,5 @@
 <div class="row justify-content-center">
-    <div class="col-auto mt-3">
+    <div class="col-auto mt-5">
         <div class="card text-center">
             <div class="card-header">
                 {{company.name}}
@@ -30,30 +30,30 @@
                         <p class="card-text">{{company.description}}</p>
                     </div>
                     <div class="tab-pane container fade" id="comments{{company.name}}">
-                        <div class="mb-3">
+                        <div class="mb-3" *ngIf="company.ownerEmail != ownerEmail">
                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="your comment" [(ngModel)]="comment"></textarea>
                         </div>
-                        <button class="btn btn-primary" (click)="createComment()">Submit</button>
+                        <button class="btn btn-primary" (click)="createComment()" *ngIf="company.ownerEmail != ownerEmail">Submit</button>
                         <div *ngFor="let comment of company.comments">
                             <app-comment [comment]="comment"></app-comment>
                         </div>
                     </div>
                     <div class="tab-pane container fade" id="salary{{company.name}}">
-                        <label>Job Position</label>
-                        <input type="text" name="jobPosition" class="form-control" placeholder="Enter Job Position" autofocus [(ngModel)]="jobPosition">
-                        <label>Salary</label>
-                        <input type="number" name="salary" class="form-control" placeholder="Enter Salary" [(ngModel)]="salary">
-                        <button class="btn btn-primary" (click)="createSalary()">Submit</button>
+                        <label *ngIf="company.ownerEmail != ownerEmail">Job Position</label>
+                        <input *ngIf="company.ownerEmail != ownerEmail" type="text" name="jobPosition" class="form-control" placeholder="Enter Job Position" autofocus [(ngModel)]="jobPosition">
+                        <label *ngIf="company.ownerEmail != ownerEmail">Salary</label>
+                        <input *ngIf="company.ownerEmail != ownerEmail" type="number" name="salary" class="form-control" placeholder="Enter Salary" [(ngModel)]="salary">
+                        <button *ngIf="company.ownerEmail != ownerEmail" class="btn btn-primary" (click)="createSalary()">Submit</button>
                         <div *ngFor="let salaryForPosition of company.salaryForPosition">
                             <app-salary [jobPosition]="salaryForPosition.jobPosition" [salary]="salaryForPosition.salary"></app-salary>
                         </div>
                     </div>
                     <div class="tab-pane container fade" id="interview{{company.name}}">
-                        <div class="mb-3">
+                        <div *ngIf="company.ownerEmail != ownerEmail" class="mb-3">
                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="your comment"
                                 [(ngModel)]="interviewReview"></textarea>
                         </div>
-                        <button class="btn btn-primary" (click)="createInterviewReview()">Submit</button>
+                        <button *ngIf="company.ownerEmail != ownerEmail" class="btn btn-primary" (click)="createInterviewReview()">Submit</button>
                         <div *ngFor="let interviewReview of company.interviewReviews">
                             <app-interview [interviewReview]="interviewReview"></app-interview>
                         </div>

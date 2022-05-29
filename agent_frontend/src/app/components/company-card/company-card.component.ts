@@ -13,6 +13,7 @@ export class CompanyCardComponent implements OnInit {
   salary = 0
   jobPosition = ''
   interviewReview = ''
+  ownerEmail = localStorage.getItem('email')
   @Input() company!: Company;
   @Output() refresh = new EventEmitter<string>();
 

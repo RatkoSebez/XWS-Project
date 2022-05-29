@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit {
   getCompanies(){
     this.companyService.getAll().subscribe(response => {
       this.companies = JSON.parse(JSON.stringify(response))
+      this.companies = this.companies.filter(company => company.isApproved)
     })
   }
 
