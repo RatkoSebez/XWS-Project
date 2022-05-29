@@ -6,6 +6,7 @@ export class Company{
         public phoneNumber: string,
         public description: string,
         public isApproved: boolean,
-        public ownerEmail: string
+        public ownerEmail: string,
+        public comments: string[]
     ){}
 }

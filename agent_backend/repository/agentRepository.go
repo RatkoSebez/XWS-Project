@@ -40,6 +40,8 @@ func (repository *AgentRepository) RegisterUser(ctx context.Context, user *model
 
 func (repository *AgentRepository) CreateCompany(ctx context.Context, company *model.Company) error {
 	company.IsApproved = false
+	var comments []string
+	company.Comments = comments
 	collection := repository.Client.Database("agent").Collection("company")
 	insertResult, err := collection.InsertOne(context.TODO(), company)
 	if err != nil {
@@ -111,6 +113,22 @@ func (repository *AgentRepository) EditCompany(ctx context.Context, newCompany *
 	company.PhoneNumber = newCompany.PhoneNumber
 	company.Email = newCompany.Email
 	company.Description = newCompany.Description
+	update := bson.M{"$set": company}
+	_, err = collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func (repository *AgentRepository) CreateCompanyComment(ctx context.Context, dto *dto.CreateCommentDTO) {
+	company := &model.Company{}
+	collection := repository.Client.Database("agent").Collection("company")
+	filter := bson.D{{"name", dto.Name}}
+	err := collection.FindOne(ctx, filter).Decode(&company)
+	company.Comments = append(company.Comments, dto.Comment)
 	update := bson.M{"$set": company}
 	_, err = collection.UpdateOne(ctx, filter, update)
 	if err != nil {

@@ -7,3 +7,7 @@
         </g>
     </svg>
 </div>
+
+<div *ngFor="let company of companies">
+    <app-company-card [company]="company" (refresh)="refresh($event)"></app-company-card>
+</div>

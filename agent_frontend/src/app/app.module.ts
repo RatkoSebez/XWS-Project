@@ -16,6 +16,8 @@ import { RegisterCompanyComponent } from './components/register-company/register
 import { CompaniesComponent } from './components/companies/companies.component';
 import { CompanyComponent } from './components/company/company.component';
 import { EditCompanyModalComponent } from './components/edit-company-modal/edit-company-modal.component';
+import { CompanyCardComponent } from './components/company-card/company-card.component';
+import { CommentComponent } from './components/comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,8 @@ import { EditCompanyModalComponent } from './components/edit-company-modal/edit-
     CompaniesComponent,
     CompanyComponent,
     EditCompanyModalComponent,
+    CompanyCardComponent,
+    CommentComponent,
   ],
   imports: [
     BrowserModule,

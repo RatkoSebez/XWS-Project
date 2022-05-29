@@ -36,4 +36,11 @@ export class CompanyService {
        {name: dto.name, address: dto.address, email: dto.email, phoneNumber: dto.phoneNumber, description: dto.description, ownerEmail: dto.ownerEmail}
     )
   }
+
+  comment(name: string, comment: string){
+    return this.http.put(
+      'http://localhost:8090/api/company/comment',
+       {name: name, comment: comment}
+    )
+  }
 }

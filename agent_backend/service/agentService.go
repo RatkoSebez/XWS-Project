@@ -58,6 +58,10 @@ func (service *AgentService) EditCompany(ctx context.Context, company *model.Com
 	service.Repository.EditCompany(ctx, company)
 }
 
+func (service *AgentService) CreateCompanyComment(ctx context.Context, dto *dto.CreateCommentDTO) {
+	service.Repository.CreateCompanyComment(ctx, dto)
+}
+
 //func (service *AgentService) GetAllUsersCompanies(ctx context.Context, userEmail string) []*model.Company {
 //	return service.Repository.GetAllUsersCompanies(ctx, userEmail)
 //}

@@ -11,7 +11,7 @@ import { CompanyService } from 'src/app/services/company.service';
 export class CompanyComponent implements OnInit {
   companies!: Company[]
   // this is company that I am sending to child component (company edit modal)
-  company = new Company('', '', '', '', '', false, '')
+  company = new Company('', '', '', '', '', false, '', [])
 
   constructor(private companyService: CompanyService) { }
 

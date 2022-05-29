@@ -1,0 +1,46 @@
+<div class="row justify-content-center">
+    <div class="col-auto mt-3">
+        <div class="card text-center">
+            <div class="card-header">
+                {{company.name}}
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#info{{company.name}}">Info</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#comments{{company.name}}">Comments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#menu2{{company.name}}">Menu 2</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane container active" id="info{{company.name}}">
+                        <h5 class="card-title">{{company.name}}</h5>
+                        <p class="card-text">{{company.address}}</p>
+                        <p class="card-text">{{company.phoneNumber}}</p>
+                        <p class="card-text">{{company.email}}</p>
+                        <p class="card-text">{{company.description}}</p>
+                    </div>
+                    <div class="tab-pane container fade" id="comments{{company.name}}">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="your comment" [(ngModel)]="comment"></textarea>
+                        </div>
+                        <button class="btn btn-primary" (click)="createComment()">Submit</button>
+                        <div *ngFor="let comment of company.comments">
+                            <app-comment [comment]="comment"></app-comment>
+                        </div>
+                    </div>
+                    <div class="tab-pane container fade" id="menu2{{company.name}}">...c</div>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                {{company.email}}
+            </div>
+        </div>
+    </div>
+</div>

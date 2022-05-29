@@ -209,6 +209,28 @@ func (handler *AgentHandler) EditCompany(rw http.ResponseWriter, r *http.Request
 	utilities.Tracer.FinishSpan(span)
 }
 
+func (handler *AgentHandler) CreateCompanyComment(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+
+	span := utilities.Tracer.StartSpanFromRequest("Edit dto handler", r)
+	ctx := utilities.Tracer.ContextWithSpan(context.Background(), span)
+
+	var dto dto.CreateCommentDTO
+	err := json.NewDecoder(r.Body).Decode(&dto)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	handler.Service.CreateCompanyComment(ctx, &dto)
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+	utilities.Tracer.FinishSpan(span)
+}
+
 //func (handler *AgentHandler) GetAllUsersCompanies(rw http.ResponseWriter, r *http.Request) {
 //	rw.Header().Set("Access-Control-Allow-Origin", "*")
 //	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
