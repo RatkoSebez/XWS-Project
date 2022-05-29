@@ -62,6 +62,10 @@ func (service *AgentService) CreateCompanyComment(ctx context.Context, dto *dto.
 	service.Repository.CreateCompanyComment(ctx, dto)
 }
 
+func (service *AgentService) CreateCompanyInterviewReview(ctx context.Context, dto *dto.CreateInterviewReviewDTO) {
+	service.Repository.CreateCompanyInterviewReview(ctx, dto)
+}
+
 func (service *AgentService) CreateCompanySalary(ctx context.Context, dto *dto.CreateSalaryForPositionDTO) {
 	service.Repository.CreateCompanySalary(ctx, dto)
 }

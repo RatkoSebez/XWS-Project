@@ -14,6 +14,9 @@
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#salary{{company.name}}">Salary</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#interview{{company.name}}">Interview</a>
+                    </li>
                 </ul>
             </div>
             <div class="card-body">
@@ -43,6 +46,16 @@
                         <button class="btn btn-primary" (click)="createSalary()">Submit</button>
                         <div *ngFor="let salaryForPosition of company.salaryForPosition">
                             <app-salary [jobPosition]="salaryForPosition.jobPosition" [salary]="salaryForPosition.salary"></app-salary>
+                        </div>
+                    </div>
+                    <div class="tab-pane container fade" id="interview{{company.name}}">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="your comment"
+                                [(ngModel)]="interviewReview"></textarea>
+                        </div>
+                        <button class="btn btn-primary" (click)="createInterviewReview()">Submit</button>
+                        <div *ngFor="let interviewReview of company.interviewReviews">
+                            <app-interview [interviewReview]="interviewReview"></app-interview>
                         </div>
                     </div>
                 </div>

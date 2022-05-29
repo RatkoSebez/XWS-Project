@@ -44,6 +44,13 @@ export class CompanyService {
     )
   }
 
+  interview(name: string, review: string){
+    return this.http.put(
+      'http://localhost:8090/api/company/interview',
+       {name: name, interviewReview: review}
+    )
+  }
+
   salary(name: string, jobPosition: string, salary: number){
     return this.http.put(
       'http://localhost:8090/api/company/salary',

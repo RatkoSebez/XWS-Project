@@ -19,6 +19,7 @@ import { EditCompanyModalComponent } from './components/edit-company-modal/edit-
 import { CompanyCardComponent } from './components/company-card/company-card.component';
 import { CommentComponent } from './components/comment/comment.component';
 import { SalaryComponent } from './components/salary/salary.component';
+import { InterviewComponent } from './components/interview/interview.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { SalaryComponent } from './components/salary/salary.component';
     CompanyCardComponent,
     CommentComponent,
     SalaryComponent,
+    InterviewComponent,
   ],
   imports: [
     BrowserModule,

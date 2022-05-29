@@ -12,6 +12,7 @@ export class CompanyCardComponent implements OnInit {
   comment = ''
   salary = 0
   jobPosition = ''
+  interviewReview = ''
   @Input() company!: Company;
   @Output() refresh = new EventEmitter<string>();
 
@@ -28,6 +29,11 @@ export class CompanyCardComponent implements OnInit {
     // this.callParent()
     this.companyService.comment(this.company.name, this.comment).subscribe()
     this.comment = ''
+  }
+
+  createInterviewReview(){
+    this.companyService.interview(this.company.name, this.interviewReview).subscribe()
+    this.interviewReview = ''
   }
 
   createSalary(){

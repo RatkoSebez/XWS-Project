@@ -10,6 +10,7 @@ export class Company{
         public isApproved: boolean,
         public ownerEmail: string,
         public comments: string[],
+        public interviewReviews: string[],
         public salaryForPosition: SalaryForPosition[]
     ){}
 }

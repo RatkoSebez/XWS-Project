@@ -11,5 +11,6 @@ type Company struct {
 	OwnerEmail        string                  `json:"ownerEmail" bson:"ownerEmail"`
 	IsApproved        bool                    `json:"isApproved"`
 	Comments          []string                `json:"comments"`
+	InterviewReviews  []string                `json:"interviewReviews"`
 	SalaryForPosition []dto.SalaryForPosition `json:"salaryForPosition"`
 }
