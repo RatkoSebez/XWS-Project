@@ -5,6 +5,7 @@ import (
 	"XWS-Project/agent_backend/model"
 	"XWS-Project/agent_backend/service"
 	"XWS-Project/agent_backend/utilities"
+	globalUtils "XWS-Project/utilities"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -40,12 +41,19 @@ func (handler *AgentHandler) Login(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	agentToken, err := globalUtils.CreateAgentToken(user.Email, "agent_service")
+	if err != nil {
+		utilities.Tracer.LogError(span, errr)
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	responseDTO := dto.LoginResponseDTO{
-		Token:    token,
-		Email:    user.Email,
-		Username: user.Username,
-		IsAdmin:  user.IsAdmin,
+		Token:      token,
+		Email:      user.Email,
+		Username:   user.Username,
+		IsAdmin:    user.IsAdmin,
+		AgentToken: agentToken,
 	}
 
 	respJson, err := json.Marshal(responseDTO)

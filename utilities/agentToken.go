@@ -3,7 +3,9 @@ package utilities
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -26,11 +28,11 @@ func initAgentToken() {
 }
 
 func CreateAgentToken(agentName string, issuer string) (string, error) {
-	if TokenSecret == "" {
+	if TokenSecretKey == "" {
 		initAgentToken()
 	}
 	claims := TokenInnerData{AgentName: agentName, StandardClaims: jwt.StandardClaims{
-		ExpiresAt: time.Now().Unix() + ExpiresIn,
+		ExpiresAt: time.Now().Unix() + Expiration,
 		IssuedAt:  time.Now().Unix(),
 		Issuer:    issuer,
 	}}
@@ -55,4 +57,24 @@ func GetAgentNameFromPureToken(tok string) string {
 		fmt.Println(err)
 		return ""
 	}
+}
+
+func getAgentToken(header http.Header) (string, error) {
+	reqToken := header.Get("AgentToken")
+	splitToken := strings.Split(reqToken, "Bearer ")
+	if len(splitToken) != 2 {
+		return "", fmt.Errorf("NO_TOKEN")
+	}
+	return strings.TrimSpace(splitToken[1]), nil
+}
+
+func GetAgentNameFromToken(r *http.Request) string {
+	if TokenSecretKey == "" {
+		initPublicToken()
+	}
+	tokenString, err := getAgentToken(r.Header)
+	if err != nil {
+		panic(err)
+	}
+	return GetAgentNameFromPureToken(tokenString)
 }

@@ -31,5 +31,6 @@ export class LoginService {
     localStorage.setItem('email', jwtData.email)
     localStorage.setItem('username', jwtData.username)
     localStorage.setItem('isAdmin', String(jwtData.isAdmin))
+    localStorage.setItem('agentToken',jwtData.agentToken)
   }
 }

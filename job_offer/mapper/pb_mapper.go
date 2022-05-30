@@ -7,9 +7,8 @@ import (
 )
 
 func MapCreateRequest(dto *pb.OfferRequest) *model.JobOffer {
-	id, _ := primitive.ObjectIDFromHex(dto.CompanyId)
 	resp := &model.JobOffer{
-		CompanyId:      id,
+		CompanyId:      dto.CompanyId,
 		JobDescription: dto.JobDescription,
 		JobOfferId:     primitive.NewObjectID(),
 		Position:       dto.Position,
@@ -23,7 +22,7 @@ func MapCreateRequest(dto *pb.OfferRequest) *model.JobOffer {
 
 func MapOfferResponse(dto *model.JobOffer) *pb.Offer {
 	resp := &pb.Offer{
-		CompanyId:      dto.CompanyId.String(),
+		CompanyId:      dto.CompanyId,
 		JobOfferId:     dto.JobOfferId.String(),
 		JobDescription: dto.JobDescription,
 		Position:       dto.Position,

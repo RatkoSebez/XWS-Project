@@ -32,3 +32,19 @@ func (handler *JobHandler) GetOffersByPosition(ctx context.Context, request *pb.
 	response := mapper.MapOffersResponse(resp)
 	return response, err
 }
+
+func (handler *JobHandler) CreateAgentOffer(ctx context.Context, request *pb.OfferRequest) (*pb.Offer, error) {
+	newRequest := &pb.OfferRequest{
+		CompanyId:      request.CompanyId,
+		JobDescription: request.JobDescription,
+		Position:       request.Position,
+		Preconditions:  nil,
+	}
+	for _, el := range request.Preconditions {
+		newRequest.Preconditions = append(newRequest.Preconditions, el)
+	}
+	offer := mapper.MapCreateRequest(newRequest)
+	resp, err := handler.JobService.CreateOffer(ctx, *offer)
+	response := mapper.MapOfferResponse(resp)
+	return response, err
+}

@@ -20,6 +20,7 @@ type JobOfferServiceClient interface {
 	CreateOffer(ctx context.Context, in *OfferRequest, opts ...grpc.CallOption) (*Offer, error)
 	GetOffersByCompany(ctx context.Context, in *CompanyID, opts ...grpc.CallOption) (*Offers, error)
 	GetOffersByPosition(ctx context.Context, in *Position, opts ...grpc.CallOption) (*Offers, error)
+	CreateAgentOffer(ctx context.Context, in *CreatOfferFromAgent, opts ...grpc.CallOption) (*Offer, error)
 }
 
 type jobOfferServiceClient struct {
@@ -57,6 +58,15 @@ func (c *jobOfferServiceClient) GetOffersByPosition(ctx context.Context, in *Pos
 	return out, nil
 }
 
+func (c *jobOfferServiceClient) CreateAgentOffer(ctx context.Context, in *CreatOfferFromAgent, opts ...grpc.CallOption) (*Offer, error) {
+	out := new(Offer)
+	err := c.cc.Invoke(ctx, "/job_offer.JobOfferService/CreateAgentOffer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JobOfferServiceServer is the server API for JobOfferService service.
 // All implementations must embed UnimplementedJobOfferServiceServer
 // for forward compatibility
@@ -64,6 +74,7 @@ type JobOfferServiceServer interface {
 	CreateOffer(context.Context, *OfferRequest) (*Offer, error)
 	GetOffersByCompany(context.Context, *CompanyID) (*Offers, error)
 	GetOffersByPosition(context.Context, *Position) (*Offers, error)
+	CreateAgentOffer(context.Context, *CreatOfferFromAgent) (*Offer, error)
 	mustEmbedUnimplementedJobOfferServiceServer()
 }
 
@@ -79,6 +90,9 @@ func (*UnimplementedJobOfferServiceServer) GetOffersByCompany(context.Context, *
 }
 func (*UnimplementedJobOfferServiceServer) GetOffersByPosition(context.Context, *Position) (*Offers, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOffersByPosition not implemented")
+}
+func (*UnimplementedJobOfferServiceServer) CreateAgentOffer(context.Context, *CreatOfferFromAgent) (*Offer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAgentOffer not implemented")
 }
 func (*UnimplementedJobOfferServiceServer) mustEmbedUnimplementedJobOfferServiceServer() {}
 
@@ -140,6 +154,24 @@ func _JobOfferService_GetOffersByPosition_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JobOfferService_CreateAgentOffer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatOfferFromAgent)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobOfferServiceServer).CreateAgentOffer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/job_offer.JobOfferService/CreateAgentOffer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobOfferServiceServer).CreateAgentOffer(ctx, req.(*CreatOfferFromAgent))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _JobOfferService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "job_offer.JobOfferService",
 	HandlerType: (*JobOfferServiceServer)(nil),
@@ -155,6 +187,10 @@ var _JobOfferService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOffersByPosition",
 			Handler:    _JobOfferService_GetOffersByPosition_Handler,
+		},
+		{
+			MethodName: "CreateAgentOffer",
+			Handler:    _JobOfferService_CreateAgentOffer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

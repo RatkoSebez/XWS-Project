@@ -27,6 +27,13 @@ service JobOfferService{
             body:"*"
         };
     }
+
+    rpc CreateAgentOffer(CreatOfferFromAgent) returns (Offer){
+        option(google.api.http)={
+            post:"/create-agent-offer"
+            body:"*"
+        };
+    }
 }
 
 message OfferRequest{
@@ -54,4 +61,12 @@ message CompanyID{
 
 message Position{
     string position=1;
+}
+
+message CreatOfferFromAgent{
+    string companyId=1;
+    string position=2;
+    string  jobDescription=3;
+    repeated string preconditions=4;
+    string token=5;
 }

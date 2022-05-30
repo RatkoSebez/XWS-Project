@@ -97,6 +97,10 @@ func (handler *CustomHandler) Init(mux *runtime.ServeMux) {
 	if err != nil {
 		panic(err)
 	}
+	err = mux.HandlePath("POST", "/create-agent-offer", handler.CreateAgentOffer)
+	if err != nil {
+		panic(err)
+	}
 	err = mux.HandlePath("GET", "/get-by-coid", handler.GetOfferByCompanyID)
 	if err != nil {
 		panic(err)
@@ -533,16 +537,12 @@ func (handler *CustomHandler) GetProfileByMail(w http.ResponseWriter, r *http.Re
 func (handler *CustomHandler) CreateOffer(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 	jobOfferClient := services.NewJobOfferClient(handler.jobOfferClientAddress)
 
-	/*userEmail := utilities.GetLoggedUserEmailFromToken(r)
-	email := pathParams["email"]
-	if email == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if userEmail == "" || userEmail != email {
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+
+	if userEmail == "" {
 		w.WriteHeader(http.StatusForbidden)
 		return
-	}*/
+	}
 
 	var request job_offer_service.OfferRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -625,4 +625,54 @@ func (handler *CustomHandler) GetOfferByPosition(w http.ResponseWriter, r *http.
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(responseJson)
+}
+
+func (handler *CustomHandler) CreateAgentOffer(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	jobOfferClient := services.NewJobOfferClient(handler.jobOfferClientAddress)
+	var request job_offer_service.CreatOfferFromAgent
+	agentName := utilities.GetAgentNameFromPureToken(request.Token)
+
+	if agentName == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	if !handler.CheckDoesProfileExist(agentName) {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	response, err := jobOfferClient.CreateAgentOffer(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
+
+func (handler *CustomHandler) CheckDoesProfileExist(mail string) bool {
+	profileClient := services.NewProfileClient(handler.profileClientAddress)
+	var request profile_service.EmptyMailMessage
+	request.Email = mail
+	response, err := profileClient.GetProfileByMail(context.TODO(), &request)
+	if err != nil {
+		return false
+	}
+	if response == nil {
+		return false
+	}
+	return true
 }
