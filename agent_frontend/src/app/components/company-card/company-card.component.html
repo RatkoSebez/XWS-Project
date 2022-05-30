@@ -1,0 +1,76 @@
+<div class="row justify-content-center">
+    <div class="col-auto mt-5">
+        <div class="card text-center">
+            <div class="card-header">
+                {{company.name}}
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#info{{company.name}}">Info</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#comments{{company.name}}">Comments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#salary{{company.name}}">Salary</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#interview{{company.name}}">Interview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#jobs{{company.name}}">Jobs</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane container active" id="info{{company.name}}">
+                        <h5 class="card-title">{{company.name}}</h5>
+                        <p class="card-text">{{company.address}}</p>
+                        <p class="card-text">{{company.phoneNumber}}</p>
+                        <p class="card-text">{{company.email}}</p>
+                        <p class="card-text">{{company.description}}</p>
+                    </div>
+                    <div class="tab-pane container fade" id="comments{{company.name}}">
+                        <div class="mb-3" *ngIf="company.ownerEmail != ownerEmail">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="your comment" [(ngModel)]="comment"></textarea>
+                        </div>
+                        <button class="btn btn-primary" (click)="createComment()" *ngIf="company.ownerEmail != ownerEmail">Submit</button>
+                        <div *ngFor="let comment of company.comments">
+                            <app-comment [comment]="comment"></app-comment>
+                        </div>
+                    </div>
+                    <div class="tab-pane container fade" id="salary{{company.name}}">
+                        <label *ngIf="company.ownerEmail != ownerEmail">Job Position</label>
+                        <input *ngIf="company.ownerEmail != ownerEmail" type="text" name="jobPosition" class="form-control" placeholder="Enter Job Position" autofocus [(ngModel)]="jobPosition">
+                        <label *ngIf="company.ownerEmail != ownerEmail">Salary</label>
+                        <input *ngIf="company.ownerEmail != ownerEmail" type="number" name="salary" class="form-control" placeholder="Enter Salary" [(ngModel)]="salary">
+                        <button *ngIf="company.ownerEmail != ownerEmail" class="btn btn-primary" (click)="createSalary()">Submit</button>
+                        <div *ngFor="let salaryForPosition of company.salaryForPosition">
+                            <app-salary [jobPosition]="salaryForPosition.jobPosition" [salary]="salaryForPosition.salary"></app-salary>
+                        </div>
+                    </div>
+                    <div class="tab-pane container fade" id="interview{{company.name}}">
+                        <div *ngIf="company.ownerEmail != ownerEmail" class="mb-3">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="your comment"
+                                [(ngModel)]="interviewReview"></textarea>
+                        </div>
+                        <button *ngIf="company.ownerEmail != ownerEmail" class="btn btn-primary" (click)="createInterviewReview()">Submit</button>
+                        <div *ngFor="let interviewReview of company.interviewReviews">
+                            <app-interview [interviewReview]="interviewReview"></app-interview>
+                        </div>
+                    </div>
+                    <div class="tab-pane container fade" id="jobs{{company.name}}">
+                        <div *ngFor="let job of company.jobs">
+                            <app-job [job]="job"></app-job>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <p class="card-text">owner: {{company.ownerEmail}} | approved: {{company.isApproved}}</p>
+            </div>
+        </div>
+    </div>
+</div>

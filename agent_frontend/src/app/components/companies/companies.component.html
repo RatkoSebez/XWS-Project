@@ -1,0 +1,32 @@
+<app-menu></app-menu>
+
+<div class="row justify-content-center">
+    <div class="col-auto mt-3">
+        <table class="table table-secondary table-striped w-auto mt-3" *ngIf="companies">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Owner Email</th>
+                    <th scope="col">Approved</th>
+                    <th scope="col">Approve</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let company of companies">
+                    <th scope="row">{{ company.name }}</th>
+                    <td>{{ company.address }}</td>
+                    <td>{{ company.phoneNumber }}</td>
+                    <td>{{ company.email }}</td>
+                    <td>{{ company.description }}</td>
+                    <td>{{ company.ownerEmail }}</td>
+                    <td>{{ company.isApproved }}</td>
+                    <td><button class="btn btn-primary" type="button" *ngIf="!company.isApproved" (click)="approve(company.name)">Approve</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

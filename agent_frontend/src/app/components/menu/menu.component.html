@@ -1,0 +1,40 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="">AGENT</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a routerLink="/companies" routerLinkActive="active" class="nav-link" *ngIf="isAdmin && isLoggedIn">Companies</a>
+                </li>
+                <li class="nav-item">
+                    <a routerLink="/company" routerLinkActive="active" class="nav-link" *ngIf="!isAdmin && isLoggedIn">My Company</a>
+                </li>
+                <li class="nav-item">
+                    <a routerLink="/registerCompany" routerLinkActive="active" class="nav-link" *ngIf="!isAdmin && isLoggedIn">Register Company</a>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <a routerLink="/login" *ngIf="!isLoggedIn">
+                    <button class="btn btn-outline-success" type="button">
+                        Login
+                    </button>
+                </a>
+                <a routerLink="/" *ngIf="isLoggedIn" (click)="logout()">
+                    <button class="btn btn-outline-success" type="button">
+                        Logout
+                    </button>
+                </a>
+                <a routerLink="/register" *ngIf="!isLoggedIn">
+                    <button class="btn btn-outline-success" type="button">
+                        Register
+                    </button>
+                </a>
+            </form>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,38 @@
+<!-- New job modal -->
+<div class="modal fade" id="newJobModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New Job</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="name">Job Name</label>
+                <input class="form-control mb-4" type="text" placeholder="job name" name="owner id"
+                    [(ngModel)]="job.name">
+                <label for="name">Job Description</label>
+                <div class="mb-3">
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"
+                        placeholder="job description" [(ngModel)]="job.description"></textarea>
+                </div>
+                <label for="name">Job Requirements</label>
+                <div class="mb-3">
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"
+                        placeholder="job requirements" [(ngModel)]="job.requirements"></textarea>
+                </div>
+                <label for="name">Job Benefits</label>
+                <div class="mb-3">
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" placeholder="job benefits"
+                        [(ngModel)]="job.benefits"></textarea>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                    (click)="newJob()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

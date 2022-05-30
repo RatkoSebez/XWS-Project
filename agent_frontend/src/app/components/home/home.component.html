@@ -1,0 +1,5 @@
+<app-menu></app-menu>
+
+<div *ngFor="let company of companies">
+    <app-company-card *ngIf="show" [company]="company" (refresh)="refresh($event)"></app-company-card>
+</div>
