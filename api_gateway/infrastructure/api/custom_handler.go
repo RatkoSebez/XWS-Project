@@ -3,6 +3,7 @@ package api
 import (
 	"XWS-Project/api_gateway/infrastructure/services"
 	"XWS-Project/proto/follow_service"
+	"XWS-Project/proto/job_offer_service"
 	"XWS-Project/proto/login_service"
 	"XWS-Project/proto/post_service"
 	"XWS-Project/proto/profile_service"
@@ -92,7 +93,18 @@ func (handler *CustomHandler) Init(mux *runtime.ServeMux) {
 	if err != nil {
 		panic(err)
 	}
-
+	err = mux.HandlePath("POST", "/create-offer", handler.CreateOffer)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("GET", "/get-by-coid", handler.GetOfferByCompanyID)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("GET", "/get-by-position", handler.GetOfferByPosition)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (handler *CustomHandler) Test(w http.ResponseWriter, r *http.Request) {
@@ -369,6 +381,11 @@ func (handler *CustomHandler) CreateFollow(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	var request follow_service.FollowRequestMessage
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	follow, err := followClient.CreateFollow(context.TODO(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -423,6 +440,11 @@ func (handler *CustomHandler) CreateFollowRequest(w http.ResponseWriter, r *http
 		return
 	}
 	var request follow_service.FollowRequestMessage
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	follow, err := followClient.CreateFollowRequest(context.TODO(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -493,6 +515,103 @@ func (handler *CustomHandler) GetProfileByMail(w http.ResponseWriter, r *http.Re
 	var request profile_service.EmptyMailMessage
 	request.Email = email
 	response, err := profileClient.GetProfileByMail(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
+
+func (handler *CustomHandler) CreateOffer(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	jobOfferClient := services.NewJobOfferClient(handler.jobOfferClientAddress)
+
+	/*userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	email := pathParams["email"]
+	if email == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if userEmail == "" || userEmail != email {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}*/
+
+	var request job_offer_service.OfferRequest
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	response, err := jobOfferClient.CreateOffer(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
+
+func (handler *CustomHandler) GetOfferByCompanyID(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	jobOfferClient := services.NewJobOfferClient(handler.jobOfferClientAddress)
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	var request job_offer_service.CompanyID
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	response, err := jobOfferClient.GetOffersByCompany(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
+
+func (handler *CustomHandler) GetOfferByPosition(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	jobOfferClient := services.NewJobOfferClient(handler.jobOfferClientAddress)
+
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	var request job_offer_service.Position
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	response, err := jobOfferClient.GetOffersByPosition(context.TODO(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err.Error())

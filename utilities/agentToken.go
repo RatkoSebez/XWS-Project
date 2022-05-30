@@ -7,11 +7,11 @@ import (
 	"time"
 )
 
-const ExpiresIn = 86400
+const Expiration = 86400
 
-var TokenSecret = ""
+var TokenSecretKey = ""
 
-type TokenClaims struct {
+type TokenInnerData struct {
 	AgentName string `json:"agentName"`
 	jwt.StandardClaims
 }
@@ -19,37 +19,37 @@ type TokenClaims struct {
 func initAgentToken() {
 	env := os.Getenv("PUBLIC_JWT_TOKEN_SECRET")
 	if env == "" {
-		TokenSecret = "agent_secret"
+		TokenSecretKey = "agent_secret"
 	} else {
-		TokenSecret = env
+		TokenSecretKey = env
 	}
 }
 
-func CreateToken(agentName string, issuer string) (string, error) {
+func CreateAgentToken(agentName string, issuer string) (string, error) {
 	if TokenSecret == "" {
 		initAgentToken()
 	}
-	claims := TokenClaims{AgentName: agentName, StandardClaims: jwt.StandardClaims{
+	claims := TokenInnerData{AgentName: agentName, StandardClaims: jwt.StandardClaims{
 		ExpiresAt: time.Now().Unix() + ExpiresIn,
 		IssuedAt:  time.Now().Unix(),
 		Issuer:    issuer,
 	}}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(TokenSecret))
+	return token.SignedString([]byte(TokenSecretKey))
 }
 
 func GetAgentNameFromPureToken(tok string) string {
-	if TokenSecret == "" {
+	if TokenSecretKey == "" {
 		initPublicToken()
 	}
 	token, err := jwt.ParseWithClaims(tok, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(TokenSecret), nil
+		return []byte(TokenSecretKey), nil
 	})
 	if err != nil {
 		fmt.Println(err)
 		return ""
 	}
-	if claims, ok := token.Claims.(*TokenClaims); ok && token.Valid {
+	if claims, ok := token.Claims.(*TokenInnerData); ok && token.Valid {
 		return claims.AgentName
 	} else {
 		fmt.Println(err)
