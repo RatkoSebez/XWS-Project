@@ -48,3 +48,15 @@ func (handler *JobHandler) CreateAgentOffer(ctx context.Context, request *pb.Cre
 	response := mapper.MapOfferResponse(resp)
 	return response, err
 }
+
+func (handler *JobHandler) GetAllOffers(ctx context.Context, request *pb.EmptyMessage) (*pb.Offers, error) {
+	resp, err := handler.JobService.FindAll(ctx)
+	response := mapper.MapOffersResponse(resp)
+	return response, err
+}
+
+func (handler *JobHandler) Delete(ctx context.Context, request *pb.DeleteRequest) error {
+	id, _ := primitive.ObjectIDFromHex(request.OfferId)
+	err := handler.JobService.Delete(ctx, id)
+	return err
+}

@@ -27,7 +27,7 @@ func (repository *JobRepository) GetAll(ctx context.Context) ([]*model.JobOffer,
 	findOptions.SetLimit(40)
 	var results []*model.JobOffer
 
-	cur, err := collection.Find(ctx, findOptions)
+	cur, err := collection.Find(ctx, bson.D{{}}, findOptions)
 	if err != nil {
 		panic(err)
 	}
@@ -47,7 +47,15 @@ func (repository *JobRepository) GetAll(ctx context.Context) ([]*model.JobOffer,
 }
 
 func (repository *JobRepository) DeleteOffer(ctx context.Context, offerId primitive.ObjectID) error {
-	return nil
+	collection := repository.Client.Database("jobOffers").Collection("offers")
+	deleteOptions := options.Delete()
+	filter := bson.D{{"JobOfferId", offerId}}
+	_, err := collection.DeleteOne(ctx, filter, deleteOptions)
+	if err != nil {
+		panic(err)
+	}
+
+	return err
 }
 
 func (repository *JobRepository) FindByCompany(ctx context.Context, data primitive.ObjectID) ([]*model.JobOffer, error) {

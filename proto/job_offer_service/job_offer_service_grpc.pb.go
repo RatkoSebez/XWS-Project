@@ -21,6 +21,8 @@ type JobOfferServiceClient interface {
 	GetOffersByCompany(ctx context.Context, in *CompanyID, opts ...grpc.CallOption) (*Offers, error)
 	GetOffersByPosition(ctx context.Context, in *Position, opts ...grpc.CallOption) (*Offers, error)
 	CreateAgentOffer(ctx context.Context, in *CreatOfferFromAgent, opts ...grpc.CallOption) (*Offer, error)
+	GetAllOffers(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*Offers, error)
+	DeleteOffer(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*EmptyMessage, error)
 }
 
 type jobOfferServiceClient struct {
@@ -67,6 +69,24 @@ func (c *jobOfferServiceClient) CreateAgentOffer(ctx context.Context, in *CreatO
 	return out, nil
 }
 
+func (c *jobOfferServiceClient) GetAllOffers(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*Offers, error) {
+	out := new(Offers)
+	err := c.cc.Invoke(ctx, "/job_offer.JobOfferService/GetAllOffers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *jobOfferServiceClient) DeleteOffer(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*EmptyMessage, error) {
+	out := new(EmptyMessage)
+	err := c.cc.Invoke(ctx, "/job_offer.JobOfferService/DeleteOffer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JobOfferServiceServer is the server API for JobOfferService service.
 // All implementations must embed UnimplementedJobOfferServiceServer
 // for forward compatibility
@@ -75,6 +95,8 @@ type JobOfferServiceServer interface {
 	GetOffersByCompany(context.Context, *CompanyID) (*Offers, error)
 	GetOffersByPosition(context.Context, *Position) (*Offers, error)
 	CreateAgentOffer(context.Context, *CreatOfferFromAgent) (*Offer, error)
+	GetAllOffers(context.Context, *EmptyMessage) (*Offers, error)
+	DeleteOffer(context.Context, *DeleteRequest) (*EmptyMessage, error)
 	mustEmbedUnimplementedJobOfferServiceServer()
 }
 
@@ -93,6 +115,12 @@ func (*UnimplementedJobOfferServiceServer) GetOffersByPosition(context.Context, 
 }
 func (*UnimplementedJobOfferServiceServer) CreateAgentOffer(context.Context, *CreatOfferFromAgent) (*Offer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAgentOffer not implemented")
+}
+func (*UnimplementedJobOfferServiceServer) GetAllOffers(context.Context, *EmptyMessage) (*Offers, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllOffers not implemented")
+}
+func (*UnimplementedJobOfferServiceServer) DeleteOffer(context.Context, *DeleteRequest) (*EmptyMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteOffer not implemented")
 }
 func (*UnimplementedJobOfferServiceServer) mustEmbedUnimplementedJobOfferServiceServer() {}
 
@@ -172,6 +200,42 @@ func _JobOfferService_CreateAgentOffer_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JobOfferService_GetAllOffers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobOfferServiceServer).GetAllOffers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/job_offer.JobOfferService/GetAllOffers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobOfferServiceServer).GetAllOffers(ctx, req.(*EmptyMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JobOfferService_DeleteOffer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobOfferServiceServer).DeleteOffer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/job_offer.JobOfferService/DeleteOffer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobOfferServiceServer).DeleteOffer(ctx, req.(*DeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _JobOfferService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "job_offer.JobOfferService",
 	HandlerType: (*JobOfferServiceServer)(nil),
@@ -191,6 +255,14 @@ var _JobOfferService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateAgentOffer",
 			Handler:    _JobOfferService_CreateAgentOffer_Handler,
+		},
+		{
+			MethodName: "GetAllOffers",
+			Handler:    _JobOfferService_GetAllOffers_Handler,
+		},
+		{
+			MethodName: "DeleteOffer",
+			Handler:    _JobOfferService_DeleteOffer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

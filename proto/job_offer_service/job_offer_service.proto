@@ -34,6 +34,19 @@ service JobOfferService{
             body:"*"
         };
     }
+
+    rpc GetAllOffers(EmptyMessage) returns (Offers){
+        option(google.api.http)={
+            get:"/get-all-offers"
+        };
+    }
+
+    rpc DeleteOffer(DeleteRequest) returns (EmptyMessage){
+        option(google.api.http)={
+            post:"/delete-offer"
+            body:"*"
+        };
+    }
 }
 
 message OfferRequest{
@@ -69,4 +82,12 @@ message CreatOfferFromAgent{
     string  jobDescription=3;
     repeated string preconditions=4;
     string token=5;
+}
+
+message DeleteRequest{
+    string offerId=1;
+}
+
+message EmptyMessage{
+
 }

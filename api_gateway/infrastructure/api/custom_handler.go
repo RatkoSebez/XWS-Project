@@ -109,6 +109,10 @@ func (handler *CustomHandler) Init(mux *runtime.ServeMux) {
 	if err != nil {
 		panic(err)
 	}
+	err = mux.HandlePath("GET", "/get-all-offers", handler.GetAllOffers)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (handler *CustomHandler) Test(w http.ResponseWriter, r *http.Request) {
@@ -677,4 +681,60 @@ func (handler *CustomHandler) CheckDoesProfileExist(mail string) bool {
 		return false
 	}
 	return true
+}
+
+func (handler *CustomHandler) GetAllOffers(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	jobOfferClient := services.NewJobOfferClient(handler.jobOfferClientAddress)
+
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+	request := &job_offer_service.EmptyMessage{}
+	response, err := jobOfferClient.GetAllOffers(context.TODO(), request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
+
+func (handler *CustomHandler) DeleteOffer(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	jobOfferClient := services.NewJobOfferClient(handler.jobOfferClientAddress)
+
+	userEmail := utilities.GetLoggedUserEmailFromToken(r)
+	if userEmail == "" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+	var request job_offer_service.DeleteRequest
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	response, err := jobOfferClient.DeleteOffer(context.TODO(), &request)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
 }
