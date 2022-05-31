@@ -25,3 +25,13 @@ func (service *JobService) FindByPosition(ctx context.Context, position string) 
 	res, err := service.JobRepo.FindByPosition(ctx, position)
 	return res, err
 }
+
+func (service *JobService) FindAll(ctx context.Context) ([]*model.JobOffer, error) {
+	res, err := service.JobRepo.GetAll(ctx)
+	return res, err
+}
+
+func (service *JobService) Delete(ctx context.Context, id primitive.ObjectID) error {
+	err := service.JobRepo.DeleteOffer(ctx, id)
+	return err
+}

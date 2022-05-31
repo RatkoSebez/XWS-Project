@@ -33,7 +33,7 @@ func (handler *JobHandler) GetOffersByPosition(ctx context.Context, request *pb.
 	return response, err
 }
 
-func (handler *JobHandler) CreateAgentOffer(ctx context.Context, request *pb.OfferRequest) (*pb.Offer, error) {
+func (handler *JobHandler) CreateAgentOffer(ctx context.Context, request *pb.CreatOfferFromAgent) (*pb.Offer, error) {
 	newRequest := &pb.OfferRequest{
 		CompanyId:      request.CompanyId,
 		JobDescription: request.JobDescription,

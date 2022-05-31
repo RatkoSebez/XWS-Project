@@ -630,8 +630,12 @@ func (handler *CustomHandler) GetOfferByPosition(w http.ResponseWriter, r *http.
 func (handler *CustomHandler) CreateAgentOffer(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 	jobOfferClient := services.NewJobOfferClient(handler.jobOfferClientAddress)
 	var request job_offer_service.CreatOfferFromAgent
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	agentName := utilities.GetAgentNameFromPureToken(request.Token)
-
 	if agentName == "" {
 		w.WriteHeader(http.StatusForbidden)
 		return
@@ -642,11 +646,6 @@ func (handler *CustomHandler) CreateAgentOffer(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
 	response, err := jobOfferClient.CreateAgentOffer(context.TODO(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -668,10 +667,13 @@ func (handler *CustomHandler) CheckDoesProfileExist(mail string) bool {
 	var request profile_service.EmptyMailMessage
 	request.Email = mail
 	response, err := profileClient.GetProfileByMail(context.TODO(), &request)
+
 	if err != nil {
+		fmt.Println(err)
 		return false
 	}
 	if response == nil {
+
 		return false
 	}
 	return true

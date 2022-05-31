@@ -21,6 +21,35 @@ func (repository *JobRepository) AddNew(ctx context.Context, data model.JobOffer
 	return &data, err
 }
 
+func (repository *JobRepository) GetAll(ctx context.Context) ([]*model.JobOffer, error) {
+	collection := repository.Client.Database("jobOffers").Collection("offers")
+	findOptions := options.Find()
+	findOptions.SetLimit(40)
+	var results []*model.JobOffer
+
+	cur, err := collection.Find(ctx, findOptions)
+	if err != nil {
+		panic(err)
+	}
+
+	for cur.Next(ctx) {
+		var elem model.JobOffer
+		err := cur.Decode(&elem)
+		if err != nil {
+			panic(err)
+		}
+
+		results = append(results, &elem)
+	}
+
+	cur.Close(ctx)
+	return results, err
+}
+
+func (repository *JobRepository) DeleteOffer(ctx context.Context, offerId primitive.ObjectID) error {
+	return nil
+}
+
 func (repository *JobRepository) FindByCompany(ctx context.Context, data primitive.ObjectID) ([]*model.JobOffer, error) {
 	collection := repository.Client.Database("jobOffers").Collection("offers")
 	findOptions := options.Find()

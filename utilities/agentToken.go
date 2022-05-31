@@ -21,7 +21,7 @@ type TokenInnerData struct {
 func initAgentToken() {
 	env := os.Getenv("PUBLIC_JWT_TOKEN_SECRET")
 	if env == "" {
-		TokenSecretKey = "agent_secret"
+		TokenSecretKey = "token_secret"
 	} else {
 		TokenSecretKey = env
 	}
@@ -42,14 +42,13 @@ func CreateAgentToken(agentName string, issuer string) (string, error) {
 
 func GetAgentNameFromPureToken(tok string) string {
 	if TokenSecretKey == "" {
-		initPublicToken()
+		initAgentToken()
 	}
-	token, err := jwt.ParseWithClaims(tok, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tok, &TokenInnerData{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(TokenSecretKey), nil
 	})
 	if err != nil {
 		fmt.Println(err)
-		return ""
 	}
 	if claims, ok := token.Claims.(*TokenInnerData); ok && token.Valid {
 		return claims.AgentName
@@ -70,7 +69,7 @@ func getAgentToken(header http.Header) (string, error) {
 
 func GetAgentNameFromToken(r *http.Request) string {
 	if TokenSecretKey == "" {
-		initPublicToken()
+		initAgentToken()
 	}
 	tokenString, err := getAgentToken(r.Header)
 	if err != nil {

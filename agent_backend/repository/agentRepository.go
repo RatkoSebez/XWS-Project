@@ -70,6 +70,9 @@ func (repository *AgentRepository) ApproveCompany(ctx context.Context, dto *dto.
 	collection := repository.Client.Database("agent").Collection("company")
 	filter := bson.D{{"name", dto.Name}}
 	err := collection.FindOne(ctx, filter).Decode(&company)
+	if err != nil {
+		fmt.Println(err)
+	}
 	company.IsApproved = true
 	update := bson.M{"$set": company}
 	_, err = collection.UpdateOne(ctx, filter, update)
@@ -109,6 +112,9 @@ func (repository *AgentRepository) EditCompany(ctx context.Context, newCompany *
 	collection := repository.Client.Database("agent").Collection("company")
 	filter := bson.D{{"name", newCompany.Name}}
 	err := collection.FindOne(ctx, filter).Decode(&company)
+	if err != nil {
+		fmt.Println(err)
+	}
 	company.Address = newCompany.Address
 	company.PhoneNumber = newCompany.PhoneNumber
 	company.Email = newCompany.Email
@@ -144,6 +150,9 @@ func (repository *AgentRepository) CreateCompanyInterviewReview(ctx context.Cont
 	collection := repository.Client.Database("agent").Collection("company")
 	filter := bson.D{{"name", dto.Name}}
 	err := collection.FindOne(ctx, filter).Decode(&company)
+	if err != nil {
+		fmt.Println(err)
+	}
 	company.InterviewReviews = append(company.InterviewReviews, dto.InterviewReview)
 	update := bson.M{"$set": company}
 	_, err = collection.UpdateOne(ctx, filter, update)
@@ -160,6 +169,9 @@ func (repository *AgentRepository) CreateCompanySalary(ctx context.Context, data
 	collection := repository.Client.Database("agent").Collection("company")
 	filter := bson.D{{"name", data.Name}}
 	err := collection.FindOne(ctx, filter).Decode(&company)
+	if err != nil {
+		fmt.Println(err)
+	}
 	company.SalaryForPosition = append(company.SalaryForPosition, dto.SalaryForPosition{data.JobPosition, data.Salary})
 	update := bson.M{"$set": company}
 	_, err = collection.UpdateOne(ctx, filter, update)
@@ -176,6 +188,9 @@ func (repository *AgentRepository) CreateCompanyJob(ctx context.Context, data *d
 	collection := repository.Client.Database("agent").Collection("company")
 	filter := bson.D{{"name", data.CompanyName}}
 	err := collection.FindOne(ctx, filter).Decode(&company)
+	if err != nil {
+		fmt.Println(err)
+	}
 	company.Jobs = append(company.Jobs, model.Job{data.Name, data.Description, data.Requirements, data.Benefits})
 	update := bson.M{"$set": company}
 	_, err = collection.UpdateOne(ctx, filter, update)
