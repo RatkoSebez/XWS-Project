@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { PostService } from '../services/post-service';
 
 @Component({
   selector: 'app-front-page',
@@ -9,10 +10,16 @@ import { Observable } from 'rxjs';
 export class FrontPageComponent implements OnInit {
 
   public skillList = new Array<string>();
-  mail =  localStorage.getItem('mail')
-  constructor() { }
+  public posts : any
+  public mail : any 
+  constructor(private postservice:PostService) { }
 
   ngOnInit(): void {
+    this.mail = localStorage.getItem('mail')
+  this.postservice.getFollowingPosts().subscribe(data=>{
+    this.posts = data;
+      })
+  
   }
 
 }

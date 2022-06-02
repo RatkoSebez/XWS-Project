@@ -1,22 +1,27 @@
+
+
 <div  *ngIf="myprofile==false" style="margin-left: auto; margin-right: auto; width:30%">
     <div>{{getUserEmail()}}</div>
     <h1>{{user2$.username}}</h1>
     <h4 >{{user2$.email}}</h4>
-    <div *ngIf="user2$.isPrivate == true"> 
+    <div *ngIf="isPrivate == true"> 
         <button (click)="followRequest()">{{privateFollowbtn}}</button>
         </div>
-    <div *ngIf="user2$.isPrivate != true"> 
+    <div *ngIf="isPrivate == false"> 
         <button (click)="follow()" >{{followbtn}}</button>
     </div>
 
 </div>
+
 
 <div *ngIf="myprofile==true">
     <p><strong> {{mail}} </strong></p>
     <button (click)="profileInfo()" style="width: 7%;">Profile info</button> <br> 
     <button style="margin-top: 2ex;width: 7%;" (click)="showFollowers()">Followers</button> <br>
     <button style="margin-top : 2ex;width: 7%;" (click)="showFollowing()">Following</button> <br>
+    <button style="margin-top : 2ex;width: 7%;" (click)="showRequests()">Follow Requests</button> <br>
 
+ 
 
     <div *ngIf="followers"><br>
         <p><strong>followers:</strong></p>
@@ -35,9 +40,23 @@
         </tr>
     </table>
 </div>
-    
+<div *ngIf="followRequests"> <br>
+    <p><strong>Requests:</strong></p>
+
+    <table style="margin-left : 5%; ">
+        <tr *ngFor="let r of myRequests.requests ; let i = index">
+            <div style="margin-top : 15%; background-color: lightgray;">
+            <label> {{r.senderEmail}}</label><br>
+             <button style="margin-left : 15%" (click)="acceptFollow(r.senderEmail)"> Accept</button>
+            </div>
+        </tr>
+    </table>
+</div>
 
 </div>
+
+
+
 
 <div *ngIf="myprofile==true">
     

@@ -1,8 +1,13 @@
-
+<div>
+    <label> {{privatetext}} </label> <br>
+    <button (click)="profilePrivate()">Change</button> 
+</div> 
 <form   #regForm="ngForm"    style=" justify-items: center; visibility: visible;text-align: center; background-color: white;">
 
 
+    
     <div>
+
         <label><b> Name</b> </label> <br>
         <input name="name" type="text" [(ngModel)]="user$.name"> 
     </div>

@@ -31,6 +31,7 @@ export class ProfileEditPageComponent implements OnInit {
       public skill3 = ''
       public skillList = new Array<string>();
       public x :any
+      public privatetext = 'Make profile public'
  
   constructor(
     public service: ProfileEditService,
@@ -42,6 +43,7 @@ export class ProfileEditPageComponent implements OnInit {
   ngOnInit(): void {
     this.service.getUserByMail(localStorage.getItem('mail'))
       .subscribe(data => this.user$ = data);
+      this.user$.isprivate=true
   }
 
   onSubmit(){
@@ -109,5 +111,23 @@ export class ProfileEditPageComponent implements OnInit {
     this.user$.skills.push(this.skill1)
     this.skill1 = ""
   }
-
+  profilePublic(){
+    this.user$.isprivate = false
+  }
+  profilePrivate(){
+    this.user$.isprivate = !this.user$.isprivate
+    if (this.user$.isprivate == true){
+      this.privatetext = 'Make profile public'
+    }else if (this.user$.isprivate == false){
+      this.privatetext = 'Make profile private'
+    }
+    this.service.editUser(this.user$).subscribe(
+      res=>{
+        
+        this.toastr.success('Updated successfully', 'Success');
+      }, err => {        this.toastr.error('Error!', 'Error');
+    }
+      
+    );
+  }
 }

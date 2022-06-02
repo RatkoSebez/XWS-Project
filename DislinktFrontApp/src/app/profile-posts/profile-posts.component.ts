@@ -47,16 +47,25 @@ export class ProfilePostsComponent implements OnInit {
   public newpostactive:boolean = false
   public myprofile:boolean = false
   static user$ : any
+  public myUser$:any
   public followreq:any
   public followbtn: string = ''
   public privateFollowbtn: string = ''
   public followers:boolean = false
   public following:boolean = false
+  public receivermail:string = ''
+  public isPrivate:boolean = false
+  public followRequests: boolean = false
+  public myRequests: any
 
   ngOnInit(): void {
   //this.posts$ = this.service.getUserPosts()
+  this.service.getUserByMail(localStorage.getItem('mail'))
+      .subscribe(data => this.myUser$ = data);
   this.followbtn = 'Follow'
+  this.privateFollowbtn = 'Follow'
   this.mail = localStorage.getItem('mail')
+
   this.isThisMyProfile()
   this.header = this.loginservice.getHeaders()
 
@@ -192,6 +201,8 @@ public user2$ : any
 getUserEmail(){
   this.userEmail =  ProfilePostsComponent.user$.email
   this.user2$ = ProfilePostsComponent.user$
+  this.isPrivate = ProfilePostsComponent.user$.isPrivate
+  
 }
 follow(){
   this.followreq = new FollowRequestDTO(this.mail, this.user2$.email )
@@ -208,7 +219,19 @@ follow(){
   );;
 }
 followRequest(){
-  
+  this.followreq = new FollowRequestDTO(this.mail, this.userEmail)
+  this.followService.followRequest(this.followreq).subscribe(
+    res=>{
+      
+      //this.toastr.success('Registered successfully', 'Success')
+     console.log('success');
+     this.privateFollowbtn = 'Follow Request sent'
+
+      ;
+    }, err => {   console.log('error')     ;
+  }
+  );;
+
 }
 profileInfo(){
   this.route.navigate(['/profile'])
@@ -218,6 +241,8 @@ public follows:any
 showFollowers(){
   this.following = false
   this.followers = true;
+  this.followRequests = false 
+
   this.followService.getFollowers(this.mail).subscribe(data=>{
     this.follows = data;
       })
@@ -227,8 +252,33 @@ showFollowers(){
 showFollowing(){
   this.followers = false
   this.following = true;
+  this.followRequests = false 
+
   this.followService.getFollowers(this.mail).subscribe(data=>{
     this.follows = data;
       })
+}
+showRequests(){
+  this.followers = false
+  this.following = false
+  this.followRequests = true 
+
+  this.followService.getRequests(this.mail).subscribe(data=>{
+    this.myRequests = data;
+      })
+}
+acceptFollow(mail:string){
+  this.followreq = new FollowRequestDTO(mail, this.mail )
+
+  this.followService.follow(this.followreq).subscribe(
+    res=>{
+      
+      //this.toastr.success('Registered successfully', 'Success')
+     console.log('success');
+
+      ;
+    }, err => {   console.log('error')     ;
+  }
+  );;
 }
 }

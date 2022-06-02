@@ -76,7 +76,11 @@ func (handler *CustomHandler) Init(mux *runtime.ServeMux) {
 	if err != nil {
 		panic(err)
 	}
-	err = mux.HandlePath("POST", "/following-posts", handler.FollowingPosts)
+	err = mux.HandlePath("GET", "/following-posts", handler.FollowingPosts)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("OPTIONS", "/following-posts", handler.Preflight)
 	if err != nil {
 		panic(err)
 	}
@@ -102,6 +106,10 @@ func (handler *CustomHandler) Init(mux *runtime.ServeMux) {
 		panic(err)
 	}
 	err = mux.HandlePath("POST", "/followRequest/{email}", handler.CreateFollowRequest)
+	if err != nil {
+		panic(err)
+	}
+	err = mux.HandlePath("OPTIONS", "/followRequest/{email}", handler.Preflight)
 	if err != nil {
 		panic(err)
 	}
@@ -303,6 +311,9 @@ func (handler *CustomHandler) MakeReaction(w http.ResponseWriter, r *http.Reques
 }
 
 func (handler *CustomHandler) FollowingPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	postClient := services.NewPostClient(handler.postClientAddress)
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
 	if userEmail == "" {
@@ -316,13 +327,18 @@ func (handler *CustomHandler) FollowingPosts(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	response, err := postClient.FollowingPosts(context.TODO(), &request)
+
 	if err != nil {
+		fmt.Println("GRESKA 1")
+
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err.Error())
 		return
 	}
 	responseJson, err := json.Marshal(response)
 	if err != nil {
+		fmt.Println("GRESKA 2")
+
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Println(err.Error())
 		return
@@ -459,6 +475,9 @@ func (handler *CustomHandler) CreateFollow(w http.ResponseWriter, r *http.Reques
 }
 
 func (handler *CustomHandler) GetFollowRequest(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	followClient := services.NewFollowClient(handler.followClientAddress)
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
 	if userEmail == "" {
@@ -489,13 +508,24 @@ func (handler *CustomHandler) GetFollowRequest(w http.ResponseWriter, r *http.Re
 }
 
 func (handler *CustomHandler) CreateFollowRequest(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
 	followClient := services.NewFollowClient(handler.followClientAddress)
+	email := pathParams["email"]
+	if email == "" {
+		fmt.Println("Mail invalid")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	userEmail := utilities.GetLoggedUserEmailFromToken(r)
 	if userEmail == "" {
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 	var request follow_service.FollowRequestMessage
+	request.SenderEmail = userEmail
+	request.ReceiverEmail = email
 	follow, err := followClient.CreateFollowRequest(context.TODO(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

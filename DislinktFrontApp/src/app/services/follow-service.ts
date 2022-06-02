@@ -21,9 +21,17 @@ export class FollowService{
         const headers = this.loginService.getHeaders();
         return this.http.post<any>(this.url+'follow/'+data.email, data, {headers:headers})
     }
+    followRequest(data:any){
+        const headers = this.loginService.getHeaders();
+        return this.http.post<any>(this.url+'followRequest/'+data.email, data, {headers:headers})
+    }
     getFollowers(mail:string){
         const headers = this.loginService.getHeaders();
         return this.http.get<any>(this.url+'follow/'+mail,  {headers:headers})
 
+    }
+    getRequests(mail:string){
+        const headers = this.loginService.getHeaders();
+        return this.http.get<any>(this.url+'followRequest/'+mail,  {headers:headers})
     }
 }

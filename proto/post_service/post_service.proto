@@ -34,7 +34,7 @@ service PostService{
     }
     rpc FollowingPosts(GetListOfFollowing) returns (PostList){
         option(google.api.http)={
-            post:"/following-posts"
+            get:"/following-posts"
             body:"*"
         };
     }
