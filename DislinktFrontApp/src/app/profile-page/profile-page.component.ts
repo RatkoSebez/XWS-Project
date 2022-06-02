@@ -27,21 +27,23 @@ export class ProfilePageComponent implements OnInit {
   ngOnInit(): void {
     this.mail = localStorage.getItem('mail')
     this.token = localStorage.getItem('token')
-    this.service.getUserByMail('${mail}')
+    this.service.getUserByMail(this.mail)
       .subscribe(data => this.user$ = data);
+
+    console.log('user ovaj je')
     console.log(this.user$)
-    this.bio = this.user$.bio
-    this.skills = this.user$.skills 
-    this.education = this.user$.education
-    this.interests = this.user$.interests
-    this.experience = this.user$.experience
-    console.log(this.experience)
+    // this.bio = this.user$.bio
+    // this.skills = this.user$.skills 
+    // this.education = this.user$.education
+    // this.interests = this.user$.interests
+    // this.experience = this.user$.experience
+    // console.log(this.experience)
     //this.userDTO$ = new UserDTO(this.user$.name,this.user$.surname , this.user$.email, this.user$.number, this.user$.sex,this.user$.bdateday,this.user$.bdatemonth,this.user$.bdateyear, this.user$.username, this.user$.password, this.user$.bio, this.user$.experience, this.user$.education, this.user$.skills, this.user$.isprivate);
 
 }
 
 edit(){
-  this.route.navigate(['/edit']);
+  this.route.navigate(['/'+'edit']);
 }
 
 

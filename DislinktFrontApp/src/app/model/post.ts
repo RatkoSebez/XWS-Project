@@ -2,8 +2,8 @@ import { Media } from "./media";
 import { Reaction } from "./reaction";
 
 export class Post{
-    postId: number;
-	userId: number;
+    postId: string;
+	userId: string;
 	creationTime:any;
 	mediaAssets: Array<Media>
 	postText:string;
@@ -12,8 +12,8 @@ export class Post{
 
     constructor(){
 
-            this.postId=-1;
-            this.userId=-1;
+            this.postId='';
+            this.userId='';
             this.creationTime=null;
             this.mediaAssets=[];
             this.postText='';

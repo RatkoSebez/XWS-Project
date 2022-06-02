@@ -1,7 +1,8 @@
 
+        <button style="background-color: blue; color: white;" (click) = "edit()" >Edit profile</button>
 
     <div style="text-align: center;">
-        
+        <div style="border: 3px; border-style: solid; background-color: white; margin-left: auto;margin-right: auto;width: 30%; text-align: center;">
         <label style="font-weight: 800;"> Name </label> <br>
         <p> {{user$.name}}  </p> 
         <label style="font-weight: 800;"> Surname </label> <br>
@@ -16,7 +17,7 @@
      <label style="font-weight: 800;"> Biography </label> <br>
         <p> {{user$.bio}}   </p> 
         <label style="font-weight: 800;"> Date of birth </label> <br>
-        <p> {{user$.bDateDay}} {{user$.bDateMonth}} {{user$.bDateYear}}    </p> 
+        <p> {{user$.bDateDay}}. {{user$.bDateMonth}}. {{user$.bDateYear}}.    </p> 
         <label style="font-weight: 800;"> Experience </label> <br>
         <p> {{user$.experience[0]}} <br>   {{user$.experience[1]}} <br> {{user$.experience[2]}}<br>  {{user$.experience[3]}}    </p> 
         <label style="font-weight: 800;"> Education </label> <br>
@@ -25,7 +26,6 @@
         <p> {{user$.interests[0]}} <br> {{user$.interests[1]}} <br>  {{user$.interests[2]}} <br> {{user$.interests[3]}}    </p> 
         <label style="font-weight: 800;"> Skills </label> <br>
         <p> {{user$.skills[0]}} <br>  {{user$.skills[1]}} <br> {{user$.skills[2]}} <br> {{user$.skills[3]}}    </p> 
-
-        <button style="background-color: blue; color: white;" (click) = "edit()" >Edit profile</button>
+    </div>
     </div>
     

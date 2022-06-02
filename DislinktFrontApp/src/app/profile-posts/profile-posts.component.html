@@ -1,0 +1,103 @@
+<div  *ngIf="myprofile==false" style="margin-left: auto; margin-right: auto; width:30%">
+    <div>{{getUserEmail()}}</div>
+    <h1>{{user2$.username}}</h1>
+    <h4 >{{user2$.email}}</h4>
+    <div *ngIf="user2$.isPrivate == true"> 
+        <button (click)="followRequest()">{{privateFollowbtn}}</button>
+        </div>
+    <div *ngIf="user2$.isPrivate != true"> 
+        <button (click)="follow()" >{{followbtn}}</button>
+    </div>
+
+</div>
+
+<div *ngIf="myprofile==true">
+    <p><strong> {{mail}} </strong></p>
+    <button (click)="profileInfo()" style="width: 7%;">Profile info</button> <br> 
+    <button style="margin-top: 2ex;width: 7%;" (click)="showFollowers()">Followers</button> <br>
+    <button style="margin-top : 2ex;width: 7%;" (click)="showFollowing()">Following</button> <br>
+
+
+    <div *ngIf="followers"><br>
+        <p><strong>followers:</strong></p>
+    <table>
+        <tr *ngFor="let f of follows.followers ; let i = index">
+            <label> {{f}}</label>
+        </tr>
+    </table>
+</div>
+<div *ngIf="following"> <br>
+    <p><strong>following:</strong></p>
+
+    <table>
+        <tr *ngFor="let f of follows.follows ; let i = index">
+            <label> {{f}}</label>
+        </tr>
+    </table>
+</div>
+    
+
+</div>
+
+<div *ngIf="myprofile==true">
+    
+<div style="text-align: center;">
+<button (click)="newpost()">New post</button>
+<div *ngIf="newpostactive==true">  
+<app-new-post></app-new-post>
+</div>  
+</div>
+
+<div >
+    <table style="margin-left: auto; margin-right: auto; width:30%"  >
+        <label> My posts </label>
+        
+        <tr *ngFor="let p of x.posts ; let i = index">
+                <div>{{getlikes()}}</div>
+                <div>{{getdislikes()}}</div>
+            <div style=" background-color: white; margin-bottom: 10%;  border-style:solid; border-color:black;">
+                <label> <strong>{{p.userEmail}}</strong>  </label> <br>   
+                <p style="margin-left: auto; margin-right: auto;"> {{p.postText}}  </p>
+                 <br> <br>
+                 <!-- <img src="{{p.mediaAssets[0].filepath}}"> -->
+                <label> {{p.user}}</label>
+                
+                <label style="background-color: rgb(77, 158, 196); width: 100%;text-align: center;"><strong>Reactions</strong> </label>
+
+                <div *ngFor="let t of p.reactions; let i1=index">
+                    <div *ngIf="t.typeOfReaction == 'LIKE';"> {{likeplus()}}</div>
+                    <div *ngIf="t.typeOfReaction == 'DISLIKE';"> {{dislikeplus()}}</div>
+                    <div>{{getlikes()}}</div>
+                    <div>{{getdislikes()}}</div>
+     
+                        </div>
+                        <div style="text-align: center;">
+                        <label style="margin-left: 7%; margin-right: 5%;">likes: {{likenum[i+1]}} </label> 
+                        <button style="margin-left:auto" type="submit" (click)="like(p.postID, i+1)"> Like </button> <button (click)="dislike(p.postID, i+1)"> Dislike</button> 
+                        <label style="margin-left:7%;">dislikes: {{dislikenum[i+1]}}</label> 
+                    </div>
+
+      
+                <label style="background-color: rgb(72, 148, 235); width: 100%; text-align: center;" (click)="comments(i+1)"><strong>Comments</strong> </label> <br>
+                
+                <div *ngFor="let c of p.comments">
+
+                    <div *ngIf=" comindex == i+1 && commentsSelected==true " style="background-color: lightgray; margin-top:3px; margin-bottom: 3px;">
+                        <div>{{getcomments()}}</div>
+
+                        <tr> {{c.userEmail}}</tr>
+                    <tr>{{c.commentData}}</tr><br></div>
+                    
+                </div>
+
+                <input type="text" [(ngModel)]="commentText">    <button (click)="comment(p.postID, i+1)">Comment</button>     
+                  
+  
+            </div>
+            <div>{{likereset()}}</div>    
+            <div>{{resetcom()}}</div>           
+        </tr>
+
+    </table>
+
+</div></div>

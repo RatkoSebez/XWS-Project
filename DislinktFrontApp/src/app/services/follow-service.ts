@@ -11,22 +11,19 @@ import { CommentDTO } from '../dtos/CommentDTO';
   providedIn: 'root'
 })
 
-export class PostService{
+export class FollowService{
     constructor(private http: HttpClient, private route: Router, private loginService:LoginService) {}
     url = 'http://localhost:8080/'
-    url1 = 'http://localhost:8080//following-posts/'
+    url1 = 'http://localhost:8080//follow'
 
-    makeNewPost(post:NewPostDTO){
+  
+    follow( data:any){
         const headers = this.loginService.getHeaders();
-        const body=JSON.stringify(post) 
-        return this.http.post<any>(this.url+'make-new-post',body,{headers:headers})
+        return this.http.post<any>(this.url+'follow/'+data.email, data, {headers:headers})
     }
-    getFollowingPosts(mail:string){
-        return this.http.get<any>(this.url1)
-    }
-    makeComment(comm:CommentDTO){
+    getFollowers(mail:string){
         const headers = this.loginService.getHeaders();
+        return this.http.get<any>(this.url+'follow/'+mail,  {headers:headers})
 
-        return this.http.post<any>(this.url+'comment',comm, {headers:headers} )
     }
 }

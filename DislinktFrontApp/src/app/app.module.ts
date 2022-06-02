@@ -19,7 +19,9 @@ import { NewPostComponent } from './new-post/new-post.component';
 import { PostBoxComponent } from './post-box/post-box.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ProfilePageComponent } from './profile-page/profile-page.component';
+import { ProfilePostsComponent } from './profile-posts/profile-posts.component';
 //>>>>>>> d5b454f8c581b57932eed820dde1d1fa63716a55
+import { LinkyModule } from 'angular-linky';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { ProfilePageComponent } from './profile-page/profile-page.component';
     NewPostComponent,
     PostBoxComponent,
     HomepageComponent,
-    ProfilePageComponent
+    ProfilePageComponent,
+    ProfilePostsComponent
 //>>>>>>> d5b454f8c581b57932eed820dde1d1fa63716a55
   ],
   imports: [
@@ -45,7 +48,8 @@ import { ProfilePageComponent } from './profile-page/profile-page.component';
     HttpClientModule, 
     RouterModule,
     ToastrModule.forRoot(),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    LinkyModule
 
   ],
   providers: [],

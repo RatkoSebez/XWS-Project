@@ -1,10 +1,13 @@
 export class ReactionDTO{
-    type:string;
-    usermail:string;
+    react:string;
+    userEmail:string;
+    postID:string
 
-    constructor(type:"", usermail:""){
-        this.type=type;
-        this.usermail=usermail;
+
+    constructor( type:string, usermail:string, id:string){
+        this.react=type;
+        this.userEmail=usermail;
+        this.postID = id ;
       
     }
 }

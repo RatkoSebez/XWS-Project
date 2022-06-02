@@ -22,7 +22,7 @@ export class NewPostComponent implements OnInit {
   fileinput:string='';
   newPost:NewPostDTO={
     links:[],
-    photos:[],
+    photos:[''],
     postText:''
   }
   responsePost:Post=new Post();

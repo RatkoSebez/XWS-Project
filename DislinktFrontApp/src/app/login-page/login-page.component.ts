@@ -5,7 +5,7 @@ import { LoginService } from '../services/login-service';
 import { AuthRequestDTO } from '../dtos/AuthRequestDTO';
 import { AuthResponseDTO } from '../dtos/AuthResponseDTO';
 import {HttpClientModule} from '@angular/common/http';
-
+import { AppComponent } from '../app.component';
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
@@ -43,9 +43,10 @@ export class LoginPageComponent implements OnInit {
     localStorage.setItem('mail', this.authenticationRequest.email)
     localStorage.setItem('isLogged','yes')
     
+    AppComponent.logged = true
     this.mail = localStorage.getItem('mail')
     console.log(localStorage.getItem('mail'))
-    this.route.navigate(['/profile']);
+    this.route.navigate(['/'+this.mail]);
   }
 
   ngOnInit(): void {

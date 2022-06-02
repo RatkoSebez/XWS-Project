@@ -6,6 +6,13 @@ import { AuthResponseDTO } from '../dtos/AuthResponseDTO';
 import { Observable } from 'rxjs';
 import { UserDTO } from '../dtos/UserDTO';
 import { LoginService } from './login-service';
+import { PostDTO } from '../dtos/PostDTO';
+import { Post } from '../model/post';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import { JsonpInterceptor } from '@angular/common/http';
+import { JsonPipe } from '@angular/common';
+import { ReactionDTO } from '../dtos/ReactionDTO';
 
 
 @Injectable({
@@ -40,6 +47,13 @@ export class ProfileEditService{
       this.mail = localStorage.getItem('mail')
       console.log(this.header)
       console.log(this.mail)
-      return this.http.get<UserDTO>(this.urlDefault + this.mail, {'headers':this.header})
+      return this.http.get<UserDTO>(this.urlDefault + mail, {'headers':this.header})
     }
+    makeReaction(data:ReactionDTO){
+      this.header = this.loginservice.getHeaders()
+      var body = JSON.stringify(data)
+      console.log('ovo se kreira ' + body)
+      return this.http.post(this.urlDefault + 'make-reaction', body, {headers:this.header})
+    }
+    
 }

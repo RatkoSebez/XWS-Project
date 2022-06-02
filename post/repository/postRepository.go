@@ -4,6 +4,7 @@ import (
 	"XWS-Project/post/model"
 	"context"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -101,6 +102,10 @@ func (repository *PostRepository) AddCommentToPost(ctx context.Context, postId p
 
 func (repository *PostRepository) ReactOnPost(ctx context.Context, post model.Post, reaction model.Reaction) (*model.Post, error) {
 	collection := repository.Client.Database("dislinkt").Collection("reactions")
+	//var result model.Reaction
+	// filter := bson.D{{"userEmail", reaction.UserEmail}, {"postID", reaction.PostID}}
+	// _, err := collection.Find(context.TODO(), filter)
+	// if err != nil {
 	ress, err := collection.InsertOne(ctx, reaction)
 	fmt.Println(ress)
 	if err != nil {
@@ -109,4 +114,7 @@ func (repository *PostRepository) ReactOnPost(ctx context.Context, post model.Po
 	_, err = repository.UpdatePost(ctx, post)
 	updateRes, _ := repository.LoadPostByID(ctx, post.PostID)
 	return updateRes, err
+	// }
+	// updateRes, _ := repository.LoadPostByID(ctx, post.PostID)
+	// return updateRes, err
 }

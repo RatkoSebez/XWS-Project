@@ -15,7 +15,7 @@ service FollowService{
 
     rpc CreateFollow(FollowRequestMessage) returns (EmptyMessage){
         option(google.api.http)={
-            post:"/follow"
+            post:"/follow/{email}"
             body:"*"
         };
     }

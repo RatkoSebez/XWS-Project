@@ -7,7 +7,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"fmt"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
@@ -15,6 +15,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type PostService struct {
@@ -156,6 +158,12 @@ func (service *PostService) LoadFollowingPosts(ctx context.Context, followingLis
 func (service *PostService) GetUserPosts(ctx context.Context, userEmail string) ([]*model.Post, error) {
 
 	list, err := service.PostRepo.LoadPostsByUser(ctx, userEmail)
-
+	if len(list) == 0 {
+		fmt.Println("Nema postova")
+	}
+	if len(list) != 0 {
+		fmt.Println("Ima postova")
+		fmt.Println(list[0].PostText)
+	}
 	return list, err
 }
